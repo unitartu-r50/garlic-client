@@ -6,3 +6,50 @@ html, body {
 body {
 	font-family: "Helvetica Neue", "Helvetica", "Arial", sans-serif;
 }
+
+.instruction {
+	cursor: pointer;
+	padding: 1rem;
+	border: 4px solid rgba(159, 241, 255, .35);
+	transition: all .2s ease-in-out;
+}
+
+.instruction:hover {
+	cursor: pointer;
+	border-color: rgba(159, 241, 255, 1);
+}
+
+
+.notifications {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	display: flex;
+	flex-direction: column;
+	/*padding: 1rem;*/
+	/*transition: all ease-in-out .2s;*/
+	/*z-index: 99;*/
+}
+
+.notification-item {
+	background: darkseagreen;
+	border-radius: 2rem;
+	color: white;
+	padding: 1rem;
+	margin: 0 1rem 1rem;
+	transition: all ease-in-out .2s;
+	font-weight: bold;
+	z-index: 99;
+}
+
+.notification-item.positive {
+	background: #6AE57B;
+}
+
+.notification-item.negative {
+	background: #FD8181;
+}
+
+.notification-item.error::before {
+	content: "ERROR: ";
+}
