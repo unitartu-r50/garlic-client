@@ -1,5 +1,5 @@
 <script>
-    import { notify, sendInstruction } from './App.svelte';
+    import { notify, sendInstruction } from '../App.svelte';
 
     let moves;
     let moveGroups;

@@ -23,10 +23,18 @@
 </script>
 
 <script>
-	import SiteHeader from './SiteHeader.svelte';
-	import Introduction from './Introduction.svelte';
-	import Sessions from './Sessions.svelte';
-	import Motions from './Motions.svelte';
+	import Home from './pages/Home.svelte';
+	import About from './pages/About.svelte';
+	import Sessions from './pages/Sessions.svelte';
+
+	import router from "page";
+
+	let currentPage = Home;
+
+	router('/', () => (currentPage = Home));
+	router('/about', () => (currentPage = About));
+	router('/sessions', () => (currentPage = Sessions));
+	router.start();
 </script>
 
 <style>
@@ -37,10 +45,7 @@
 	}
 </style>
 
-<SiteHeader/>
-<Introduction/>
-<main class="p2 mt4">
-	<Sessions/>
-	<Motions/>
-</main>
-<div id="notifications" class="notifications"></div>
+<div>
+	<svelte:component this={currentPage}/>
+	<div id="notifications" class="notifications"></div>
+</div>
