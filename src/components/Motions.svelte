@@ -1,5 +1,5 @@
 <script>
-    import { notify, sendInstruction } from '../App.svelte';
+    import {notify, sendInstruction} from '../App.svelte';
 
     let moves;
     let moveGroups;
@@ -59,11 +59,14 @@
             <h3 class="h3">{groupName}</h3>
             <section class="move-group">
                 {#each movesByGroups[groupName] as move}
-                    <article class="instruction move" id="{move.ID}" on:click={markVisited(move.ID)} on:click={sendInstruction(move.ID)}>
+                    <article class="instruction move" id="{move.ID}" on:click={markVisited(move.ID)}
+                             on:click={sendInstruction(move.ID)}>
                         {move.Name}
                     </article>
                 {/each}
             </section>
         {/each}
+    {:else}
+        <p><em>No motions found.</em></p>
     {/if}
 </section>

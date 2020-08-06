@@ -50,6 +50,10 @@ body {
 	background: #FD8181;
 }
 
+.notification-item.warning {
+	background: #FDCA81;
+}
+
 .notification-item.error::before {
 	content: "ERROR: ";
 }

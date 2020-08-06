@@ -1,10 +1,13 @@
 <script>
-    import {notify, sendInstruction} from '../App.svelte';
+    import {notify} from '../App.svelte';
+
     import Instruction from './Instruction.svelte';
+    import SessionItemEdit from './SessionItemEdit.svelte';
 
     let sessions;
     let fetchNeeded = true;
     let currentSession;
+    let inEditingMode = false;
 
     $: {
         if (fetchNeeded) {
@@ -26,6 +29,28 @@
 
     function markVisited(id) {
         document.getElementById(id).style.background = "rgba(159, 241, 255, .15)";
+    }
+
+    function editSession(id) {
+        inEditingMode = true;
+        console.log("in editing:", inEditingMode)
+        notify("warning", "entering editing mode")
+    }
+
+    function saveSession(id) {
+        inEditingMode = false;
+        notify("positive", "session has been saved")
+        // TODO: saveSession implementation
+    }
+
+    function removeSession(id) {
+        notify("positive", "session has been removed")
+        // TODO: removeSession implementation with confirmation
+    }
+
+    function addQuestion() {
+        notify("positive", "question has been added")
+        // TODO: addQuestion implementation with confirmation
     }
 </script>
 
@@ -55,6 +80,14 @@
         padding: 1em;
         border-radius: 1em;
     }
+
+    button {
+        margin: 0;
+    }
+
+    fieldset {
+        border: 4px solid rgba(159, 241, 255, .35);
+    }
 </style>
 
 <section>
@@ -66,17 +99,44 @@
                 <option value="{session}">{session.Name}</option>
             {/each}
         </select>
+        {#if currentSession}
+            {#if inEditingMode}
+                <button on:click={saveSession(currentSession.ID)}>Save</button>
+            {:else}
+                <button on:click={editSession(currentSession.ID)}>Edit</button>
+            {/if}
+            <button on:click={removeSession(currentSession.ID)}>Remove</button>
+        {/if}
+    {:else}
+        <p><em>No sessions found.</em></p>
     {/if}
 
     {#if currentSession}
         {#each currentSession.Items as item, i}
-            <div class="session-item my2">
-                <Instruction item="{item.Question}" index="{i}" expanded={true}/>
-                <div class="answers">
-                    <Instruction item="{item.PositiveAnswer}"/>
-                    <Instruction item="{item.NegativeAnswer}"/>
+            {#if inEditingMode}
+                <div class="session-item-edit my2">
+                    <form>
+                        <SessionItemEdit item="{item}" index="{i}"/>
+                    </form>
                 </div>
-            </div>
+            {:else}
+                <div class="session-item my2">
+                    {#if item.Actions.length > 0}
+                        <Instruction item="{item.Actions[0]}" index="{i}" expanded={true}/>
+                        <div class="answers">
+                            {#each item.Actions as action, actionIndex}
+                                {#if actionIndex > 0}
+                                    <Instruction item="{action}" index="{i}"/>
+                                {/if}
+                            {/each}
+                        </div>
+                    {/if}
+                </div>
+            {/if}
         {/each}
+
+        {#if inEditingMode}
+            <button on:click|preventDefault={addQuestion}>Add a question</button>
+        {/if}
     {/if}
 </section>

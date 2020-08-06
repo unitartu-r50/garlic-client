@@ -1,5 +1,5 @@
 <script>
-    import {notify, sendInstruction} from '../App.svelte';
+    import {sendInstruction} from '../App.svelte';
 
     export let item, index = 0, expanded = false;
 
