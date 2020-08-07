@@ -38,19 +38,76 @@
     }
 
     function saveSession(id) {
+        console.log("saving session", currentSession);
+        fetch("http://localhost:8080/api/sessions/" + id, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            mode: "cors",
+            redirect: "follow",
+            body: JSON.stringify(currentSession)
+        })
+                .then(r => {
+                    if (!r.ok) {
+                        throw Error(r.statusText);
+                    }
+                    return r.json();
+                })
+                .then(r => {
+                    notify("positive", r.message);
+                })
+                .catch(err => {
+                    console.error(err);
+                    notify("negative", err);
+                })
         inEditingMode = false;
-        notify("positive", "session has been saved")
-        // TODO: saveSession implementation
+        fetchNeeded = true;
     }
 
     function removeSession(id) {
-        notify("positive", "session has been removed")
-        // TODO: removeSession implementation with confirmation
+        fetch("http://localhost:8080/api/sessions/" + id, {
+            method: "DELETE",
+            mode: "cors",
+            redirect: "follow",
+            body: JSON.stringify(currentSession)
+        })
+                .then(r => {
+                    if (!r.ok) {
+                        throw Error(r.statusText);
+                    }
+                    return r.json();
+                })
+                .then(r => {
+                    notify("positive", r.message);
+                    inEditingMode = false;
+                    currentSession = null;
+                    fetchNeeded = true;
+                })
+                .catch(err => {
+                    console.error(err);
+                    notify("negative", err);
+                })
     }
 
     function addQuestion() {
-        notify("positive", "question has been added")
-        // TODO: addQuestion implementation with confirmation
+        currentSession.Items.push({
+            Actions: []
+        });
+        currentSession.Items = currentSession.Items;
+    }
+
+    function editingOff() {
+        console.log("editing off");
+        inEditingMode = false;
+    }
+
+    function handleItemEditMessage(event) {
+        const itemID = event.detail.id;
+        const index = event.detail.index;
+        console.log("remove item", itemID);
+        currentSession.Items.splice(index, 1);
+        currentSession.Items = currentSession.Items;
     }
 </script>
 
@@ -93,7 +150,7 @@
 <section>
     <h2 class="h2 m0 mb1">{currentSession ? currentSession.Name : "Choose a session"}</h2>
     {#if sessions}
-        <select name="sessions" id="sessions" class="m0" bind:value={currentSession}>
+        <select name="sessions" id="sessions" class="m0" bind:value={currentSession} on:change={editingOff}>
             <option value="">Please, select a session</option>
             {#each sessions as session, i}
                 <option value="{session}">{session.Name}</option>
@@ -114,11 +171,7 @@
     {#if currentSession}
         {#each currentSession.Items as item, i}
             {#if inEditingMode}
-                <div class="session-item-edit my2">
-                    <form>
-                        <SessionItemEdit item="{item}" index="{i}"/>
-                    </form>
-                </div>
+                <SessionItemEdit item="{item}" index="{i}" on:message={handleItemEditMessage}/>
             {:else}
                 <div class="session-item my2">
                     {#if item.Actions.length > 0}
