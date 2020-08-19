@@ -1,8 +1,12 @@
 <script>
     import {createEventDispatcher} from 'svelte';
+    import {notify} from '../App.svelte';
 
     const dispatch = createEventDispatcher();
     export let item, index;
+
+    // TODO: drag and drop audio files, display audio file upload, etc + API
+    // TODO: add new session UI + API
 
     function addAction() {
         const length = item.Actions.push({
@@ -38,6 +42,77 @@
         item.Actions[event.target.dataset.index].MoveItem.Delay = event.target.value * 1000000000;
         item.Actions = item.Actions;
     }
+
+    function dragOverHandler(event) {
+        event.dataTransfer.dropEffect = "copy";
+        const dropzone = document.getElementById("dropzone-" + event.target.dataset.id);
+        if (dropzone) {
+            dropzone.style.opacity = .5;
+        }
+    }
+
+    function dragLeave(event) {
+        const dropzone = document.getElementById("dropzone-" + event.target.dataset.id);
+        if (dropzone) {
+            dropzone.style.opacity = 1;
+        }
+    }
+
+    function dropHandler(event) {
+        const id = event.target.dataset.id;
+        const actionIndex = event.target.dataset.index;
+        const dropzone = document.getElementById("dropzone-" + id);
+        if (dropzone) {
+            dropzone.style.opacity = 1;
+            const moveID = event.dataTransfer.getData("text/plain");
+            fetch("http://localhost:8080/api/moves/" + moveID)
+                .then(r => {
+                    if (!r.ok) {
+                        throw Error(r.statusText);
+                    }
+                    return r.json();
+                })
+                .then(d => {
+                    item.Actions[actionIndex].MoveItem = d.data;
+                })
+                .catch(err => {
+                    console.error("error:", err);
+                    notify("negative", err);
+                });
+        }
+    }
+
+    function fileUpload(event) {
+        const name = event.target.files[0].name;
+        const actionIndex = event.target.dataset.index;
+        console.log("file upload", name, event.target.value);
+
+        const reader = new FileReader();
+        reader.addEventListener('load', (e) => {
+            let data = new FormData();
+            data.append("file_content", event.target.files[0]);
+
+            fetch("http://localhost:8080/api/upload/audio", {
+                method: "POST",
+                body: data
+            })
+                .then(response => response.json())
+                .then((response) => {
+                    console.log(response);
+                    item.Actions[actionIndex].SayItem.FilePath = response["filepath"];
+                    if (response["error"] && response["error"].length > 0) {
+                        notify("negative", response["error"]);
+                    } else {
+                        notify("positive", response["message"]);
+                    }
+                })
+                .catch((err) => {
+                    console.error(err);
+                    notify("negative", err);
+                })
+        })
+        reader.readAsArrayBuffer(event.target.files[0]);
+    }
 </script>
 
 <style>
@@ -47,20 +122,39 @@
         background: rgba(228, 249, 254, .5);
     }
 
+    .col-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-gap: 2em;
+    }
+
+    .full-width {
+        width: 100%;
+    }
+
     label {
         display: block;
     }
 
     .item {
-        /*background: rgba(228, 249, 254, .5);*/
         border: 4px solid rgba(159, 241, 255, .35);
         border-radius: .5em;
         padding: 1em;
     }
+
+    .move-dropzone {
+        background: white;
+        padding: .5em .5em;
+        border: 1px dotted black;
+    }
+
+    .grey {
+        color: darkgray;
+    }
 </style>
 
 <form class="item my2">
-    <h2 class="h3 m0 mb2 bold">Question {index+1}</h2>
+    <h2 class="h3 m0 mb2 bold">Question {index + 1}</h2>
     {#if item.Actions}
         {#each item.Actions as action, i}
             <fieldset class="m0 mb2">
@@ -69,30 +163,48 @@
                 {:else}
                     <legend class="h5 m0 bold caps mb1">Action</legend>
                 {/if}
-                {#if action.SayItem}
-                    <div class="mb1">
-                        <label for="{action.SayItem.ID}">Phrase:</label>
-                        <textarea name="phrase" id="{action.SayItem.ID}" cols="75" rows="3"
-                                  bind:value={action.SayItem.Phrase}></textarea>
-                    </div>
-                {/if}
-                {#if action.MoveItem}
-                    <label class="mb1" for="{action.MoveItem.ID}-path">Move File Path:
-                        <input type="text" id="{action.MoveItem.ID}-path" name="movePath"
-                               bind:value={action.MoveItem.FilePath}>
-                    </label>
-                    <label class="mb1" for="{action.MoveItem.ID}-name">Move Name:
-                        <input type="text" id="{action.MoveItem.ID}-name" name="moveName"
-                               bind:value={action.MoveItem.Name}>
-                    </label>
-                    <label class="mb1" for="{action.MoveItem.ID}-delay">Move Delay:
-                        <input type="number" id="{action.MoveItem.ID}-delay" name="moveDelay"
-                               value={action.MoveItem.Delay / 1000000000}
-                               data-index="{i}"
-                               on:change={handleMoveDelay}> seconds
-                    </label>
-                {/if}
-                <button on:click|preventDefault={removeAction} data-index="{i}" class="m0">Remove the action</button>
+                <div class="col-2 full-width">
+                    {#if action.SayItem}
+                        <div>
+                            <h3 class="h4 m0 mb2">Say</h3>
+                            <div class="mb1">
+                                <label for="{action.SayItem.ID}">Phrase:</label>
+                                <textarea class="full-width" name="phrase" id="{action.SayItem.ID}" rows="3"
+                                          bind:value={action.SayItem.Phrase}></textarea>
+                            </div>
+                            <div class="mb1">
+                                <label for="{action.SayItem.ID}-filepath">Audio file:
+                                    <span class="h6">{action.SayItem.FilePath}</span>
+                                    <input type="file" id="{action.SayItem.ID}-filepath" accept="audio/*"
+                                           on:change="{fileUpload}" data-index="{i}">
+                                </label>
+                            </div>
+                        </div>
+                    {/if}
+                    {#if action.MoveItem}
+                        <div>
+                            <h3 class="h4 m0 mb2">Move</h3>
+                            <label>Move name:
+                                <div class="move-dropzone mb2" id="dropzone-{action.MoveItem.ID}"
+                                     data-id="{action.MoveItem.ID}"
+                                     data-index="{i}"
+                                     on:dragover|preventDefault={dragOverHandler}
+                                     on:drop|preventDefault={dropHandler}
+                                     on:dragleave|preventDefault={dragLeave}>
+                                    {action.MoveItem.Name} <em class="h6 grey">(drag a motion here)</em>
+                                </div>
+                            </label>
+                            <label class="mb1" for="{action.MoveItem.ID}-delay">Move delay:
+                                <input type="number" id="{action.MoveItem.ID}-delay" name="moveDelay"
+                                       value={action.MoveItem.Delay / 1000000000}
+                                       data-index="{i}"
+                                       on:change={handleMoveDelay}> seconds
+                            </label>
+                        </div>
+                    {/if}
+                </div>
+                <button on:click|preventDefault={removeAction} data-index="{i}" class="m0 mt3">Remove the action
+                </button>
             </fieldset>
         {/each}
 

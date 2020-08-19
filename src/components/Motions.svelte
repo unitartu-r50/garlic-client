@@ -41,6 +41,11 @@
     function markVisited(id) {
         document.getElementById(id).style.background = "rgba(159, 241, 255, .15)";
     }
+
+    function dragStartHandler(event) {
+        event.dataTransfer.setData("text/plain", event.target.dataset.id);
+        event.dataTransfer.dropEffect = "copy";
+    }
 </script>
 
 <style>
@@ -49,7 +54,6 @@
         grid-template-columns: 1fr 1fr;
         grid-gap: .3em;
     }
-
 </style>
 
 <section>
@@ -60,7 +64,9 @@
             <section class="move-group">
                 {#each movesByGroups[groupName] as move}
                     <article class="instruction move" id="{move.ID}" on:click={markVisited(move.ID)}
-                             on:click={sendInstruction(move.ID)}>
+                             on:click={sendInstruction(move.ID)}
+                             data-id="{move.ID}"
+                             draggable="true" on:dragstart={dragStartHandler}>
                         {move.Name}
                     </article>
                 {/each}

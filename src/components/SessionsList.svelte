@@ -4,7 +4,7 @@
     import Instruction from './Instruction.svelte';
     import SessionItemEdit from './SessionItemEdit.svelte';
 
-    let sessions;
+    let sessions = [];
     let fetchNeeded = true;
     let currentSession;
     let inEditingMode = false;
@@ -12,18 +12,24 @@
     $: {
         if (fetchNeeded) {
             fetch("http://localhost:8080/api/sessions/")
-                    .then(r => r.json())
-                    .then(d => {
-                        sessions = d.data;
-                        fetchNeeded = false;
-                        if (!currentSession) {
-                            currentSession = sessions[0];
+                .then(r => r.json())
+                .then(d => {
+                    sessions = d.data;
+                    fetchNeeded = false;
+                    if (!currentSession) {
+                        currentSession = sessions[0];
+                    } else if (!currentSession.ID || currentSession.ID.length === 0) {
+                        for (let el of sessions) {
+                            if (el.Name === currentSession.Name) {
+                                currentSession = el;
+                            }
                         }
-                    })
-                    .catch(err => {
-                        console.error("error:", err);
-                        fetchNeeded = false;
-                    });
+                    }
+                })
+                .catch(err => {
+                    console.error("error:", err);
+                    fetchNeeded = false;
+                });
         }
     }
 
@@ -34,44 +40,19 @@
     function editSession(id) {
         inEditingMode = true;
         console.log("in editing:", inEditingMode)
-        notify("warning", "entering editing mode")
+        // notify("warning", "entering editing mode")
     }
 
     function saveSession(id) {
-        console.log("saving session", currentSession);
-        fetch("http://localhost:8080/api/sessions/" + id, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            mode: "cors",
-            redirect: "follow",
-            body: JSON.stringify(currentSession)
-        })
-                .then(r => {
-                    if (!r.ok) {
-                        throw Error(r.statusText);
-                    }
-                    return r.json();
-                })
-                .then(r => {
-                    notify("positive", r.message);
-                })
-                .catch(err => {
-                    console.error(err);
-                    notify("negative", err);
-                })
-        inEditingMode = false;
-        fetchNeeded = true;
-    }
-
-    function removeSession(id) {
-        fetch("http://localhost:8080/api/sessions/" + id, {
-            method: "DELETE",
-            mode: "cors",
-            redirect: "follow",
-            body: JSON.stringify(currentSession)
-        })
+        if (!currentSession["ID"] || currentSession["ID"].length === 0) {
+            console.log("posting a new session", currentSession);
+            fetch("http://localhost:8080/api/sessions/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(currentSession)
+            })
                 .then(r => {
                     if (!r.ok) {
                         throw Error(r.statusText);
@@ -81,13 +62,69 @@
                 .then(r => {
                     notify("positive", r.message);
                     inEditingMode = false;
-                    currentSession = null;
                     fetchNeeded = true;
                 })
                 .catch(err => {
                     console.error(err);
                     notify("negative", err);
+                    inEditingMode = false;
+                    fetchNeeded = true;
                 })
+        } else {
+            console.log("saving session", currentSession);
+            fetch("http://localhost:8080/api/sessions/" + id, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                mode: "cors",
+                redirect: "follow",
+                body: JSON.stringify(currentSession)
+            })
+                .then(r => {
+                    if (!r.ok) {
+                        throw Error(r.statusText);
+                    }
+                    return r.json();
+                })
+                .then(r => {
+                    notify("positive", r.message);
+                    inEditingMode = false;
+                    fetchNeeded = true;
+                })
+                .catch(err => {
+                    console.error(err);
+                    notify("negative", err);
+                    inEditingMode = false;
+                    fetchNeeded = true;
+                })
+        }
+    }
+
+    function removeSession(id) {
+        fetch("http://localhost:8080/api/sessions/" + id, {
+            method: "DELETE",
+            mode: "cors",
+            redirect: "follow",
+            body: JSON.stringify(currentSession)
+        })
+            .then(r => {
+                if (!r.ok) {
+                    throw Error(r.statusText);
+                }
+                return r.json();
+            })
+            .then(r => {
+                notify("positive", r.message);
+                inEditingMode = false;
+                currentSession = null;
+                sessions = [];
+                fetchNeeded = true;
+            })
+            .catch(err => {
+                console.error(err);
+                notify("negative", err);
+            })
     }
 
     function addQuestion() {
@@ -97,8 +134,20 @@
         currentSession.Items = currentSession.Items;
     }
 
+    function addSession() {
+        let session = {
+            "Name": "New Session",
+            "Items": [{
+                "Actions": [],
+            }]
+        };
+        currentSession = session;
+        sessions.push(session);
+        sessions = sessions;
+        inEditingMode = true;
+    }
+
     function editingOff() {
-        console.log("editing off");
         inEditingMode = false;
     }
 
@@ -145,15 +194,33 @@
     fieldset {
         border: 4px solid rgba(159, 241, 255, .35);
     }
+
+    label {
+        display: block;
+    }
 </style>
 
 <section>
-    <h2 class="h2 m0 mb1">{currentSession ? currentSession.Name : "Choose a session"}</h2>
+    {#if currentSession}
+        {#if inEditingMode}
+            <label for="session-name" class="mb2">Session name:
+                <input id="session-name" type="text"
+                       bind:value={currentSession.Name}></label>
+        {:else}
+            <h2 class="h2 m0 mb1">{currentSession.Name}</h2>
+        {/if}
+    {:else}
+        <h2 class="h2 m0 mb1">Choose a session</h2>
+    {/if}
     {#if sessions}
         <select name="sessions" id="sessions" class="m0" bind:value={currentSession} on:change={editingOff}>
             <option value="">Please, select a session</option>
             {#each sessions as session, i}
-                <option value="{session}">{session.Name}</option>
+                {#if session.ID === currentSession.ID}
+                    <option value="{session}" selected>{session.Name}</option>
+                {:else}
+                    <option value="{session}">{session.Name}</option>
+                {/if}
             {/each}
         </select>
         {#if currentSession}
@@ -163,12 +230,12 @@
                 <button on:click={editSession(currentSession.ID)}>Edit</button>
             {/if}
             <button on:click={removeSession(currentSession.ID)}>Remove</button>
+            <button on:click|preventDefault={addSession}>Add a session</button>
         {/if}
     {:else}
         <p><em>No sessions found.</em></p>
     {/if}
-
-    {#if currentSession}
+    {#if currentSession && currentSession.Items}
         {#each currentSession.Items as item, i}
             {#if inEditingMode}
                 <SessionItemEdit item="{item}" index="{i}" on:message={handleItemEditMessage}/>
