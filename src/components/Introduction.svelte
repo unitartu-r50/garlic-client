@@ -12,4 +12,5 @@
 <section class="px2 my2">
     <h1 class="h1 m0">{title}</h1>
     <p>{description}</p>
+    <slot/>
 </section>

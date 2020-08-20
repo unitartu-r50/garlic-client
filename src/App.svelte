@@ -1,34 +1,3 @@
-<script context="module">
-    export function notify(label, message) {
-        // adding a notification item
-        const notification = document.createElement("div");
-        notification.classList.add("notification-item");
-        notification.classList.add(label);
-        notification.innerText = message;
-
-        // global notifications container on each page
-        const notifications = document.getElementById("notifications");
-        notifications.appendChild(notification);
-
-        // removing the notification after some time
-        const timeoutID = window.setTimeout(() => {
-            window.clearTimeout(timeoutID);
-            notifications.removeChild(notification);
-        }, 3000);
-    }
-
-    export function sendInstruction(id) {
-        notify("positive", "command has been sent");
-    }
-
-    // TODO: login, logout page and corresponding auth API
-    // TODO: router doesn't load a page on a direct URI, use server-side redirect
-    // TODO: send real instructions to the server and display the response
-    // TODO: "robot connected" indicator
-    // TODO: favorite motions
-    // TODO: sessions management system
-</script>
-
 <script>
     // Routing
     //
@@ -49,7 +18,7 @@
 
     // Alternative routing
 
-    import { onMount } from 'svelte';
+    // import { onMount } from 'svelte';
 
     import SiteHeader from './components/SiteHeader.svelte';
     import Introduction from './components/Introduction.svelte';
@@ -57,13 +26,24 @@
     import Motions from './components/Motions.svelte';
 
     let currentPage = "";
+    let isPepperConnected = false;
 
     $: {
         currentPage = localStorage.getItem("location");
+        setPepperStatus();
     }
 
     function handlePseudoRedirect(event) {
         currentPage = event.detail.text;
+    }
+
+    function setPepperStatus() {
+        fetch("http://localhost:8080/api/pepper/status")
+            .then(response => response.json())
+            .then((response) => {
+                isPepperConnected = response["status"] === 1
+            })
+            .catch(err => console.error(err))
     }
 </script>
 
@@ -85,7 +65,13 @@
 {:else if currentPage === "sessions" }
     <Introduction title="Sessions Control" description="This dashboard allows the control of the Pepper robot through the local network simply by clicking corresponding
         buttons, either questions, or positive answers, or negative answers. On the right side, there is available the
-        general motion library, so a user can initiate any movement at any time."/>
+        general motion library, so a user can initiate any movement at any time.">
+        {#if isPepperConnected}
+            <p>Pepper status: 🟢</p>
+        {:else}
+            <p>Pepper status: ⚪</p>
+        {/if}
+    </Introduction>
     <main class="p2 mt4">
         <SessionsList/>
         <Motions/>

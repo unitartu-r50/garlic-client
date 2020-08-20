@@ -1,5 +1,5 @@
 <script>
-    import {notify} from '../App.svelte';
+    import {notify} from './Helpers.svelte';
 
     import Instruction from './Instruction.svelte';
     import SessionItemEdit from './SessionItemEdit.svelte';
@@ -18,7 +18,7 @@
                     fetchNeeded = false;
                     if (!currentSession) {
                         currentSession = sessions[0];
-                    } else if (!currentSession.ID || currentSession.ID.length === 0) {
+                    } else if (!currentSession.ID || currentSession.ID.length == 0) {
                         for (let el of sessions) {
                             if (el.Name === currentSession.Name) {
                                 currentSession = el;
@@ -163,7 +163,7 @@
 <style>
     .session-item {
         display: grid;
-        grid-template-columns: 4fr 1fr;
+        grid-template-columns: 5fr 2fr;
         grid-gap: .3rem;
     }
 
@@ -213,7 +213,7 @@
         <h2 class="h2 m0 mb1">Choose a session</h2>
     {/if}
     {#if sessions}
-        <select name="sessions" id="sessions" class="m0" bind:value={currentSession} on:change={editingOff}>
+        <select name="sessions" id="sessions" class="m0" bind:value={currentSession} on:blur={editingOff}>
             <option value="">Please, select a session</option>
             {#each sessions as session, i}
                 {#if session.ID === currentSession.ID}

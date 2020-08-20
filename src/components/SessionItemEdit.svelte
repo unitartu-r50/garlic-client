@@ -1,6 +1,6 @@
 <script>
     import {createEventDispatcher} from 'svelte';
-    import {notify} from '../App.svelte';
+    import {notify} from './Helpers.svelte';
 
     const dispatch = createEventDispatcher();
     export let item, index;

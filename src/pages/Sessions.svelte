@@ -16,7 +16,10 @@
 <SiteHeader/>
 <Introduction title="Sessions Control" description="This dashboard allows the control of the Pepper robot through the local network simply by clicking corresponding
         buttons, either questions, or positive answers, or negative answers. On the right side, there is available the
-        general motion library, so a user can initiate any movement at any time."/>
+        general motion library, so a user can initiate any movement at any time.">
+    <p>something new</p>
+    <h2 class="h2">hoh</h2>
+</Introduction>
 <main class="p2 mt4">
     <SessionsList/>
     <Motions/>

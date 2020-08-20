@@ -1,8 +1,8 @@
 <script>
     import SiteHeader from '../components/SiteHeader.svelte';
     import Introduction from '../components/Introduction.svelte';
-    import SessionsList from '../components/SessionsList.svelte';
-    import Motions from '../components/Motions.svelte';
+    // import SessionsList from '../components/SessionsList.svelte';
+    // import Motions from '../components/Motions.svelte';
 </script>
 
 <SiteHeader/>
