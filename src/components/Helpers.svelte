@@ -22,7 +22,7 @@
             "item_id": id
         }
 
-        fetch("http://localhost:8080/pepper/send_command", {
+        fetch("http://localhost:8080/api/pepper/send_command", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

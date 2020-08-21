@@ -30,6 +30,9 @@
 
     $: {
         currentPage = localStorage.getItem("location");
+        if (!currentPage) {
+            currentPage = "";
+        }
         setPepperStatus();
     }
 
@@ -53,7 +56,7 @@
     main {
         display: grid;
         grid-template-columns: 2fr 1fr;
-        grid-gap: 1em;
+        grid-gap: 2em;
     }
 </style>
 

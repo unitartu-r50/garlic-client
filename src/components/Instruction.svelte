@@ -31,7 +31,7 @@
             <div>
                 <p class="h2 m0 mb1">{item.SayItem.Phrase}</p>
                 <div class="h6 m0"><span class="bold">audio</span>: {item.SayItem.FilePath}</div>
-                {#if item.MoveItem}
+                {#if item.MoveItem && (item.MoveItem.Name || item.MoveItem.FilePath)}
                     <div class="h6 m0"><span
                             class="bold">motion</span>: {item.MoveItem.Name}
                         {#if item.MoveItem.Delay > 0}
@@ -55,7 +55,7 @@
             {#if item.SayItem.FilePath.length > 0}
                 <p class="h6 m0"><span class="bold">audio</span>: {item.SayItem.FilePath}</p>
             {/if}
-            {#if item.MoveItem}
+            {#if item.MoveItem && (item.MoveItem.Name || item.MoveItem.FilePath)}
                 <p class="h6 m0"><span
                         class="bold">motion</span>: {item.MoveItem.Name}
                     {#if item.MoveItem.Delay > 0}

@@ -18,9 +18,15 @@
                     fetchNeeded = false;
                     if (!currentSession) {
                         currentSession = sessions[0];
-                    } else if (!currentSession.ID || currentSession.ID.length == 0) {
+                    } else if (!currentSession.ID || currentSession.ID.length === 0) {
                         for (let el of sessions) {
                             if (el.Name === currentSession.Name) {
+                                currentSession = el;
+                            }
+                        }
+                    } else {
+                        for (let el of sessions) {
+                            if (el.ID === currentSession.ID) {
                                 currentSession = el;
                             }
                         }
@@ -40,7 +46,6 @@
     function editSession(id) {
         inEditingMode = true;
         console.log("in editing:", inEditingMode)
-        // notify("warning", "entering editing mode")
     }
 
     function saveSession(id) {
@@ -212,7 +217,7 @@
     {:else}
         <h2 class="h2 m0 mb1">Choose a session</h2>
     {/if}
-    {#if sessions}
+    {#if sessions && sessions.length > 0}
         <select name="sessions" id="sessions" class="m0" bind:value={currentSession} on:blur={editingOff}>
             <option value="">Please, select a session</option>
             {#each sessions as session, i}
@@ -234,6 +239,7 @@
         {/if}
     {:else}
         <p><em>No sessions found.</em></p>
+        <button on:click|preventDefault={addSession}>Add a session</button>
     {/if}
     {#if currentSession && currentSession.Items}
         {#each currentSession.Items as item, i}
