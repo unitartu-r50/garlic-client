@@ -59,7 +59,7 @@
 
 <header class="flex align-baseline justify-between px1">
     <div class="flex">
-        <img class="logotype m1" srcset="/pepper.svg, /pepper.png, /pepper@2x.png" src="/pepper.png"
+        <img class="logotype m1" srcset="/images/pepper.svg, /images/pepper.png, /images/pepper@2x.png" src="/images/pepper.png"
              alt="Pepper Control">
         <nav class="flex">
             <a on:click|preventDefault={pseudoRedirect} data-loc="" href="/" title="Home"

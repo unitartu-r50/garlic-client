@@ -47,7 +47,7 @@
     function search() {
         let filteredMoves = [];
         for (const move of moves) {
-            if (move.Name.includes(searchQuery)) {
+            if (move.Name.toLowerCase().includes(searchQuery.toLowerCase())) {
                 filteredMoves.push(move);
             }
         }
@@ -169,6 +169,12 @@
         border: 4px solid rgba(159, 241, 255, .35);
         border-radius: .5em;
         background: rgba(228, 249, 254, .5);
+    }
+
+    .sticky {
+        position: -webkit-sticky;
+        position: sticky;
+        top: 20px;
     }
 </style>
 

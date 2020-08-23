@@ -36,6 +36,8 @@
         setPepperStatus();
     }
 
+    setInterval(() => setPepperStatus(), 5000);
+
     function handlePseudoRedirect(event) {
         currentPage = event.detail.text;
     }
@@ -55,7 +57,7 @@
 <style>
     main {
         display: grid;
-        grid-template-columns: 2fr 1fr;
+        grid-template-columns: 2fr 2fr;
         grid-gap: 2em;
     }
 </style>

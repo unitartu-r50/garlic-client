@@ -10,11 +10,17 @@
         const notifications = document.getElementById("notifications");
         notifications.appendChild(notification);
 
+        // conditional timeout
+        let timeout = 3000;
+        if (label === "negative") {
+            timeout = 5000;
+        }
+
         // removing the notification after some time
         const timeoutID = window.setTimeout(() => {
             window.clearTimeout(timeoutID);
             notifications.removeChild(notification);
-        }, 3000);
+        }, timeout);
     }
 
     export function sendInstruction(id) {

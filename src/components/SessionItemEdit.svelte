@@ -12,7 +12,8 @@
         const length = item.Actions.push({
             SayItem: {
                 Phrase: "",
-                FilePath: ""
+                FilePath: "",
+                Delay: 0
             },
             MoveItem: {
                 Name: "",
@@ -40,6 +41,11 @@
 
     function handleMoveDelay(event) {
         item.Actions[event.target.dataset.index].MoveItem.Delay = event.target.value * 1000000000;
+        item.Actions = item.Actions;
+    }
+
+    function handleSayDelay(event) {
+        item.Actions[event.target.dataset.index].SayItem.Delay = event.target.value * 1000000000;
         item.Actions = item.Actions;
     }
 
@@ -136,6 +142,10 @@
         display: block;
     }
 
+    input[type=number] {
+        width: 5em;
+    }
+
     .item {
         border: 4px solid rgba(159, 241, 255, .35);
         border-radius: .5em;
@@ -145,7 +155,7 @@
     .move-dropzone {
         background: white;
         padding: .5em .5em;
-        border: 1px dotted black;
+        border: 1px dashed black;
     }
 
     .grey {
@@ -172,13 +182,17 @@
                                 <textarea class="full-width" name="phrase" id="{action.SayItem.ID}" rows="3"
                                           bind:value={action.SayItem.Phrase}></textarea>
                             </div>
-                            <div class="mb1">
-                                <label for="{action.SayItem.ID}-filepath">Audio file:
-                                    <span class="h6">{action.SayItem.FilePath}</span>
-                                    <input type="file" id="{action.SayItem.ID}-filepath" accept="audio/*"
-                                           on:change="{fileUpload}" data-index="{i}">
-                                </label>
-                            </div>
+                            <label class="mb1" for="{action.SayItem.ID}-filepath">Audio file:
+                                <span class="h6">{action.SayItem.FilePath}</span>
+                                <input type="file" id="{action.SayItem.ID}-filepath" accept="audio/*"
+                                       on:change="{fileUpload}" data-index="{i}">
+                            </label>
+                            <label class="mb1" for="{action.SayItem.ID}-delay">Audio delay, s:
+                                <input type="number" id="{action.SayItem.ID}-delay" name="sayDelay"
+                                       value={action.SayItem.Delay / 1000000000}
+                                       data-index="{i}"
+                                       on:change={handleSayDelay}>
+                            </label>
                         </div>
                     {/if}
                     {#if action.MoveItem}
@@ -191,14 +205,14 @@
                                      on:dragover|preventDefault={dragOverHandler}
                                      on:drop|preventDefault={dropHandler}
                                      on:dragleave|preventDefault={dragLeave}>
-                                    {action.MoveItem.Name} <em class="h6 grey">(drag a motion here)</em>
+                                    {action.MoveItem.Name}
                                 </div>
                             </label>
-                            <label class="mb1" for="{action.MoveItem.ID}-delay">Move delay:
+                            <label class="mb1" for="{action.MoveItem.ID}-delay">Move delay, s:
                                 <input type="number" id="{action.MoveItem.ID}-delay" name="moveDelay"
                                        value={action.MoveItem.Delay / 1000000000}
                                        data-index="{i}"
-                                       on:change={handleMoveDelay}> seconds
+                                       on:change={handleMoveDelay}>
                             </label>
                         </div>
                     {/if}
