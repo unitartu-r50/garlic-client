@@ -11,11 +11,8 @@
         let delayMillis = delay / 1000000;
         const audioElement = document.getElementById("audio-" + itemID);
         if (audioElement) {
-            console.log("playing audio");
             // NOTE: this timer could be non-exact, read more at https://stackoverflow.com/questions/29971898/how-to-create-an-accurate-timer-in-javascript
-            console.log("setting a timer");
             setTimeout(() => {
-                console.log("playing");
                 audioElement.play()
                     .catch(err => {
                         console.error(err);
@@ -23,7 +20,7 @@
                     });
             }, delayMillis);
         } else {
-            console.log("not playing audio");
+            console.log("no audio element found");
         }
     }
 </script>

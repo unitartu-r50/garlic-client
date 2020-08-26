@@ -5,8 +5,25 @@
     const dispatch = createEventDispatcher();
     export let item, index;
 
-    // TODO: drag and drop audio files, display audio file upload, etc + API
-    // TODO: add new session UI + API
+    let fetchNeeded = false;
+
+    $: {
+        if (fetchNeeded) {
+            fetch("http://localhost:8080/api/session_items/" + item.ID)
+                .then(r => r.json())
+                .then(response => {
+                    item = response.data;
+                    fetchNeeded = false;
+                    if (response["error"] && response["error"].length > 0) {
+                        notify("negative", response["error"]);
+                    }
+                })
+                .catch(err => {
+                    console.error("error:", err);
+                    fetchNeeded = false;
+                });
+        }
+    }
 
     function addAction() {
         const length = item.Actions.push({
@@ -27,9 +44,25 @@
     }
 
     function removeAction(event) {
-        item.Actions.splice(event.target.dataset.index, 1);
-        item = item;
-        console.log("action removed, new size is", item.Actions.length);
+        const actionIndex = event.target.dataset.index;
+
+        if (item && item.Actions[actionIndex]) {
+            fetch("http://localhost:8080/api/instructions/" + item.Actions[actionIndex].ID, {
+                method: "DELETE"
+            })
+                .then(r => r.json())
+                .then((response) => {
+                    if (response["error"] && response["error"].length > 0) {
+                        notify("negative", response["error"]);
+                    } else {
+                        notify("positive", response["message"]);
+                    }
+                    item.Actions.splice(actionIndex, 1);
+                    item = item;
+                    fetchNeeded = true;
+                })
+                .catch(err => console.log(err));
+        }
     }
 
     function removeItem(event) {
@@ -91,12 +124,14 @@
     function fileUpload(event) {
         const name = event.target.files[0].name;
         const actionIndex = event.target.dataset.index;
-        console.log("file upload", name, event.target.value);
+        const phrase = event.target.dataset.phrase;
+        console.log("file upload", name, event.target.value, name, actionIndex, phrase);
 
         const reader = new FileReader();
         reader.addEventListener('load', (e) => {
             let data = new FormData();
             data.append("file_content", event.target.files[0]);
+            data.append("phrase", phrase);
 
             fetch("http://localhost:8080/api/upload/audio", {
                 method: "POST",
@@ -165,7 +200,7 @@
 
 <form class="item my2">
     <h2 class="h3 m0 mb2 bold">Question {index + 1}</h2>
-    {#if item.Actions}
+    {#if item && item.Actions}
         {#each item.Actions as action, i}
             <fieldset class="m0 mb2">
                 {#if i === 0}
@@ -185,7 +220,7 @@
                             <label class="mb1" for="{action.SayItem.ID}-filepath">Audio file:
                                 <span class="h6">{action.SayItem.FilePath}</span>
                                 <input type="file" id="{action.SayItem.ID}-filepath" accept="audio/*"
-                                       on:change="{fileUpload}" data-index="{i}">
+                                       on:change="{fileUpload}" data-index="{i}" data-phrase="{action.SayItem.Phrase}">
                             </label>
                             <label class="mb1" for="{action.SayItem.ID}-delay">Audio delay, s:
                                 <input type="number" id="{action.SayItem.ID}-delay" name="sayDelay"

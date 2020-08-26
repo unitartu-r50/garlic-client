@@ -161,20 +161,14 @@
         display: block;
     }
 
-    .full-width {
-        width: 100%;
-    }
-
     fieldset {
         border: 4px solid rgba(159, 241, 255, .35);
         border-radius: .5em;
         background: rgba(228, 249, 254, .5);
     }
 
-    .sticky {
-        position: -webkit-sticky;
-        position: sticky;
-        top: 20px;
+    .icon {
+        height: 1em;
     }
 </style>
 
@@ -220,11 +214,21 @@
             <section class="move-group">
                 {#each movesByGroups[groupName] as move}
                     <div>
-                        <article class="instruction move" id="{move.ID}" on:click={markVisited(move.ID)}
+                        <article class="instruction move flex justify-between" id="{move.ID}"
+                                 on:click={markVisited(move.ID)}
                                  on:click={sendInstruction(move.ID)}
                                  data-id="{move.ID}"
                                  draggable="true" on:dragstart={dragStartHandler}>
-                            {move.Name}
+                            <p class="m0">{move.Name}</p>
+                            {#if move && (move.Name || move.FilePath)}
+                                {#if move.Delay > 0}
+                                    <img class="icon" src="/images/pepper-icon-delay.svg" alt="movement with delay is present"
+                                         title="movement with delay is present">
+                                {:else}
+                                    <img class="icon" src="/images/pepper-icon.svg" alt="movement is present"
+                                         title="movement is present">
+                                {/if}
+                            {/if}
                         </article>
                         {#if inEditingMode}
                             <button class="m0 mb1" on:click|preventDefault={removeMove(move.ID)}>Remove</button>

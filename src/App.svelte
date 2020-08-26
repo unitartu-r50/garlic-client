@@ -24,6 +24,7 @@
     import Introduction from './components/Introduction.svelte';
     import SessionsList from './components/SessionsList.svelte';
     import Motions from './components/Motions.svelte';
+    import AudioLibrary from './components/AudioLibrary.svelte';
 
     let currentPage = "";
     let isPepperConnected = false;
@@ -79,7 +80,10 @@
     </Introduction>
     <main class="p2 mt4">
         <SessionsList/>
-        <Motions/>
+        <div>
+            <AudioLibrary/>
+            <Motions/>
+        </div>
     </main>
 {:else if currentPage === "about" }
     <Introduction title="Pepper Project"
