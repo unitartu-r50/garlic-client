@@ -7,7 +7,7 @@
     let fetchNeeded = true;
     let currentSession;
     let inEditingMode = false;
-    let inPresentationMode = false;
+    let inPresentationMode = true;
     let currentPresentationItemIndex = 0;
 
     $: {
@@ -38,6 +38,10 @@
                     console.error("error:", err);
                     fetchNeeded = false;
                 });
+        }
+
+        if (inEditingMode) {
+            inPresentationMode = false;
         }
     }
 
@@ -288,21 +292,19 @@
             {/each}
         </select>
         {#if currentSession}
-            {#if inEditingMode}
-                <button on:click={() => {saveSession(currentSession.ID)}}>Save</button>
+            {#if inPresentationMode}
+                <button on:click|preventDefault={() => {inPresentationMode = !inPresentationMode}}>Detailed mode
+                </button>
             {:else}
-                <button on:click={() => {editSession(currentSession.ID)}}>Edit</button>
-            {/if}
-            <button on:click={removeSession(currentSession.ID)}>Remove</button>
-            <button on:click|preventDefault={addSession}>Add a session</button>
-            {#if !inEditingMode}
-                {#if !inPresentationMode}
-                    <button on:click|preventDefault={() => {inPresentationMode = !inPresentationMode}}>Presentation mode
-                    </button>
+                {#if inEditingMode}
+                    <button on:click={() => {saveSession(currentSession.ID)}}>Save</button>
                 {:else}
-                    <button on:click|preventDefault={() => {inPresentationMode = !inPresentationMode}}>Detailed mode
-                    </button>
+                    <button on:click={() => {editSession(currentSession.ID)}}>Edit</button>
                 {/if}
+                <button on:click={removeSession(currentSession.ID)}>Remove</button>
+                <button on:click|preventDefault={addSession}>Add a session</button>
+                <button on:click|preventDefault={() => {inPresentationMode = !inPresentationMode}}>Presentation mode
+                </button>
             {/if}
         {/if}
         <!--        <button on:click|preventDefault={exportSessions}>Export sessions</button>-->
