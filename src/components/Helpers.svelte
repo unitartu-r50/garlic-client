@@ -27,7 +27,7 @@
         const payload = {
             "item_id": id
         }
-
+        console.log("sending instruction", payload)
         fetch("http://localhost:8080/api/pepper/send_command", {
             method: "POST",
             headers: {

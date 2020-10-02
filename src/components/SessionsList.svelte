@@ -31,6 +31,7 @@
                             }
                         }
                     }
+                    console.log("current session", currentSession);
                 })
                 .catch(err => {
                     console.error("error:", err);
@@ -163,6 +164,10 @@
         currentSession.Items.splice(index, 1);
         currentSession.Items = currentSession.Items;
     }
+
+    function importSessions(event) {}
+
+    function exportSessions(event) {}
 </script>
 
 <style>
@@ -237,10 +242,13 @@
             <button on:click={removeSession(currentSession.ID)}>Remove</button>
             <button on:click|preventDefault={addSession}>Add a session</button>
         {/if}
+<!--        <button on:click|preventDefault={exportSessions}>Export sessions</button>-->
     {:else}
         <p><em>No sessions found.</em></p>
         <button on:click|preventDefault={addSession}>Add a session</button>
     {/if}
+<!--    <button on:click|preventDefault={importSessions}>Import sessions</button>-->
+
     {#if currentSession && currentSession.Items}
         {#each currentSession.Items as item, i}
             {#if inEditingMode}

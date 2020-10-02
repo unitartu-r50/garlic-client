@@ -25,6 +25,7 @@
     import SessionsList from './components/SessionsList.svelte';
     import Motions from './components/Motions.svelte';
     import AudioLibrary from './components/AudioLibrary.svelte';
+    import ImageLibrary from './components/ImageLibrary.svelte';
 
     let currentPage = "";
     let isPepperConnected = false;
@@ -81,6 +82,7 @@
     <main class="p2 mt4">
         <SessionsList/>
         <div>
+            <ImageLibrary/>
             <AudioLibrary/>
             <Motions/>
         </div>

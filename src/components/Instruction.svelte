@@ -1,5 +1,5 @@
 <script>
-    import {sendInstruction, notify} from './Helpers.svelte'
+    import {sendInstruction, notify} from './Helpers.svelte';
 
     export let item, index = 0, expanded = false;
 
@@ -37,7 +37,7 @@
     {#if item && item.SayItem}
         <article id="{item.SayItem.ID}" class="instruction flex flex-column justify-between"
                  on:click={markVisited(item.SayItem.ID)}
-                 on:click={sendInstruction(item.SayItem.ID)}
+                 on:click={sendInstruction(item.ID)}
                  on:click={playAudio(item.SayItem.ID, item.SayItem.Delay)}>
             <p class="h6 m0 mb4 bold caps">Question {index + 1}</p>
             <div>
@@ -59,6 +59,9 @@
                              title="movement is present">
                     {/if}
                 {/if}
+                {#if item.ImageItem && item.ImageItem.FilePath}
+                    <span>image</span>
+                {/if}
                 <audio id="audio-{item.SayItem.ID}" src="http://localhost:8080/{item.SayItem.FilePath}">
                     Your browser does not support the <code>audio</code> element.
                 </audio>
@@ -69,7 +72,7 @@
     {#if item}
         <article id="{item.SayItem.ID}" class="instruction flex flex-column justify-between items-start"
                  on:click={markVisited(item.SayItem.ID)}
-                 on:click={sendInstruction(item.SayItem.ID)}
+                 on:click={sendInstruction(item.ID)}
                  on:click={playAudio(item.SayItem.ID, item.SayItem.Delay)}>
             <p class="h2 m0 mb1">{item.SayItem.Phrase}</p>
             <div>
@@ -89,6 +92,14 @@
                         <img class="icon" src="/images/pepper-icon.svg" alt="movement is present"
                              title="movement is present">
                     {/if}
+                {/if}
+                {#if item.ImageItem && item.ImageItem.FilePath}
+                    {#if item.ImageItem.Delay > 0}
+                        <img class="icon" src="/images/image-delay.svg" alt="image with delay is present" title="image with delay is present">
+                    {:else}
+                        <img class="icon" src="/images/image.svg" alt="image is present" title="image is present">
+                    {/if}
+
                 {/if}
             </div>
             {#if item.SayItem.FilePath.length > 0}

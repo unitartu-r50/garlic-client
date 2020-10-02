@@ -38,6 +38,12 @@
                 Delay: 0,
                 Group: ""
             },
+            ImageItem: {
+                Name: "",
+                FilePath: "",
+                Delay: 0,
+                Group: ""
+            }
         });
         item = item;
         console.log("action added, new size is", length);
@@ -45,9 +51,16 @@
 
     function removeAction(event) {
         const actionIndex = event.target.dataset.index;
+        let actionID = item.Actions[actionIndex].ID;
+        if (!actionID) {
+            console.log("no action ID to remove");
+            item.Actions.splice(actionIndex, 1);
+            item = item;
+            return;
+        }
 
         if (item && item.Actions[actionIndex]) {
-            fetch("http://localhost:8080/api/instructions/" + item.Actions[actionIndex].ID, {
+            fetch("http://localhost:8080/api/instructions/" + actionID, {
                 method: "DELETE"
             })
                 .then(r => r.json())
@@ -79,6 +92,11 @@
 
     function handleSayDelay(event) {
         item.Actions[event.target.dataset.index].SayItem.Delay = event.target.value * 1000000000;
+        item.Actions = item.Actions;
+    }
+
+    function handleImageDelay(event) {
+        item.Actions[event.target.dataset.index].ImageItem.Delay = event.target.value * 1000000000;
         item.Actions = item.Actions;
     }
 
@@ -121,7 +139,7 @@
         }
     }
 
-    function fileUpload(event) {
+    function audioUpload(event) {
         const name = event.target.files[0].name;
         const actionIndex = event.target.dataset.index;
         const phrase = event.target.dataset.phrase;
@@ -141,6 +159,38 @@
                 .then((response) => {
                     console.log(response);
                     item.Actions[actionIndex].SayItem.FilePath = response["filepath"];
+                    if (response["error"] && response["error"].length > 0) {
+                        notify("negative", response["error"]);
+                    } else {
+                        notify("positive", response["message"]);
+                    }
+                })
+                .catch((err) => {
+                    console.error(err);
+                    notify("negative", err);
+                })
+        })
+        reader.readAsArrayBuffer(event.target.files[0]);
+    }
+
+    function imageUpload(event) {
+        const name = event.target.files[0].name;
+        const actionIndex = event.target.dataset.index;
+        console.log("file upload", name, event.target.value, name, actionIndex);
+
+        const reader = new FileReader();
+        reader.addEventListener('load', (e) => {
+            let data = new FormData();
+            data.append("file_content", event.target.files[0]);
+
+            fetch("http://localhost:8080/api/upload/image", {
+                method: "POST",
+                body: data
+            })
+                .then(response => response.json())
+                .then((response) => {
+                    console.log(response);
+                    item.Actions[actionIndex].ImageItem.FilePath = response["filepath"];
                     if (response["error"] && response["error"].length > 0) {
                         notify("negative", response["error"]);
                     } else {
@@ -220,7 +270,7 @@
                             <label class="mb1" for="{action.SayItem.ID}-filepath">Audio file:
                                 <span class="h6">{action.SayItem.FilePath}</span>
                                 <input type="file" id="{action.SayItem.ID}-filepath" accept="audio/*"
-                                       on:change="{fileUpload}" data-index="{i}" data-phrase="{action.SayItem.Phrase}">
+                                       on:change="{audioUpload}" data-index="{i}" data-phrase="{action.SayItem.Phrase}">
                             </label>
                             <label class="mb1" for="{action.SayItem.ID}-delay">Audio delay, s:
                                 <input type="number" id="{action.SayItem.ID}-delay" name="sayDelay"
@@ -248,6 +298,22 @@
                                        value={action.MoveItem.Delay / 1000000000}
                                        data-index="{i}"
                                        on:change={handleMoveDelay}>
+                            </label>
+                        </div>
+                    {/if}
+                    {#if action.ImageItem}
+                        <div>
+                            <h3 class="h4 m0 mb2">Image</h3>
+                            <label class="mb1" for="{action.ImageItem.ID}-filepath">Image file:
+                                <span class="h6">{action.ImageItem.FilePath}</span>
+                                <input type="file" id="{action.ImageItem.ID}-filepath" accept="image/*"
+                                       on:change="{imageUpload}" data-index="{i}">
+                            </label>
+                            <label class="mb1" for="{action.ImageItem.ID}-delay">Image delay, s:
+                                <input type="number" id="{action.ImageItem.ID}-delay" name="imageDelay"
+                                       value={action.ImageItem.Delay / 1000000000}
+                                       data-index="{i}"
+                                       on:change={handleImageDelay}>
                             </label>
                         </div>
                     {/if}
