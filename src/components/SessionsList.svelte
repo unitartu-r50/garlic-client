@@ -7,6 +7,8 @@
     let fetchNeeded = true;
     let currentSession;
     let inEditingMode = false;
+    let inPresentationMode = false;
+    let currentPresentationItemIndex = 0;
 
     $: {
         if (fetchNeeded) {
@@ -45,7 +47,7 @@
 
     function editSession(id) {
         inEditingMode = true;
-        console.log("in editing:", inEditingMode)
+        inPresentationMode = false;
     }
 
     function saveSession(id) {
@@ -195,6 +197,22 @@
 
     function exportSessions(event) {
     }
+
+    function nextQuestion() {
+        currentPresentationItemIndex += 1;
+        if (currentPresentationItemIndex >= currentSession.Items.length) {
+            currentPresentationItemIndex = currentSession.Items.length - 1;
+            console.log("already the last question in the list");
+        }
+    }
+
+    function previousQuestion() {
+        currentPresentationItemIndex -= 1;
+        if (currentPresentationItemIndex < 0) {
+            currentPresentationItemIndex = 0;
+            console.log("already the first question in the list");
+        }
+    }
 </script>
 
 <style>
@@ -235,6 +253,11 @@
     label {
         display: block;
     }
+
+    .presentation-label {
+        font-weight: normal;
+        color: rgba(159, 241, 255, 1);
+    }
 </style>
 
 <section>
@@ -244,7 +267,11 @@
                 <input id="session-name" type="text"
                        bind:value={currentSession.Name}></label>
         {:else}
-            <h2 class="h2 m0 mb1">{currentSession.Name}</h2>
+            <h2 class="h2 m0 mb1 flex flex-wrap justify-between">{currentSession.Name}
+                {#if inPresentationMode}
+                    <span class="presentation-label">Presentation Mode</span>
+                {/if}
+            </h2>
         {/if}
     {:else}
         <h2 class="h2 m0 mb1">Choose a session</h2>
@@ -262,12 +289,21 @@
         </select>
         {#if currentSession}
             {#if inEditingMode}
-                <button on:click={saveSession(currentSession.ID)}>Save</button>
+                <button on:click={() => {saveSession(currentSession.ID)}}>Save</button>
             {:else}
-                <button on:click={editSession(currentSession.ID)}>Edit</button>
+                <button on:click={() => {editSession(currentSession.ID)}}>Edit</button>
             {/if}
             <button on:click={removeSession(currentSession.ID)}>Remove</button>
             <button on:click|preventDefault={addSession}>Add a session</button>
+            {#if !inEditingMode}
+                {#if !inPresentationMode}
+                    <button on:click|preventDefault={() => {inPresentationMode = !inPresentationMode}}>Presentation mode
+                    </button>
+                {:else}
+                    <button on:click|preventDefault={() => {inPresentationMode = !inPresentationMode}}>Detailed mode
+                    </button>
+                {/if}
+            {/if}
         {/if}
         <!--        <button on:click|preventDefault={exportSessions}>Export sessions</button>-->
     {:else}
@@ -278,24 +314,43 @@
 
 
     {#if currentSession && currentSession.Items}
-        {#each currentSession.Items as item, i}
-            {#if inEditingMode}
-                <SessionItemEdit item="{item}" index="{i}" on:message={handleItemEditMessage}/>
-            {:else}
-                <div class="session-item my2">
-                    {#if item.Actions.length > 0}
-                        <Instruction item="{item.Actions[0]}" index="{i}" expanded={true}/>
-                        <div class="answers">
-                            {#each item.Actions as action, actionIndex}
-                                {#if actionIndex > 0}
-                                    <Instruction item="{action}" index="{i}"/>
-                                {/if}
-                            {/each}
-                        </div>
-                    {/if}
-                </div>
-            {/if}
-        {/each}
+        {#if inPresentationMode}
+            <div class="session-item my2">
+                {#if currentSession.Items[currentPresentationItemIndex].Actions.length > 0}
+                    <Instruction item="{currentSession.Items[currentPresentationItemIndex].Actions[0]}"
+                                 index="{currentPresentationItemIndex}" expanded={true}/>
+                    <div class="answers">
+                        {#each currentSession.Items[currentPresentationItemIndex].Actions as action, actionIndex}
+                            {#if actionIndex > 0}
+                                <Instruction item="{action}" index="{currentPresentationItemIndex}"/>
+                            {/if}
+                        {/each}
+                    </div>
+                {/if}
+            </div>
+            <button on:click|preventDefault={previousQuestion}>&larr;</button>
+            <button on:click|preventDefault={nextQuestion}>&rarr;</button>
+        {:else}
+            {#each currentSession.Items as item, i}
+                {#if inEditingMode}
+                    <SessionItemEdit item="{item}" index="{i}" on:message={handleItemEditMessage}/>
+                {:else}
+                    <div class="session-item my2">
+                        {#if item.Actions.length > 0}
+                            <Instruction item="{item.Actions[0]}" index="{i}" expanded={true}/>
+                            <div class="answers">
+                                {#each item.Actions as action, actionIndex}
+                                    {#if actionIndex > 0}
+                                        <Instruction item="{action}" index="{i}"/>
+                                    {/if}
+                                {/each}
+                            </div>
+                        {/if}
+                    </div>
+                {/if}
+            {/each}
+        {/if}
+
 
         {#if inEditingMode}
             <button on:click|preventDefault={addQuestion}>Add a question</button>
