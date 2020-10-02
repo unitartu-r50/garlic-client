@@ -1,6 +1,5 @@
 <script>
     import {notify} from './Helpers.svelte';
-
     import Instruction from './Instruction.svelte';
     import SessionItemEdit from './SessionItemEdit.svelte';
 
@@ -158,16 +157,44 @@
     }
 
     function handleItemEditMessage(event) {
-        const itemID = event.detail.id;
-        const index = event.detail.index;
-        console.log("remove item", itemID);
-        currentSession.Items.splice(index, 1);
-        currentSession.Items = currentSession.Items;
+        const command = event.detail.command;
+        console.log("dispatcher", command);
+        if (command === "remove") {
+            const itemID = event.detail.id;
+            const index = event.detail.index;
+            currentSession.Items.splice(index, 1);
+            currentSession.Items = currentSession.Items;
+            console.log("remove item", itemID);
+        } else if (command === "move-up") {
+            const index = parseInt(event.detail.index);
+            if (index === 0) {
+                console.log("already the first");
+                return;
+            }
+            let item = currentSession.Items[index];
+            currentSession.Items.splice(index, 1);
+            currentSession.Items.splice(index - 1, 0, item);
+            currentSession.Items = currentSession.Items;
+        } else if (command === "move-down") {
+            const index = parseInt(event.detail.index);
+            if (index >= currentSession.Items.length - 1) {
+                console.log("already the last");
+                return;
+            }
+            let item = currentSession.Items[index];
+            currentSession.Items.splice(index, 1);
+            currentSession.Items.splice(index + 1, 0, item);
+            currentSession.Items = currentSession.Items;
+        } else {
+            console.log("unknown command on dispatch:", command);
+        }
     }
 
-    function importSessions(event) {}
+    function importSessions(event) {
+    }
 
-    function exportSessions(event) {}
+    function exportSessions(event) {
+    }
 </script>
 
 <style>
@@ -242,12 +269,13 @@
             <button on:click={removeSession(currentSession.ID)}>Remove</button>
             <button on:click|preventDefault={addSession}>Add a session</button>
         {/if}
-<!--        <button on:click|preventDefault={exportSessions}>Export sessions</button>-->
+        <!--        <button on:click|preventDefault={exportSessions}>Export sessions</button>-->
     {:else}
         <p><em>No sessions found.</em></p>
         <button on:click|preventDefault={addSession}>Add a session</button>
     {/if}
-<!--    <button on:click|preventDefault={importSessions}>Import sessions</button>-->
+    <!--    <button on:click|preventDefault={importSessions}>Import sessions</button>-->
+
 
     {#if currentSession && currentSession.Items}
         {#each currentSession.Items as item, i}

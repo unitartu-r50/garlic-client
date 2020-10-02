@@ -23,7 +23,7 @@
     import SiteHeader from './components/SiteHeader.svelte';
     import Introduction from './components/Introduction.svelte';
     import SessionsList from './components/SessionsList.svelte';
-    import Motions from './components/Motions.svelte';
+    import MotionLibrary from './components/MotionLibrary.svelte';
     import AudioLibrary from './components/AudioLibrary.svelte';
     import ImageLibrary from './components/ImageLibrary.svelte';
 
@@ -75,7 +75,14 @@
     }
 
     abbr {
+        text-decoration: none;
         border-bottom: 1px dotted black;
+    }
+
+    .sticky {
+        position: sticky;
+        top: 1em;
+        background: white;
     }
 </style>
 
@@ -85,24 +92,22 @@
         home
     </main>
 {:else if currentPage === "sessions" }
-    <Introduction title="Sessions Control" description="This dashboard allows the control of the Pepper robot through the local network simply by clicking corresponding
-        buttons, either questions, or positive answers, or negative answers. On the right side, there is available the
-        general motion library, so a user can initiate any movement at any time.">
-        <ul>
-            {#if isPepperConnected}
-                <li>Pepper status: 🟢</li>
-            {:else}
-                <li>Pepper status: ⚪</li>
-            {/if}
-            <li><abbr title="Enter this IP into the Server's IP field on Pepper's tablet">Server IP</abbr>: <code>{serverIP}</code></li>
-        </ul>
+    <Introduction title="" description="">
+        {#if isPepperConnected}
+            <div><abbr title="Pepper—server connection indicator">Pepper status</abbr>: 🟢</div>
+        {:else}
+            <div><abbr title="Pepper—server connection indicator">Pepper status</abbr>: ⚪</div>
+        {/if}
+        <div><abbr title="Enter this IP into the Server's IP field on Pepper's tablet">Server IP</abbr>:
+            <code>{serverIP}</code></div>
     </Introduction>
     <main class="p2 mt4">
         <SessionsList/>
         <div>
-            <ImageLibrary/>
-            <AudioLibrary/>
-            <Motions/>
+            <div class="sticky">
+                <AudioLibrary/>
+                <MotionLibrary/>
+            </div>
         </div>
     </main>
 {:else if currentPage === "about" }

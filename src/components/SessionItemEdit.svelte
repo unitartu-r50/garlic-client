@@ -80,7 +80,22 @@
 
     function removeItem(event) {
         dispatch('message', {
+            command: 'remove',
             id: event.target.dataset.id,
+            index: event.target.dataset.index
+        });
+    }
+
+    function moveUp(event) {
+        dispatch('message', {
+            command: 'move-up',
+            index: event.target.dataset.index
+        });
+    }
+
+    function moveDown(event) {
+        dispatch('message', {
+            command: 'move-down',
             index: event.target.dataset.index
         });
     }
@@ -327,6 +342,8 @@
         <button on:click|preventDefault={removeItem} data-id="{item.ID}" data-index="{index}" class="m0">Remove the
             question
         </button>
+        <button on:click|preventDefault={moveUp} data-index="{index}">&uarr;</button>
+        <button on:click|preventDefault={moveDown} data-index="{index}">&darr;</button>
     {:else}
         <p><em>No actions found.</em></p>
     {/if}

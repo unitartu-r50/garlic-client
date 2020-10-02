@@ -1,4 +1,5 @@
 <script>
+    import {slide} from 'svelte/transition';
     import {notify, sendInstruction} from './Helpers.svelte';
 
     let moves;
@@ -11,6 +12,8 @@
 
     let motionName = "";
     let motionGroup = "";
+
+    let collapsed = true;
 
     $: {
         if (fetchNeeded) {
@@ -170,74 +173,102 @@
     .icon {
         height: 1em;
     }
+
+    .collapsible {
+        cursor: pointer;
+        transition: all .2s;
+    }
+
+    .collapsible:hover {
+        color: rgb(80, 228, 253);
+    }
+
+    .collapsible::before {
+        content: "–";
+        margin-right: .3em;
+        color: rgba(159, 241, 255, 1);
+    }
+
+    .collapsed::before {
+        content: "+";
+        margin-right: .2em;
+        color: rgba(159, 241, 255, 1);
+    }
 </style>
 
-<section>
-    <h2 class="h2 m0 mb1">Motion Library</h2>
-    {#if !isAddingMotion}
-        <button class="m0" on:click|preventDefault={showForm}>Add a motion</button>
-    {/if}
-    {#if !inEditingMode}
-        <button class="m0" on:click|preventDefault={toggleEditMode}>Edit</button>
-    {:else}
-        <button class="m0" on:click|preventDefault={toggleEditMode}>Done</button>
-    {/if}
-    {#if isAddingMotion}
-        <form class="my2">
-            <fieldset class="mb1">
-                <legend class="h5 m0 bold caps mb1">Adding a motion</legend>
-                <label class="mb1" for="new-motion-name">Name
-                    <input id="new-motion-name" type="text" bind:value={motionName}>
+<section class:mb4={!collapsed}>
+    <h2 class="h2 m0 mb1 collapsible" class:collapsed={collapsed} on:click|preventDefault={() => {collapsed = !collapsed}}>Motion
+        Library</h2>
+    {#if !collapsed}
+        <div transition:slide={{duration: 100}}>
+            {#if !isAddingMotion}
+                <button class="m0" on:click|preventDefault={showForm}>Add a motion</button>
+            {/if}
+            {#if !inEditingMode}
+                <button class="m0" on:click|preventDefault={toggleEditMode}>Edit</button>
+            {:else}
+                <button class="m0" on:click|preventDefault={toggleEditMode}>Done</button>
+            {/if}
+            {#if isAddingMotion}
+                <form class="my2">
+                    <fieldset class="mb1">
+                        <legend class="h5 m0 bold caps mb1">Adding a motion</legend>
+                        <label class="mb1" for="new-motion-name">Name
+                            <input id="new-motion-name" type="text" bind:value={motionName}>
+                        </label>
+                        <label class="mb1" for="new-motion-group">Group
+                            <input id="new-motion-group" type="text" bind:value={motionGroup}>
+                        </label>
+                        <label class="mb1" for="new-motion-file">File
+                            <input id="new-motion-file" type="file" accept=".qianim">
+                        </label>
+                        <button class="m0 mt2" on:click|preventDefault={addMotion}>Add</button>
+                        <button class="m0 mt2" on:click|preventDefault={cancelForm}>Cancel</button>
+                    </fieldset>
+                </form>
+            {/if}
+            <div class="flex items-baseline">
+                <label for="move-search" class="m0 mt2">Filter:
+                    <input id="move-search" type="text" bind:value={searchQuery} on:input={search}
+                           placeholder="Type in your query here">
                 </label>
-                <label class="mb1" for="new-motion-group">Group
-                    <input id="new-motion-group" type="text" bind:value={motionGroup}>
-                </label>
-                <label class="mb1" for="new-motion-file">File
-                    <input id="new-motion-file" type="file" accept=".qianim">
-                </label>
-                <button class="m0 mt2" on:click|preventDefault={addMotion}>Add</button>
-                <button class="m0 mt2" on:click|preventDefault={cancelForm}>Cancel</button>
-            </fieldset>
-        </form>
-    {/if}
-    <div class="flex items-baseline">
-        <label for="move-search" class="m0 mt2">Filter:
-            <input id="move-search" type="text" bind:value={searchQuery} on:input={search} placeholder="Type in your query here">
-        </label>
-        <div>
-            <button class="ml1" on:click|preventDefault={searchReset}>Reset</button>
-        </div>
-    </div>
-    {#if movesByGroups}
-        {#each Object.keys(movesByGroups) as groupName}
-            <h3 class="h3">{groupName}</h3>
-            <section class="move-group">
-                {#each movesByGroups[groupName] as move}
-                    <div>
-                        <article class="instruction move flex justify-between" id="{move.ID}"
-                                 on:click={markVisited(move.ID)}
-                                 on:click={sendInstruction(move.ID)}
-                                 data-id="{move.ID}"
-                                 draggable="true" on:dragstart={dragStartHandler}>
-                            <p class="m0">{move.Name}</p>
-                            {#if move && (move.Name || move.FilePath)}
-                                {#if move.Delay > 0}
-                                    <img class="icon" src="/images/pepper-icon-delay.svg" alt="movement with delay is present"
-                                         title="movement with delay is present">
-                                {:else}
-                                    <img class="icon" src="/images/pepper-icon.svg" alt="movement is present"
-                                         title="movement is present">
+                <div>
+                    <button class="ml1" on:click|preventDefault={searchReset}>Reset</button>
+                </div>
+            </div>
+            {#if movesByGroups}
+                {#each Object.keys(movesByGroups) as groupName}
+                    <h3 class="h3">{groupName}</h3>
+                    <section class="move-group">
+                        {#each movesByGroups[groupName] as move}
+                            <div>
+                                <article class="instruction move flex justify-between" id="{move.ID}"
+                                         on:click={markVisited(move.ID)}
+                                         on:click={sendInstruction(move.ID)}
+                                         data-id="{move.ID}"
+                                         draggable="true" on:dragstart={dragStartHandler}>
+                                    <p class="m0">{move.Name}</p>
+                                    {#if move && (move.Name || move.FilePath)}
+                                        {#if move.Delay > 0}
+                                            <img class="icon" src="/images/pepper-icon-delay.svg"
+                                                 alt="movement with delay is present"
+                                                 title="movement with delay is present">
+                                        {:else}
+                                            <img class="icon" src="/images/pepper-icon.svg" alt="movement is present"
+                                                 title="movement is present">
+                                        {/if}
+                                    {/if}
+                                </article>
+                                {#if inEditingMode}
+                                    <button class="m0 mb1" on:click|preventDefault={removeMove(move.ID)}>Remove</button>
                                 {/if}
-                            {/if}
-                        </article>
-                        {#if inEditingMode}
-                            <button class="m0 mb1" on:click|preventDefault={removeMove(move.ID)}>Remove</button>
-                        {/if}
-                    </div>
+                            </div>
+                        {/each}
+                    </section>
                 {/each}
-            </section>
-        {/each}
-    {:else}
-        <p><em>No motions found.</em></p>
+            {:else}
+                <p><em>No motions found.</em></p>
+            {/if}
+        </div>
     {/if}
 </section>
