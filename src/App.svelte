@@ -29,6 +29,7 @@
 
     let currentPage = "";
     let isPepperConnected = false;
+    let serverIP = "unknown";
 
     $: {
         currentPage = localStorage.getItem("location");
@@ -36,6 +37,7 @@
             currentPage = "";
         }
         setPepperStatus();
+        setServerIP();
     }
 
     setInterval(() => setPepperStatus(), 5000);
@@ -52,6 +54,15 @@
             })
             .catch(err => console.error(err))
     }
+
+    function setServerIP() {
+        fetch("http://localhost:8080/api/server_ip")
+            .then(response => response.json())
+            .then((response) => {
+                serverIP = response["data"]
+            })
+            .catch(err => console.error(err))
+    }
 </script>
 
 <!--<svelte:component this={currentPage}/>-->
@@ -61,6 +72,10 @@
         display: grid;
         grid-template-columns: 2fr 2fr;
         grid-gap: 2em;
+    }
+
+    abbr {
+        border-bottom: 1px dotted black;
     }
 </style>
 
@@ -73,11 +88,14 @@
     <Introduction title="Sessions Control" description="This dashboard allows the control of the Pepper robot through the local network simply by clicking corresponding
         buttons, either questions, or positive answers, or negative answers. On the right side, there is available the
         general motion library, so a user can initiate any movement at any time.">
-        {#if isPepperConnected}
-            <p>Pepper status: 🟢</p>
-        {:else}
-            <p>Pepper status: ⚪</p>
-        {/if}
+        <ul>
+            {#if isPepperConnected}
+                <li>Pepper status: 🟢</li>
+            {:else}
+                <li>Pepper status: ⚪</li>
+            {/if}
+            <li><abbr title="Enter this IP into the Server's IP field on Pepper's tablet">Server IP</abbr>: <code>{serverIP}</code></li>
+        </ul>
     </Introduction>
     <main class="p2 mt4">
         <SessionsList/>
