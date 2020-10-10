@@ -319,7 +319,7 @@
                     {/if}
                     {#if action.ImageItem}
                         <div>
-                            <h3 class="h4 m0 mb2">Image</h3>
+                            <h3 class="h4 m0 mb2">Show image</h3>
                             <label class="mb1" for="{action.ImageItem.ID}-filepath">Image file:
                                 <span class="h6">{action.ImageItem.FilePath}</span>
                                 <input type="file" id="{action.ImageItem.ID}-filepath" accept="image/*"

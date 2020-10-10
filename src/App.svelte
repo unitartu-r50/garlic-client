@@ -85,13 +85,19 @@
 <style>
     main {
         display: grid;
-        grid-template-columns: 2fr 2fr;
+        grid-template-columns: 4fr 2fr;
         grid-gap: 2em;
     }
 
     abbr {
         text-decoration: none;
         border-bottom: 1px dotted black;
+    }
+
+    @media (max-width: 800px) {
+        main {
+            grid-template-columns: 1fr;
+        }
     }
 
     .sticky {

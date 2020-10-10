@@ -227,6 +227,12 @@
         grid-gap: .3rem;
     }
 
+    @media (max-width: 1080px) {
+        .session-item {
+            grid-template-columns: 50% 50%;
+        }
+    }
+
     .positive {
         color: #6AE57B;
     }
@@ -265,7 +271,7 @@
     }
 </style>
 
-<section>
+<section class="mb4">
     {#if currentSession}
         {#if inEditingMode}
             <label for="session-name" class="mb2">Session name:

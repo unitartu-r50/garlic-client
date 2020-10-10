@@ -3,6 +3,17 @@
     import {serverIPStore} from './stores';
 
     export let item, index = 0, expanded = false;
+    let isMobile = false;
+    let isSmallMobile = false;
+
+    $: {
+        if (window.screen.width <= 1280) {
+            isMobile = true;
+        }
+        if (window.screen.width <= 600) {
+            isSmallMobile = true;
+        }
+    }
 
     function markVisited(id) {
         document.getElementById(id).style.background = "rgba(159, 241, 255, .15)";
@@ -24,6 +35,17 @@
             console.log("no audio element found");
         }
     }
+
+    function truncateLongString(value) {
+        // truncate on desktop, mobile has different layout, no need to truncate there
+        if (!isMobile) {
+            const maxAllowedChars = 40;
+            if (value.length > maxAllowedChars) {
+                return value.substring(0, maxAllowedChars) + "...";
+            }
+        }
+        return value;
+    }
 </script>
 
 <style>
@@ -32,17 +54,39 @@
         margin-right: .25em;
         margin-bottom: .35em;
     }
+
+    .instruction {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    @media (max-width: 800px) {
+        .instruction {
+            justify-content: normal;
+        }
+    }
+
+    .phrase {
+        font-size: 1.5rem;
+    }
+
+    @media (max-width: 600px) {
+        .phrase {
+            font-size: 1.25rem;
+        }
+    }
 </style>
 
 {#if expanded}
     {#if item && item.SayItem}
-        <article id="{item.SayItem.ID}" class="instruction flex flex-column justify-between"
+        <article id="{item.SayItem.ID}" class="instruction"
                  on:click={markVisited(item.SayItem.ID)}
                  on:click={sendInstruction(item.ID, $serverIPStore)}
                  on:click={playAudio(item.SayItem.ID, item.SayItem.Delay)}>
-            <p class="h6 m0 mb4 bold caps">Question {index + 1}</p>
+            <p class="h6 m0 bold caps {isMobile ? 'mb2' : 'mb4'}">Question {index + 1}</p>
             <div>
-                <p class="h2 m0 mb1">{item.SayItem.Phrase}</p>
+                <p class="m0 mb1 phrase">{item.SayItem.Phrase}</p>
                 {#if item.SayItem.FilePath && item.SayItem.FilePath.length > 0}
                     {#if item.SayItem.Delay > 0}
                         <img class="icon" src="/images/speech-delay.svg" alt="audio with delay is present"
@@ -75,11 +119,11 @@
     {/if}
 {:else}
     {#if item}
-        <article id="{item.SayItem.ID}" class="instruction flex flex-column justify-between items-start"
+        <article id="{item.SayItem.ID}" class="instruction items-start"
                  on:click={markVisited(item.SayItem.ID)}
                  on:click={sendInstruction(item.ID, $serverIPStore)}
                  on:click={playAudio(item.SayItem.ID, item.SayItem.Delay)}>
-            <p class="h2 m0 mb1">{item.SayItem.Phrase}</p>
+            <p class="m0 mb1 phrase">{truncateLongString(item.SayItem.Phrase)}</p>
             <div>
                 {#if item.SayItem.FilePath && item.SayItem.FilePath.length > 0}
                     {#if item.SayItem.Delay > 0}
