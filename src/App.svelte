@@ -57,12 +57,15 @@
 
     function setServerIP() {
         const value = window.localStorage.getItem("server-ip");
-        if (value === 0) {
+        if (!value || value === 0) {
             console.log("fetching server IP from localhost probably server location");
-            fetch(`http://localhost:8080/api/server_ip`)
+            fetch(`http://0.0.0.0:8080/api/server_ip`)
                 .then(response => response.json())
                 .then((response) => {
+                    console.log("server IP from API", response["data"]);
                     serverIPStore.set(response["data"]);
+                    serverIP = response["data"];
+                    window.localStorage.setItem("server-ip", serverIP);
                 })
                 .catch(err => console.error(err))
         } else {
@@ -72,7 +75,7 @@
         }
     }
 
-    function setServerIPManually(e) {
+    function setServerIPManually() {
         serverIPStore.set(serverIP);
         window.localStorage.setItem("server-ip", serverIP);
         location.reload();
