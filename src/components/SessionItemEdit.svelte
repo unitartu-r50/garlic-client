@@ -1,6 +1,7 @@
 <script>
     import {createEventDispatcher} from 'svelte';
     import {notify} from './Helpers.svelte';
+    import {serverIPStore} from './stores';
 
     const dispatch = createEventDispatcher();
     export let item, index;
@@ -9,7 +10,7 @@
 
     $: {
         if (fetchNeeded) {
-            fetch("http://localhost:8080/api/session_items/" + item.ID)
+            fetch(`http://` + $serverIPStore + `:8080/api/session_items/${item.ID}`)
                 .then(r => r.json())
                 .then(response => {
                     item = response.data;
@@ -60,7 +61,7 @@
         }
 
         if (item && item.Actions[actionIndex]) {
-            fetch("http://localhost:8080/api/instructions/" + actionID, {
+            fetch(`http://` + $serverIPStore + `:8080/api/instructions/${actionID}`, {
                 method: "DELETE"
             })
                 .then(r => r.json())
@@ -137,7 +138,7 @@
         if (dropzone) {
             dropzone.style.opacity = 1;
             const moveID = event.dataTransfer.getData("text/plain");
-            fetch("http://localhost:8080/api/moves/" + moveID)
+            fetch(`http://` + $serverIPStore + `:8080/api/moves/${moveID}`)
                 .then(r => {
                     if (!r.ok) {
                         throw Error(r.statusText);
@@ -166,7 +167,7 @@
             data.append("file_content", event.target.files[0]);
             data.append("phrase", phrase);
 
-            fetch("http://localhost:8080/api/upload/audio", {
+            fetch(`http://` + $serverIPStore + `:8080/api/upload/audio`, {
                 method: "POST",
                 body: data
             })
@@ -198,7 +199,7 @@
             let data = new FormData();
             data.append("file_content", event.target.files[0]);
 
-            fetch("http://localhost:8080/api/upload/image", {
+            fetch(`http://` + $serverIPStore + `:8080/api/upload/image`, {
                 method: "POST",
                 body: data
             })

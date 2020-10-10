@@ -1,6 +1,7 @@
 <script>
     import {slide} from 'svelte/transition';
     import {notify, sendInstruction} from './Helpers.svelte';
+    import {serverIPStore} from './stores';
 
     let sounds;
     let soundGroups;
@@ -17,7 +18,7 @@
 
     $: {
         if (fetchNeeded) {
-            fetch("http://localhost:8080/api/audio/")
+            fetch(`http://` + $serverIPStore + `:8080/api/audio/`)
                 .then(r => r.json())
                 .then(d => {
                     sounds = d.data;
@@ -91,7 +92,7 @@
             data.append("phrase", audioPhrase);
             data.append("group", audioGroup);
 
-            fetch("http://localhost:8080/api/audio/", {
+            fetch(`http://` + $serverIPStore + `:8080/api/audio/`, {
                 method: "POST",
                 body: data
             })
@@ -144,7 +145,7 @@
 
     function removeAudio(id) {
         console.log("removing", id);
-        fetch("http://localhost:8080/api/audio/" + id, {
+        fetch(`http://` + $serverIPStore + `:8080/api/audio/${id}`, {
             method: "DELETE",
             headers: {"Content-Type": "application/json"}
         })
@@ -269,7 +270,7 @@
                                                  title="audio is present">
                                         {/if}
                                     {/if}
-                                    <audio id="audio-{audio.ID}" src="http://localhost:8080/{audio.FilePath}">
+                                    <audio id="audio-{audio.ID}" src="http://{$serverIPStore}:8080/{audio.FilePath}">
                                         Your browser does not support the <code>audio</code> element.
                                     </audio>
                                 </article>

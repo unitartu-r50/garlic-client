@@ -2,6 +2,7 @@
     import {notify} from './Helpers.svelte';
     import Instruction from './Instruction.svelte';
     import SessionItemEdit from './SessionItemEdit.svelte';
+    import {serverIPStore} from './stores';
 
     let sessions = [];
     let fetchNeeded = true;
@@ -12,7 +13,7 @@
 
     $: {
         if (fetchNeeded) {
-            fetch("http://localhost:8080/api/sessions/")
+            fetch(`http://` + $serverIPStore + `:8080/api/sessions/`)
                 .then(r => r.json())
                 .then(d => {
                     sessions = d.data;
@@ -57,7 +58,7 @@
     function saveSession(id) {
         if (!currentSession["ID"] || currentSession["ID"].length === 0) {
             console.log("posting a new session", currentSession);
-            fetch("http://localhost:8080/api/sessions/", {
+            fetch(`http://` + $serverIPStore + `:8080/api/sessions/`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -83,7 +84,7 @@
                 })
         } else {
             console.log("saving session", currentSession);
-            fetch("http://localhost:8080/api/sessions/" + id, {
+            fetch(`http://` + $serverIPStore + `:8080/api/sessions/${id}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json"
@@ -113,7 +114,7 @@
     }
 
     function removeSession(id) {
-        fetch("http://localhost:8080/api/sessions/" + id, {
+        fetch(`http://` + $serverIPStore + `:8080/api/sessions/${id}`, {
             method: "DELETE",
             mode: "cors",
             redirect: "follow",

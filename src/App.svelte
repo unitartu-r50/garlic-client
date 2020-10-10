@@ -25,7 +25,7 @@
     import SessionsList from './components/SessionsList.svelte';
     import MotionLibrary from './components/MotionLibrary.svelte';
     import AudioLibrary from './components/AudioLibrary.svelte';
-    import ImageLibrary from './components/ImageLibrary.svelte';
+    import {serverIPStore} from './components/stores';
 
     let currentPage = "";
     let isPepperConnected = false;
@@ -47,7 +47,7 @@
     }
 
     function setPepperStatus() {
-        fetch("http://localhost:8080/api/pepper/status")
+        fetch(`http://` + $serverIPStore + `:8080/api/pepper/status`)
             .then(response => response.json())
             .then((response) => {
                 isPepperConnected = response["status"] === 1
@@ -56,12 +56,27 @@
     }
 
     function setServerIP() {
-        fetch("http://localhost:8080/api/server_ip")
-            .then(response => response.json())
-            .then((response) => {
-                serverIP = response["data"]
-            })
-            .catch(err => console.error(err))
+        const value = window.localStorage.getItem("server-ip");
+        if (value === 0) {
+            console.log("fetching server IP from localhost probably server location");
+            fetch(`http://localhost:8080/api/server_ip`)
+                .then(response => response.json())
+                .then((response) => {
+                    serverIPStore.set(response["data"]);
+                })
+                .catch(err => console.error(err))
+        } else {
+            console.log("got serverIP from localStorage", value);
+            serverIPStore.set(value);
+            serverIP = value;
+        }
+    }
+
+    function setServerIPManually(e) {
+        serverIPStore.set(serverIP);
+        window.localStorage.setItem("server-ip", serverIP);
+        location.reload();
+        console.log("server IP set to", serverIP);
     }
 </script>
 
@@ -99,7 +114,7 @@
             <div><abbr title="Pepper—server connection indicator">Pepper status</abbr>: ⚪</div>
         {/if}
         <div><abbr title="Enter this IP into the Server's IP field on Pepper's tablet">Server IP</abbr>:
-            <code>{serverIP}</code></div>
+            <input type="text" bind:value={serverIP}/> <button on:click={setServerIPManually}>set</button></div>
     </Introduction>
     <main class="p2 mt4">
         <SessionsList/>

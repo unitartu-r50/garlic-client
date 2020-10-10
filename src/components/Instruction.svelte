@@ -1,5 +1,6 @@
 <script>
     import {sendInstruction, notify} from './Helpers.svelte';
+    import {serverIPStore} from './stores';
 
     export let item, index = 0, expanded = false;
 
@@ -37,7 +38,7 @@
     {#if item && item.SayItem}
         <article id="{item.SayItem.ID}" class="instruction flex flex-column justify-between"
                  on:click={markVisited(item.SayItem.ID)}
-                 on:click={sendInstruction(item.ID)}
+                 on:click={sendInstruction(item.ID, $serverIPStore)}
                  on:click={playAudio(item.SayItem.ID, item.SayItem.Delay)}>
             <p class="h6 m0 mb4 bold caps">Question {index + 1}</p>
             <div>
@@ -66,7 +67,7 @@
                         <img class="icon" src="/images/image.svg" alt="image is present" title="image is present">
                     {/if}
                 {/if}
-                <audio id="audio-{item.SayItem.ID}" src="http://localhost:8080/{item.SayItem.FilePath}">
+                <audio id="audio-{item.SayItem.ID}" src="http://{$serverIPStore}:8080/{item.SayItem.FilePath}">
                     Your browser does not support the <code>audio</code> element.
                 </audio>
             </div>
@@ -76,7 +77,7 @@
     {#if item}
         <article id="{item.SayItem.ID}" class="instruction flex flex-column justify-between items-start"
                  on:click={markVisited(item.SayItem.ID)}
-                 on:click={sendInstruction(item.ID)}
+                 on:click={sendInstruction(item.ID, $serverIPStore)}
                  on:click={playAudio(item.SayItem.ID, item.SayItem.Delay)}>
             <p class="h2 m0 mb1">{item.SayItem.Phrase}</p>
             <div>
@@ -106,7 +107,7 @@
                 {/if}
             </div>
             {#if item.SayItem.FilePath.length > 0}
-                <audio id="audio-{item.SayItem.ID}" src="http://localhost:8080/{item.SayItem.FilePath}">
+                <audio id="audio-{item.SayItem.ID}" src="http://{$serverIPStore}:8080/{item.SayItem.FilePath}">
                     Your browser does not support the <code>audio</code> element.
                 </audio>
             {/if}

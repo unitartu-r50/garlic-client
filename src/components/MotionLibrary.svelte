@@ -1,6 +1,7 @@
 <script>
     import {slide} from 'svelte/transition';
     import {notify, sendInstruction} from './Helpers.svelte';
+    import {serverIPStore} from './stores';
 
     let moves;
     let moveGroups;
@@ -17,7 +18,7 @@
 
     $: {
         if (fetchNeeded) {
-            fetch("http://localhost:8080/api/moves/")
+            fetch(`http://` + $serverIPStore + `:8080/api/moves/`)
                 .then(r => r.json())
                 .then(d => {
                     moves = d.data;
@@ -96,7 +97,7 @@
             data.append("name", motionName);
             data.append("group", motionGroup);
 
-            fetch("http://localhost:8080/api/upload/move", {
+            fetch(`http://` + $serverIPStore + `:8080/api/upload/move`, {
                 method: "POST",
                 body: data
             })
@@ -132,7 +133,7 @@
 
     function removeMove(id) {
         console.log("removing", id);
-        fetch("http://localhost:8080/api/moves/" + id, {
+        fetch(`http://` + $serverIPStore + `:8080/api/moves/${id}`, {
             method: "DELETE",
             headers: {"Content-Type": "application/json"}
         })
@@ -244,7 +245,7 @@
                             <div>
                                 <article class="instruction move flex justify-between" id="{move.ID}"
                                          on:click={markVisited(move.ID)}
-                                         on:click={sendInstruction(move.ID)}
+                                         on:click={sendInstruction(move.ID, $serverIPStore)}
                                          data-id="{move.ID}"
                                          draggable="true" on:dragstart={dragStartHandler}>
                                     <p class="m0">{move.Name}</p>

@@ -23,12 +23,12 @@
         }, timeout);
     }
 
-    export function sendInstruction(id) {
+    export function sendInstruction(id, serverIP) {
         const payload = {
             "item_id": id
         }
         console.log("sending instruction", payload)
-        fetch("http://localhost:8080/api/pepper/send_command", {
+        fetch(`http://${serverIP}:8080/api/pepper/send_command`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
