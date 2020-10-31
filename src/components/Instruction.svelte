@@ -31,8 +31,6 @@
                         notify("negative", err);
                     });
             }, delayMillis);
-        } else {
-            console.log("no audio element found");
         }
     }
 
@@ -106,14 +104,17 @@
                 {/if}
                 {#if item.ImageItem && item.ImageItem.FilePath}
                     {#if item.ImageItem.Delay > 0}
-                        <img class="icon" src="/images/image-delay.svg" alt="image with delay is present" title="image with delay is present">
+                        <img class="icon" src="/images/image-delay.svg" alt="image with delay is present"
+                             title="image with delay is present">
                     {:else}
                         <img class="icon" src="/images/image.svg" alt="image is present" title="image is present">
                     {/if}
                 {/if}
-                <audio id="audio-{item.SayItem.ID}" src="http://{$serverIPStore}:8080/{item.SayItem.FilePath}">
-                    Your browser does not support the <code>audio</code> element.
-                </audio>
+                {#if item.SayItem.FilePath.length > 0}
+                    <audio id="audio-{item.SayItem.ID}" src="http://{$serverIPStore}:8080/{item.SayItem.FilePath}">
+                        Your browser does not support the <code>audio</code> element.
+                    </audio>
+                {/if}
             </div>
         </article>
     {/if}
@@ -144,7 +145,8 @@
                 {/if}
                 {#if item.ImageItem && item.ImageItem.FilePath}
                     {#if item.ImageItem.Delay > 0}
-                        <img class="icon" src="/images/image-delay.svg" alt="image with delay is present" title="image with delay is present">
+                        <img class="icon" src="/images/image-delay.svg" alt="image with delay is present"
+                             title="image with delay is present">
                     {:else}
                         <img class="icon" src="/images/image.svg" alt="image is present" title="image is present">
                     {/if}
