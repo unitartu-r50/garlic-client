@@ -220,6 +220,12 @@
         })
         reader.readAsArrayBuffer(event.target.files[0]);
     }
+
+    function resetMoveItem(event) {
+        item.Actions[event.target.dataset.index].MoveItem.Name = "";
+        item.Actions[event.target.dataset.index].MoveItem.FilePath = "";
+        item.Actions[event.target.dataset.index].MoveItem.Group = "";
+    }
 </script>
 
 <style>
@@ -315,6 +321,7 @@
                                        data-index="{i}"
                                        on:change={handleMoveDelay}>
                             </label>
+                            <button class="m0" on:click|preventDefault={resetMoveItem} data-index="{i}">Reset move</button>
                         </div>
                     {/if}
                     {#if action.ImageItem}
