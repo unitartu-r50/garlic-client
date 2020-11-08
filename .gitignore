@@ -1,4 +1,5 @@
-/node_modules/
-/public/build/
-/public/caddy_windows_amd64_custom.exe
+node_modules/
+public/build/
+public/caddy_windows_amd64_custom.exe
+.idea/
 .DS_Store
