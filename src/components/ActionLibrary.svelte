@@ -10,26 +10,6 @@
     let collapsed = false;
     let inEditingMode = false;
     let isAddingAction = false;
-    let newFormItem = {
-        ID: "",
-        SayItem: {
-            Phrase: "",
-            FilePath: "",
-            Delay: 0
-        },
-        MoveItem: {
-            Name: "",
-            FilePath: "",
-            Delay: 0,
-            Group: ""
-        },
-        ImageItem: {
-            Name: "",
-            FilePath: "",
-            Delay: 0,
-            Group: ""
-        }
-    };
 
     let fetchNeeded = true;
     $: {
@@ -74,148 +54,15 @@
         inEditingMode = !inEditingMode;
     }
 
-    function removeUpload(kind, filepath) {
-        fetch(`http://` + $serverIPStore + `:8080/api/upload/${kind}/${filepath}`, {
-            method: "DELETE",
-        })
-            .then(response => response.json())
-            .then((response) => {
-                console.log(response);
-                if (response["error"] && response["error"].length > 0) {
-                    notify("negative", response["error"]);
-                }
-            })
-            .catch((err) => {
-                console.error(err);
-                notify("negative", err);
-            });
-    }
-
-    function audioUpload() {
-        const audioInput = document.getElementById("action-lib-new-audio-file");
-        if (newFormItem.SayItem) {
-            const audioReader = new FileReader();
-            audioReader.addEventListener('loadend', (e) => {
-                let data = new FormData();
-                data.append("file_content", audioInput.files[0]);
-                fetch(`http://` + $serverIPStore + `:8080/api/upload/audio`, {
-                    method: "POST",
-                    body: data
-                })
-                    .then(response => response.json())
-                    .then((response) => {
-                        console.log(response);
-                        if (response["error"] && response["error"].length > 0) {
-                            notify("negative", response["error"]);
-                        } else {
-                            newFormItem.SayItem.ID = response["id"];
-                            newFormItem.SayItem.FilePath = response["filepath"];
-                        }
-                    })
-                    .catch((err) => {
-                        console.error(err);
-                        notify("negative", err);
-                    });
-            });
-            audioReader.readAsText(audioInput.files[0]);
-        }
-    }
-
-    function imageUpload() {
-        const imageInput = document.getElementById("action-lib-new-image-file");
-        if (newFormItem.ImageItem) {
-            const imageReader = new FileReader();
-            imageReader.addEventListener('loadend', (e) => {
-                let data = new FormData();
-                data.append("file_content", imageInput.files[0]);
-                fetch(`http://` + $serverIPStore + `:8080/api/upload/image`, {
-                    method: "POST",
-                    body: data
-                })
-                    .then(response => response.json())
-                    .then((response) => {
-                        console.log(response);
-                        if (response["error"] && response["error"].length > 0) {
-                            notify("negative", response["error"]);
-                        } else {
-                            newFormItem.ImageItem.ID = response["id"];
-                            newFormItem.ImageItem.FilePath = response["filepath"];
-                        }
-                    })
-                    .catch((err) => {
-                        console.error(err);
-                        notify("negative", err);
-                    });
-            });
-            imageReader.readAsText(imageInput.files[0]);
-        }
-    }
-
-    function uploadAction() {
-        audioUpload();
-        imageUpload();
-        console.log("uploading the action:", newFormItem);
-
-        fetch(`http://` + $serverIPStore + `:8080/api/actions/`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(newFormItem)
-        })
-            .then(response => response.json())
-            .then((response) => {
-                console.log(response);
-                if (response["error"] && response["error"].length > 0) {
-                    notify("negative", response["error"]);
-                    removeUpload("audio", newFormItem.SayItem.FilePath);
-                    removeUpload("image", newFormItem.ImageItem.FilePath);
-                } else {
-                    notify("positive", response["message"]);
-                    fetchNeeded = true;
-                }
-                isAddingAction = false;
-                resetNewFormItem();
-            })
-            .catch((err) => {
-                console.error(err);
-                notify("negative", err);
-            });
-    }
-
-    function resetNewFormItem() {
-        newFormItem = {
-            ID: "",
-            SayItem: {
-                Phrase: "",
-                FilePath: "",
-                Delay: 0
-            },
-            MoveItem: {
-                Name: "",
-                FilePath: "",
-                Delay: 0,
-                Group: ""
-            },
-            ImageItem: {
-                Name: "",
-                FilePath: "",
-                Delay: 0,
-                Group: ""
-            }
-        };
-    }
-
     function handleActionItemEditMessage(event) {
         const command = event.detail.command;
         console.log("dispatcher", command);
         if (command === "add") {
-            uploadAction();
             isAddingAction = false;
-            resetNewFormItem();
-        } else if (command === "cancel") {
+        } else if (command === "cancel" || command === "edit_done") {
             isAddingAction = false;
-            resetNewFormItem();
+        } else if (command === "fetch") {
+            fetchNeeded = true;
         } else {
             console.log("unknown command on dispatch:", command);
         }
@@ -279,11 +126,18 @@
                 <button class="m0" on:click|preventDefault={toggleEditMode}>Done</button>
             {/if}
             {#if isAddingAction}
-                <ActionItemEdit item="{newFormItem}" on:message={handleActionItemEditMessage}/>
+                <ActionItemEdit on:message={handleActionItemEditMessage}/>
             {/if}
-            {#each actions as action}
-                <div>{action}</div>
-            {/each}
+            <ul>
+                {#each actions as action}
+                    <li>
+                        <div>{action.SayItem.Phrase}</div>
+                        <div>{action.MoveItem.Name}</div>
+                        <div>{action.ImageItem.Name}</div>
+                    </li>
+                    <hr/>
+                {/each}
+            </ul>
         </div>
     {/if}
 </section>

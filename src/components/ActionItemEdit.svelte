@@ -5,7 +5,30 @@
     import Select from 'svelte-select';
 
     const dispatch = createEventDispatcher();
-    export let item;
+
+    let item = {
+        ID: "",
+        SayItem: {
+            ID: "",
+            Phrase: "",
+            FilePath: "",
+            Delay: 0
+        },
+        MoveItem: {
+            ID: "",
+            Name: "",
+            FilePath: "",
+            Delay: 0,
+            Group: ""
+        },
+        ImageItem: {
+            ID: "",
+            Name: "",
+            FilePath: "",
+            Delay: 0,
+            Group: ""
+        }
+    };
 
     let moves;
     let movesFetchNeeded = true;
@@ -31,13 +54,8 @@
         }
     }
 
-    function add(event) {
-        dispatch('message', {
-            command: 'add',
-        });
-    }
-
     function cancelForm() {
+        resetNewFormItem();
         dispatch('message', {
             command: 'cancel',
         });
@@ -76,6 +94,167 @@
             item.MoveItem.Delay = newActionMove.Delay;
             // action.MoveItem.Group = newActionMove.Group;
         }
+    }
+
+    function add(event) {
+        audioUploadChainedWithOtherUploads();
+    }
+
+    function removeUpload(kind, filepath) {
+        console.log("removing", kind, filepath);
+        fetch(`http://` + $serverIPStore + `:8080/api/upload/${kind}`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({"filepath": filepath})
+        })
+            .then(response => response.json())
+            .then((response) => {
+                console.log(response);
+                if (response["error"] && response["error"].length > 0) {
+                    notify("negative", response["error"]);
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+                notify("negative", err);
+            });
+    }
+
+    function audioUploadChainedWithOtherUploads() {
+        console.log("running audioUpload");
+        const audioInput = document.getElementById("action-lib-new-audio-file");
+        if (item.SayItem && (item.SayItem.FilePath.length > 0 || item.SayItem.Phrase.length > 0)) {
+            const audioReader = new FileReader();
+            audioReader.addEventListener('loadend', (e) => {
+                let data = new FormData();
+                data.append("file_content", audioInput.files[0]);
+                fetch(`http://` + $serverIPStore + `:8080/api/upload/audio`, {
+                    method: "POST",
+                    body: data
+                })
+                    .then(response => response.json())
+                    .then((response) => {
+                        console.log(response);
+                        if (response["error"] && response["error"].length > 0) {
+                            notify("negative", response["error"]);
+                            imageUpload();
+                        } else {
+                            item.SayItem.ID = response["id"];
+                            item.SayItem.FilePath = response["filepath"];
+                            imageUpload();
+                        }
+                    })
+                    .catch((err) => {
+                        console.error(err);
+                        notify("negative", err);
+                    });
+            });
+            audioReader.readAsText(audioInput.files[0]);
+        } else {
+            // still call the closure even if there's no audio to upload
+            imageUpload();
+        }
+    }
+
+    function imageUpload() {
+        console.log("running imageUpload");
+        const imageInput = document.getElementById("action-lib-new-image-file");
+        if (item.ImageItem) {
+            const imageReader = new FileReader();
+            imageReader.addEventListener('loadend', (e) => {
+                let data = new FormData();
+                data.append("file_content", imageInput.files[0]);
+                fetch(`http://` + $serverIPStore + `:8080/api/upload/image`, {
+                    method: "POST",
+                    body: data
+                })
+                    .then(response => response.json())
+                    .then((response) => {
+                        console.log(response);
+                        if (response["error"] && response["error"].length > 0) {
+                            notify("negative", response["error"]);
+                            createAction();
+                        } else {
+                            item.ImageItem.ID = response["id"];
+                            item.ImageItem.FilePath = response["filepath"];
+                            createAction();
+                        }
+                    })
+                    .catch((err) => {
+                        console.error(err);
+                        notify("negative", err);
+                    });
+            });
+            imageReader.readAsText(imageInput.files[0]);
+        } else {
+            // still call the closure even if there's no image to upload
+            createAction();
+        }
+    }
+
+    function createAction() {
+        console.log("running create action:", item);
+        fetch(`http://` + $serverIPStore + `:8080/api/actions/`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(item)
+        })
+            .then(response => response.json())
+            .then((response) => {
+                console.log(response);
+                if (response["error"] && response["error"].length > 0) {
+                    notify("negative", response["error"]);
+                    if (item.SayItem.FilePath.length > 0) {
+                        removeUpload("audio", item.SayItem.FilePath);
+                    }
+                    if (item.ImageItem.FilePath.length > 0) {
+                        removeUpload("image", item.ImageItem.FilePath);
+                    }
+                } else {
+                    notify("positive", response["message"]);
+                    dispatch('message', {
+                        command: 'fetch',
+                    });
+                }
+                dispatch('message', {
+                    command: 'edit_done',
+                });
+                resetNewFormItem();
+            })
+            .catch((err) => {
+                console.error(err);
+                notify("negative", err);
+            });
+    }
+
+    function resetNewFormItem() {
+        item = {
+            ID: "",
+            SayItem: {
+                ID: "",
+                Phrase: "",
+                FilePath: "",
+                Delay: 0
+            },
+            MoveItem: {
+                ID: "",
+                Name: "",
+                FilePath: "",
+                Delay: 0,
+                Group: ""
+            },
+            ImageItem: {
+                ID: "",
+                Name: "",
+                FilePath: "",
+                Delay: 0,
+                Group: ""
+            }
+        };
     }
 </script>
 
