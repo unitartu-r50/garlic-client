@@ -80,7 +80,6 @@
     function addMotion(event) {
         const input = document.getElementById("new-motion-file");
 
-        console.log("add motion", input.files);
         isAddingMotion = false;
 
         if (!input.files) {

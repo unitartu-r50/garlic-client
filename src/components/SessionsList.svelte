@@ -321,7 +321,6 @@
     {/if}
     <!--    <button on:click|preventDefault={importSessions}>Import sessions</button>-->
 
-
     {#if currentSession && currentSession.Items}
         {#if inPresentationMode}
             <div class="session-item my2">
@@ -359,7 +358,6 @@
                 {/if}
             {/each}
         {/if}
-
 
         {#if inEditingMode}
             <button on:click|preventDefault={addQuestion}>Add a question</button>
