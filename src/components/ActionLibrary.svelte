@@ -10,30 +10,25 @@
     let collapsed = false;
     let inEditingMode = false;
     let isAddingAction = false;
-
     let newFormItem = {
         ID: "",
-        Actions: [
-            {
-                SayItem: {
-                    Phrase: "",
-                    FilePath: "",
-                    Delay: 0
-                },
-                MoveItem: {
-                    Name: "",
-                    FilePath: "",
-                    Delay: 0,
-                    Group: ""
-                },
-                ImageItem: {
-                    Name: "",
-                    FilePath: "",
-                    Delay: 0,
-                    Group: ""
-                }
-            }
-        ]
+        SayItem: {
+            Phrase: "",
+            FilePath: "",
+            Delay: 0
+        },
+        MoveItem: {
+            Name: "",
+            FilePath: "",
+            Delay: 0,
+            Group: ""
+        },
+        ImageItem: {
+            Name: "",
+            FilePath: "",
+            Delay: 0,
+            Group: ""
+        }
     };
 
     // audio
@@ -146,72 +141,27 @@
         reader.readAsText(audioInput.files[0]);
     }
 
-    // function imageUpload(event) {
-    //     const name = event.target.files[0].name;
-    //     const actionIndex = event.target.dataset.index;
-    //     console.log("file upload", name, event.target.value, name, actionIndex);
-    //
-    //     const reader = new FileReader();
-    //     reader.addEventListener('load', (e) => {
-    //         let data = new FormData();
-    //         data.append("file_content", event.target.files[0]);
-    //
-    //         fetch(`http://` + $serverIPStore + `:8080/api/upload/image`, {
-    //             method: "POST",
-    //             body: data
-    //         })
-    //             .then(response => response.json())
-    //             .then((response) => {
-    //                 console.log(response);
-    //                 item.ImageItem.FilePath = response["filepath"];
-    //                 if (response["error"] && response["error"].length > 0) {
-    //                     notify("negative", response["error"]);
-    //                 } else {
-    //                     notify("positive", response["message"]);
-    //                 }
-    //             })
-    //             .catch((err) => {
-    //                 console.error(err);
-    //                 notify("negative", err);
-    //             })
-    //     })
-    //     reader.readAsArrayBuffer(event.target.files[0]);
-    // }
-
-    function audioUpload() {
-        const audioInput = document.getElementById("action-lib-new-audio-file");
-
-        const name = audioInput.files[0].name;
-        const actionIndex = event.target.dataset.index;
-        const phrase = event.target.dataset.phrase;
-        console.log("file upload", name, event.target.value, name, actionIndex, phrase);
-
-        const reader = new FileReader();
-        reader.addEventListener('load', (e) => {
-            let data = new FormData();
-            data.append("file_content", audioInput.files[0]);
-            data.append("phrase", phrase);
-
-            fetch(`http://` + $serverIPStore + `:8080/api/upload/audio`, {
-                method: "POST",
-                body: data
-            })
-                .then(response => response.json())
-                .then((response) => {
-                    console.log(response);
-                    item.Actions[actionIndex].SayItem.FilePath = response["filepath"];
-                    if (response["error"] && response["error"].length > 0) {
-                        notify("negative", response["error"]);
-                    } else {
-                        notify("positive", response["message"]);
-                    }
-                })
-                .catch((err) => {
-                    console.error(err);
-                    notify("negative", err);
-                })
-        })
-        reader.readAsArrayBuffer(audioInput.files[0]);
+    function resetNewFormItem() {
+        newFormItem = {
+            ID: "",
+            SayItem: {
+                Phrase: "",
+                FilePath: "",
+                Delay: 0
+            },
+            MoveItem: {
+                Name: "",
+                FilePath: "",
+                Delay: 0,
+                Group: ""
+            },
+            ImageItem: {
+                Name: "",
+                FilePath: "",
+                Delay: 0,
+                Group: ""
+            }
+        };
     }
 
     function handleActionItemEditMessage(event) {
@@ -219,59 +169,11 @@
         console.log("dispatcher", command);
         if (command === "add") {
             uploadAction();
-            // resetting default values
             isAddingAction = false;
-            newFormItem = {
-                ID: "",
-                Actions: [
-                    {
-                        SayItem: {
-                            Phrase: "",
-                            FilePath: "",
-                            Delay: 0
-                        },
-                        MoveItem: {
-                            Name: "",
-                            FilePath: "",
-                            Delay: 0,
-                            Group: ""
-                        },
-                        ImageItem: {
-                            Name: "",
-                            FilePath: "",
-                            Delay: 0,
-                            Group: ""
-                        }
-                    }
-                ]
-            };
+            resetNewFormItem();
         } else if (command === "cancel") {
-            // resetting default values
             isAddingAction = false;
-            newFormItem = {
-                ID: "",
-                Actions: [
-                    {
-                        SayItem: {
-                            Phrase: "",
-                            FilePath: "",
-                            Delay: 0
-                        },
-                        MoveItem: {
-                            Name: "",
-                            FilePath: "",
-                            Delay: 0,
-                            Group: ""
-                        },
-                        ImageItem: {
-                            Name: "",
-                            FilePath: "",
-                            Delay: 0,
-                            Group: ""
-                        }
-                    }
-                ]
-            };
+            resetNewFormItem();
         } else {
             console.log("unknown command on dispatch:", command);
         }
