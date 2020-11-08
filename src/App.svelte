@@ -25,6 +25,7 @@
     import SessionsList from './components/SessionsList.svelte';
     import MotionLibrary from './components/MotionLibrary.svelte';
     import AudioLibrary from './components/AudioLibrary.svelte';
+    import ActionLibrary from './components/ActionLibrary.svelte';
     import {serverIPStore} from './components/stores';
 
     let currentPage = "";
@@ -129,6 +130,7 @@
         <SessionsList/>
         <div>
             <div class="sticky">
+                <ActionLibrary/>
                 <AudioLibrary/>
                 <MotionLibrary/>
             </div>
