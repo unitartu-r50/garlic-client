@@ -75,7 +75,6 @@
     function addAudio(event) {
         const input = document.getElementById("new-audio-file");
 
-        console.log("add motion", input.files);
         isAddingMotion = false;
 
         if (!input.files) {
@@ -229,8 +228,8 @@
                         <label class="mb1" for="new-audio-phrase">Phrase
                             <input id="new-audio-phrase" type="text" bind:value={audioPhrase}>
                         </label>
-                        <label class="mb1" for="new-motion-group">Group
-                            <input id="new-motion-group" type="text" bind:value={audioGroup}>
+                        <label class="mb1" for="new-audio-group">Group
+                            <input id="new-audio-group" type="text" bind:value={audioGroup}>
                         </label>
                         <label class="mb1" for="new-audio-file">File
                             <input id="new-audio-file" type="file" accept="audio/*">
