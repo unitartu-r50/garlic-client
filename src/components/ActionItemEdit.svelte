@@ -6,10 +6,10 @@
 
     const dispatch = createEventDispatcher();
 
-    let item = {
+    export let item = {
         ID: "",
         Name: "",
-        Group: "default",
+        Group: "Default",
         SayItem: {
             ID: "",
             Phrase: "",
@@ -31,6 +31,7 @@
             Group: ""
         }
     };
+
     let moves;
     let movesFetchNeeded = true;
     let newActionMove;
@@ -236,7 +237,7 @@
         item = {
             ID: "",
             Name: "",
-            Group: "default",
+            Group: "Default",
             SayItem: {
                 ID: "",
                 Phrase: "",
@@ -300,7 +301,7 @@
                         <input type="text" id="action-lib-new-name" bind:value={item.Name} required>
                     </label>
                     <label for="action-lib-new-group" class="mb1">Group:
-                        <input type="text" id="action-lib-new-group" bind:value={item.Group}>
+                        <input type="text" id="action-lib-new-group" bind:value={item.Group} required>
                     </label>
                 </div>
                 {#if item.SayItem}

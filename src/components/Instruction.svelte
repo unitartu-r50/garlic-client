@@ -78,7 +78,7 @@
 
 {#if expanded}
     {#if item && item.SayItem}
-        <article id="{item.SayItem.ID}" class="instruction"
+        <article class="instruction"
                  on:click={markVisited(item.SayItem.ID)}
                  on:click={sendInstruction(item.ID, $serverIPStore)}
                  on:click={playAudio(item.SayItem.ID, item.SayItem.Delay)}>
@@ -110,17 +110,17 @@
                         <img class="icon" src="/images/image.svg" alt="image is present" title="image is present">
                     {/if}
                 {/if}
-                {#if item.SayItem.FilePath.length > 0}
-                    <audio id="audio-{item.SayItem.ID}" src="http://{$serverIPStore}:8080/{item.SayItem.FilePath}">
-                        Your browser does not support the <code>audio</code> element.
-                    </audio>
-                {/if}
             </div>
+            {#if item.SayItem.FilePath.length > 0}
+                <audio id="audio-{item.SayItem.ID}" src="http://{$serverIPStore}:8080/{item.SayItem.FilePath}">
+                    Your browser does not support the <code>audio</code> element.
+                </audio>
+            {/if}
         </article>
     {/if}
 {:else}
     {#if item}
-        <article id="{item.SayItem.ID}" class="instruction items-start"
+        <article class="instruction items-start"
                  on:click={markVisited(item.SayItem.ID)}
                  on:click={sendInstruction(item.ID, $serverIPStore)}
                  on:click={playAudio(item.SayItem.ID, item.SayItem.Delay)}>

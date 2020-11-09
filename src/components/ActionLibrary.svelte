@@ -136,6 +136,12 @@
         grid-template-rows: 1fr;
         grid-gap: .3em;
     }
+
+    .action-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr;
+    }
 </style>
 
 <section class:mb4={!collapsed}>
@@ -161,8 +167,9 @@
                     <h3 class="h4">{groupName}</h3>
                     <div class="actions-grid">
                         {#each actionsByGroups[groupName] as action}
-                            <div>
-                                <Instruction item="{action}" name="{action.Name}" small="{true}" expanded={false}/>
+                            <div class="action-grid">
+                                <Instruction item="{action}" name="{action.Name}" small="{true}" edit="{inEditingMode}"
+                                             expanded={false}/>
                                 {#if inEditingMode}
                                     <div>
                                         <button class="m0 mb1" on:click|preventDefault={removeAction}
