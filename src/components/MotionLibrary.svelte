@@ -130,7 +130,15 @@
         inEditingMode = !inEditingMode;
     }
 
-    function removeMove(id) {
+    function removeMove(event) {
+        const id = event.target.dataset.id;
+        const name = event.target.dataset.name;
+
+        let confirmation = window.confirm(`Are you sure you want to remove the motion: ${name}?`);
+        if (!confirmation) {
+            return;
+        }
+
         console.log("removing", id);
         fetch(`http://` + $serverIPStore + `:8080/api/moves/${id}`, {
             method: "DELETE",
@@ -259,7 +267,7 @@
                                     {/if}
                                 </article>
                                 {#if inEditingMode}
-                                    <button class="m0 mb1" on:click|preventDefault={removeMove(move.ID)}>Remove</button>
+                                    <button class="m0 mb1" on:click|preventDefault={removeMove} data-id="{move.ID}" data-name="{move.Name}">Remove</button>
                                 {/if}
                             </div>
                         {/each}

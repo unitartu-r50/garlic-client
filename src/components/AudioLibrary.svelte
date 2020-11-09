@@ -142,8 +142,14 @@
         inEditingMode = !inEditingMode;
     }
 
-    function removeAudio(id) {
-        console.log("removing", id);
+    function removeAudio(event) {
+        const id = event.target.dataset.id;
+
+        let confirmation = window.confirm(`Are you sure you want to remove the audio?`);
+        if (!confirmation) {
+            return;
+        }
+
         fetch(`http://` + $serverIPStore + `:8080/api/audio/${id}`, {
             method: "DELETE",
             headers: {"Content-Type": "application/json"}
@@ -274,7 +280,7 @@
                                     </audio>
                                 </article>
                                 {#if inEditingMode}
-                                    <button class="m0 mb1" on:click|preventDefault={removeAudio(audio.ID)}>Remove
+                                    <button class="m0 mb1" on:click|preventDefault={removeAudio} data-id="{audio.ID}">Remove
                                     </button>
                                 {/if}
                             </div>

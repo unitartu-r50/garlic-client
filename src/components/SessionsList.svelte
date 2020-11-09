@@ -113,7 +113,15 @@
         }
     }
 
-    function removeSession(id) {
+    function removeSession(event) {
+        const id = event.target.dataset.id;
+        const name = event.target.dataset.name;
+
+        let confirmation = window.confirm(`Are you sure you want to remove the session: ${name}?`);
+        if (!confirmation) {
+            return;
+        }
+
         fetch(`http://` + $serverIPStore + `:8080/api/sessions/${id}`, {
             method: "DELETE",
             mode: "cors",
@@ -308,7 +316,7 @@
                 {:else}
                     <button on:click={() => {editSession(currentSession.ID)}}>Edit</button>
                 {/if}
-                <button on:click={removeSession(currentSession.ID)}>Remove</button>
+                <button on:click|preventDefault={removeSession} data-id="{currentSession.ID}" data-name="{currentSession.Name}">Remove</button>
                 <button on:click|preventDefault={addSession}>Add a session</button>
                 <button on:click|preventDefault={() => {inPresentationMode = !inPresentationMode}}>Presentation mode
                 </button>

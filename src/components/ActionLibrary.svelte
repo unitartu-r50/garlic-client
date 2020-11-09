@@ -71,6 +71,13 @@
 
     function removeAction(event) {
         const id = event.target.dataset.id;
+        const name = event.target.dataset.name;
+
+        let confirmation = window.confirm(`Are you sure you want to remove the action: ${name}?`);
+        if (!confirmation) {
+            return;
+        }
+
         fetch(`http://` + $serverIPStore + `:8080/api/actions/${id}`, {
             method: "DELETE"
         })
@@ -157,8 +164,12 @@
                             <div>
                                 <Instruction item="{action}" name="{action.Name}" small="{true}" expanded={false}/>
                                 {#if inEditingMode}
-                                    <button class="m0 mb1" on:click|preventDefault={removeAction} data-id="{action.ID}">Remove
-                                    </button>
+                                    <div>
+                                        <button class="m0 mb1" on:click|preventDefault={removeAction}
+                                                data-id="{action.ID}" data-name="{action.Name}">
+                                            Remove
+                                        </button>
+                                    </div>
                                 {/if}
                             </div>
                         {/each}
