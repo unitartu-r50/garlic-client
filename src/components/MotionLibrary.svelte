@@ -245,7 +245,7 @@
             </div>
             {#if movesByGroups}
                 {#each Object.keys(movesByGroups) as groupName}
-                    <h3 class="h3">{groupName}</h3>
+                    <h3 class="h4">{groupName}</h3>
                     <section class="move-group">
                         {#each movesByGroups[groupName] as move}
                             <div>

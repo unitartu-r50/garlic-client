@@ -158,7 +158,7 @@
             {/if}
             {#if actionsByGroups}
                 {#each Object.keys(actionsByGroups) as groupName}
-                    <h3 class="h3">{groupName}</h3>
+                    <h3 class="h4">{groupName}</h3>
                     <div class="actions-grid">
                         {#each actionsByGroups[groupName] as action}
                             <div>

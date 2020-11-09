@@ -256,7 +256,7 @@
             </div>
             {#if audioByGroups}
                 {#each Object.keys(audioByGroups) as groupName}
-                    <h3 class="h3">{groupName}</h3>
+                    <h3 class="h4">{groupName}</h3>
                     <section class="audio-group">
                         {#each audioByGroups[groupName] as audio}
                             <div>
