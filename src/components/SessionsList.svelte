@@ -326,11 +326,13 @@
             <div class="session-item my2">
                 {#if currentSession.Items[currentPresentationItemIndex].Actions.length > 0}
                     <Instruction item="{currentSession.Items[currentPresentationItemIndex].Actions[0]}"
+                                 name="{currentSession.Items[currentPresentationItemIndex].Actions[0].SayItem.Phrase}"
                                  index="{currentPresentationItemIndex}" expanded={true}/>
                     <div class="answers">
                         {#each currentSession.Items[currentPresentationItemIndex].Actions as action, actionIndex}
                             {#if actionIndex > 0}
-                                <Instruction item="{action}" index="{currentPresentationItemIndex}"/>
+                                <Instruction item="{action}" index="{currentPresentationItemIndex}"
+                                             name="{action.SayItem.Phrase}"/>
                             {/if}
                         {/each}
                     </div>
@@ -345,11 +347,12 @@
                 {:else}
                     <div class="session-item my2">
                         {#if item.Actions.length > 0}
-                            <Instruction item="{item.Actions[0]}" index="{i}" expanded={true}/>
+                            <Instruction item="{item.Actions[0]}" name="{item.Actions[0].SayItem.Phrase}" index="{i}"
+                                         expanded={true}/>
                             <div class="answers">
                                 {#each item.Actions as action, actionIndex}
                                     {#if actionIndex > 0}
-                                        <Instruction item="{action}" index="{i}"/>
+                                        <Instruction item="{action}" name="{action.SayItem.Phrase}" index="{i}"/>
                                     {/if}
                                 {/each}
                             </div>

@@ -2,7 +2,7 @@
     import {sendInstruction, notify} from './Helpers.svelte';
     import {serverIPStore} from './stores';
 
-    export let item, index = 0, expanded = false;
+    export let item, index = 0, expanded = false, name, small = false;
     let isMobile = false;
     let isSmallMobile = false;
 
@@ -65,12 +65,12 @@
         }
     }
 
-    .phrase {
+    .instruction-name {
         font-size: 1.5rem;
     }
 
     @media (max-width: 600px) {
-        .phrase {
+        .instruction-name {
             font-size: 1.25rem;
         }
     }
@@ -84,7 +84,7 @@
                  on:click={playAudio(item.SayItem.ID, item.SayItem.Delay)}>
             <p class="h6 m0 bold caps {isMobile ? 'mb2' : 'mb4'}">Question {index + 1}</p>
             <div>
-                <p class="m0 mb1 phrase">{item.SayItem.Phrase}</p>
+                <p class="m0 mb1 instruction-name">{name}</p>
                 {#if item.SayItem.FilePath && item.SayItem.FilePath.length > 0}
                     {#if item.SayItem.Delay > 0}
                         <img class="icon" src="/images/speech-delay.svg" alt="audio with delay is present"
@@ -124,7 +124,7 @@
                  on:click={markVisited(item.SayItem.ID)}
                  on:click={sendInstruction(item.ID, $serverIPStore)}
                  on:click={playAudio(item.SayItem.ID, item.SayItem.Delay)}>
-            <p class="m0 mb1 phrase">{truncateLongString(item.SayItem.Phrase)}</p>
+            <p class="m0 mb1" class:instruction-name="{!small}">{truncateLongString(name)}</p>
             <div>
                 {#if item.SayItem.FilePath && item.SayItem.FilePath.length > 0}
                     {#if item.SayItem.Delay > 0}
