@@ -8,6 +8,8 @@
 
     let item = {
         ID: "",
+        Name: "",
+        Group: "default",
         SayItem: {
             ID: "",
             Phrase: "",
@@ -29,7 +31,6 @@
             Group: ""
         }
     };
-
     let moves;
     let movesFetchNeeded = true;
     let newActionMove;
@@ -234,6 +235,8 @@
     function resetNewFormItem() {
         item = {
             ID: "",
+            Name: "",
+            Group: "default",
             SayItem: {
                 ID: "",
                 Phrase: "",
@@ -292,6 +295,14 @@
         <fieldset class="m0 mb2">
             <legend class="h5 m0 bold caps mb1">Adding an action</legend>
             <div class="full-width">
+                <div class="mb3">
+                    <label for="action-lib-new-name" class="mb1">Name:
+                        <input type="text" id="action-lib-new-name" bind:value={item.Name} required>
+                    </label>
+                    <label for="action-lib-new-group" class="mb1">Group:
+                        <input type="text" id="action-lib-new-group" bind:value={item.Group}>
+                    </label>
+                </div>
                 {#if item.SayItem}
                     <section class="mb3">
                         <h3 class="h4 m0 mb2">Say</h3>
