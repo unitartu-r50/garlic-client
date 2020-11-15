@@ -11,6 +11,7 @@
     let collapsed = false;
     let inEditingMode = false;
     let isAddingAction = false;
+    let isLoading = true;
 
     let fetchNeeded = true;
     $: {
@@ -22,15 +23,18 @@
                     populateGroups(actions);
                     populateActionsByGroups(actions, groups);
                     fetchNeeded = false;
+                    isLoading = false;
                 })
                 .catch(err => {
                     console.error("error:", err);
                     fetchNeeded = false;
+                    isLoading = false;
                 });
         }
     }
 
     function populateGroups(actions) {
+        groups = [];
         if (!actions || actions.length === 0) {
             return;
         }
@@ -42,10 +46,10 @@
     }
 
     function populateActionsByGroups(actions, groups) {
+        actionsByGroups = {};
         if (!actions || actions.length === 0 || !groups || groups.length === 0) {
             return;
         }
-        actionsByGroups = {};
         for (const group of groups) {
             actionsByGroups[group] = actions.filter(item => item.Group === group);
         }
@@ -162,14 +166,16 @@
             {#if isAddingAction}
                 <ActionItemEdit on:message={handleActionItemEditMessage}/>
             {/if}
+            {#if isLoading}
+                <p>Loading...</p>
+            {/if}
             {#if actionsByGroups}
                 {#each Object.keys(actionsByGroups) as groupName}
                     <h3 class="h4">{groupName}</h3>
                     <div class="actions-grid">
                         {#each actionsByGroups[groupName] as action}
                             <div class="action-grid">
-                                <Instruction item="{action}" name="{action.Name}" small="{true}" edit="{inEditingMode}"
-                                             expanded={false}/>
+                                <Instruction item="{action}" name="{action.Name}" small="{true}" expanded={false}/>
                                 {#if inEditingMode}
                                     <div>
                                         <button class="m0 mb1" on:click|preventDefault={removeAction}
