@@ -127,7 +127,7 @@
     function audioUploadChainedWithOtherUploads() {
         console.log("running audioUpload");
         const audioInput = document.getElementById("action-lib-new-audio-file");
-        if (item.SayItem && (item.SayItem.FilePath.length > 0 || item.SayItem.Phrase.length > 0)) {
+        if (audioInput.files.length > 0) {
             const audioReader = new FileReader();
             audioReader.addEventListener('loadend', (e) => {
                 let data = new FormData();
@@ -163,7 +163,7 @@
     function imageUpload() {
         console.log("running imageUpload");
         const imageInput = document.getElementById("action-lib-new-image-file");
-        if (item.ImageItem) {
+        if (imageInput.files.length > 0) {
             const imageReader = new FileReader();
             imageReader.addEventListener('loadend', (e) => {
                 let data = new FormData();
@@ -208,19 +208,25 @@
             .then(response => response.json())
             .then((response) => {
                 console.log(response);
-                if (response["error"] && response["error"].length > 0) {
-                    notify("negative", response["error"]);
-                    if (item.SayItem.FilePath.length > 0) {
+                if ("error" in response) {
+                    let msg = "cannot create the action with such parameters";
+                    if (response["error"] && response["error"].length > 0) {
+                        msg = response["error"];
+                    }
+                    notify("negative", msg);
+                    if (item.SayItem && item.SayItem.FilePath.length > 0) {
                         removeUpload("audio", item.SayItem.FilePath);
                     }
-                    if (item.ImageItem.FilePath.length > 0) {
+                    if (item.ImageItem && item.ImageItem.FilePath.length > 0) {
                         removeUpload("image", item.ImageItem.FilePath);
                     }
-                } else {
+                } else if ("message" in response) {
                     notify("positive", response["message"]);
                     dispatch('message', {
                         command: 'fetch',
                     });
+                } else {
+                    console.error("unrecognized response:", response);
                 }
                 dispatch('message', {
                     command: 'edit_done',
