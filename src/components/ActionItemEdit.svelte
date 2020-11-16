@@ -65,19 +65,19 @@
 
     function handleMoveDelay(event) {
         if (item.MoveItem) {
-            item.MoveItem.Delay = event.target.value * 1000000000;
+            item.MoveItem.Delay = event.target.value;
         }
     }
 
     function handleSayDelay(event) {
         if (item.SayItem) {
-            item.SayItem.Delay = event.target.value * 1000000000;
+            item.SayItem.Delay = event.target.value;
         }
     }
 
     function handleImageDelay(event) {
         if (item.ImageItem) {
-            item.ImageItem.Delay = event.target.value * 1000000000;
+            item.ImageItem.Delay = event.target.value;
         }
     }
 

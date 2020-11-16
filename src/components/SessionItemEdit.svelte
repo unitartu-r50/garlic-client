@@ -102,17 +102,17 @@
     }
 
     function handleMoveDelay(event) {
-        item.Actions[event.target.dataset.index].MoveItem.Delay = event.target.value * 1000000000;
+        item.Actions[event.target.dataset.index].MoveItem.Delay = event.target.value;
         item.Actions = item.Actions;
     }
 
     function handleSayDelay(event) {
-        item.Actions[event.target.dataset.index].SayItem.Delay = event.target.value * 1000000000;
+        item.Actions[event.target.dataset.index].SayItem.Delay = event.target.value;
         item.Actions = item.Actions;
     }
 
     function handleImageDelay(event) {
-        item.Actions[event.target.dataset.index].ImageItem.Delay = event.target.value * 1000000000;
+        item.Actions[event.target.dataset.index].ImageItem.Delay = event.target.value;
         item.Actions = item.Actions;
     }
 
