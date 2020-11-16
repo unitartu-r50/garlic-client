@@ -8,7 +8,7 @@
     let actions = [];
     let groups = [];
     let actionsByGroups = {};
-    let collapsed = false;
+    let isCollapsed = false;
     let inEditingMode = false;
     let isAddingAction = false;
     let isLoading = true;
@@ -148,10 +148,10 @@
     }
 </style>
 
-<section class:mb4={!collapsed}>
-    <h2 class="h2 m0 mb1 collapsible" class:collapsed={collapsed}
-        on:click|preventDefault={() => {collapsed = !collapsed}}>Quick Actions</h2>
-    {#if !collapsed}
+<section class:mb4={!isCollapsed}>
+    <h2 class="h2 m0 mb1 collapsible" class:collapsed={isCollapsed}
+        on:click|preventDefault={() => {isCollapsed = !isCollapsed}}>Quick Actions</h2>
+    {#if !isCollapsed}
         <div transition:slide={{duration: 100}}>
             <div class="mb2">
                 {#if !isAddingAction}

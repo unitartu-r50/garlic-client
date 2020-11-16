@@ -14,7 +14,7 @@
     let motionName = "";
     let motionGroup = "";
 
-    let collapsed = true;
+    let isCollapsed = true;
 
     $: {
         if (fetchNeeded) {
@@ -204,9 +204,9 @@
     }
 </style>
 
-<section class:mb4={!collapsed}>
-    <h2 class="h2 m0 mb1 collapsible" class:collapsed={collapsed} on:click|preventDefault={() => {collapsed = !collapsed}}>Motions</h2>
-    {#if !collapsed}
+<section class:mb4={!isCollapsed}>
+    <h2 class="h2 m0 mb1 collapsible" class:collapsed={isCollapsed} on:click|preventDefault={() => {isCollapsed = !isCollapsed}}>Motions</h2>
+    {#if !isCollapsed}
         <div transition:slide={{duration: 100}}>
             {#if !isAddingMotion}
                 <button class="m0" on:click|preventDefault={showForm}>Add a motion</button>
