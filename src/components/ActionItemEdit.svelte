@@ -63,24 +63,6 @@
         });
     }
 
-    function handleMoveDelay(event) {
-        if (item.MoveItem) {
-            item.MoveItem.Delay = event.target.value;
-        }
-    }
-
-    function handleSayDelay(event) {
-        if (item.SayItem) {
-            item.SayItem.Delay = event.target.value;
-        }
-    }
-
-    function handleImageDelay(event) {
-        if (item.ImageItem) {
-            item.ImageItem.Delay = event.target.value;
-        }
-    }
-
     function resetMoveItem() {
         if (item.MoveItem) {
             item.MoveItem.Name = "";
@@ -324,8 +306,7 @@
                         </label>
                         <label class="mb1" for="action-lib-new-audio-delay">Audio delay, s:
                             <input type="number" id="action-lib-new-audio-delay" name="action-lib-new-audio-delay"
-                                   value={item.SayItem.Delay / 1000000000}
-                                   on:change={handleSayDelay}>
+                                   bind:value={item.SayItem.Delay}>
                         </label>
                     </section>
                 {/if}
@@ -337,8 +318,7 @@
                                 on:clear={resetMoveItem}></Select>
                         <label class="my1" for="{item.MoveItem.ID}-delay">Move delay, s:
                             <input type="number" id="{item.MoveItem.ID}-delay" name="action-lib-new-move-delay"
-                                   value={item.MoveItem.Delay / 1000000000}
-                                   on:change={handleMoveDelay}>
+                                   bind:value={item.MoveItem.Delay}>
                         </label>
                     </section>
                 {/if}
@@ -351,8 +331,7 @@
                         </label>
                         <label class="mb1" for="action-lib-new-image-delay">Image delay, s:
                             <input type="number" id="action-lib-new-image-delay" name="action-lib-new-image-delay"
-                                   value={item.ImageItem.Delay / 1000000000}
-                                   on:change={handleImageDelay}>
+                                   bind:value={item.ImageItem.Delay}>
                         </label>
                     </section>
                 {/if}

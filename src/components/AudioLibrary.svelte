@@ -116,7 +116,7 @@
     }
 
     function playAudio(itemID, delay) {
-        let delayMillis = delay / 1000000;
+        let delayMillis = delay * 1000;
         const audioElement = document.getElementById("audio-" + itemID);
         if (audioElement) {
             // NOTE: this timer could be non-exact, read more at https://stackoverflow.com/questions/29971898/how-to-create-an-accurate-timer-in-javascript

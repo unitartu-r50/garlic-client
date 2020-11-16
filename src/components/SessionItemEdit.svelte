@@ -101,21 +101,6 @@
         });
     }
 
-    function handleMoveDelay(event) {
-        item.Actions[event.target.dataset.index].MoveItem.Delay = event.target.value;
-        item.Actions = item.Actions;
-    }
-
-    function handleSayDelay(event) {
-        item.Actions[event.target.dataset.index].SayItem.Delay = event.target.value;
-        item.Actions = item.Actions;
-    }
-
-    function handleImageDelay(event) {
-        item.Actions[event.target.dataset.index].ImageItem.Delay = event.target.value;
-        item.Actions = item.Actions;
-    }
-
     function dragOverHandler(event) {
         event.dataTransfer.dropEffect = "copy";
         const dropzone = document.getElementById("dropzone-" + event.target.dataset.id);
@@ -296,9 +281,8 @@
                             </label>
                             <label class="mb1" for="{action.SayItem.ID}-delay">Audio delay, s:
                                 <input type="number" id="{action.SayItem.ID}-delay" name="sayDelay"
-                                       value={action.SayItem.Delay / 1000000000}
-                                       data-index="{i}"
-                                       on:change={handleSayDelay}>
+                                       bind:value={action.SayItem.Delay}
+                                       data-index="{i}">
                             </label>
                         </div>
                     {/if}
@@ -317,9 +301,8 @@
                             </label>
                             <label class="mb1" for="{action.MoveItem.ID}-delay">Move delay, s:
                                 <input type="number" id="{action.MoveItem.ID}-delay" name="moveDelay"
-                                       value={action.MoveItem.Delay / 1000000000}
-                                       data-index="{i}"
-                                       on:change={handleMoveDelay}>
+                                       bind:value={action.MoveItem.Delay}
+                                       data-index="{i}">
                             </label>
                             <button class="m0" on:click|preventDefault={resetMoveItem} data-index="{i}">Reset move</button>
                         </div>
@@ -334,9 +317,8 @@
                             </label>
                             <label class="mb1" for="{action.ImageItem.ID}-delay">Image delay, s:
                                 <input type="number" id="{action.ImageItem.ID}-delay" name="imageDelay"
-                                       value={action.ImageItem.Delay / 1000000000}
-                                       data-index="{i}"
-                                       on:change={handleImageDelay}>
+                                       bind:value={action.ImageItem.Delay}
+                                       data-index="{i}">
                             </label>
                         </div>
                     {/if}
