@@ -29,6 +29,13 @@
             FilePath: "",
             Delay: 0,
             Group: ""
+        },
+        URLItem: {
+            ID: "",
+            Name: "",
+            URL: "",
+            Delay: 0,
+            Group: ""
         }
     };
 
@@ -123,11 +130,11 @@
                         console.log(response);
                         if (response["error"] && response["error"].length > 0) {
                             notify("negative", response["error"]);
-                            imageUpload();
+                            imageUpload(); // this function runs the next action
                         } else {
                             item.SayItem.ID = response["id"];
                             item.SayItem.FilePath = response["filepath"];
-                            imageUpload();
+                            imageUpload(); // this function runs the next action
                         }
                     })
                     .catch((err) => {
@@ -138,7 +145,7 @@
             audioReader.readAsText(audioInput.files[0]);
         } else {
             // still call the closure even if there's no audio to upload
-            imageUpload();
+            imageUpload(); // this function runs the next action
         }
     }
 
@@ -159,11 +166,11 @@
                         console.log(response);
                         if (response["error"] && response["error"].length > 0) {
                             notify("negative", response["error"]);
-                            createAction();
+                            createAction(); // this function runs the next action
                         } else {
                             item.ImageItem.ID = response["id"];
                             item.ImageItem.FilePath = response["filepath"];
-                            createAction();
+                            createAction(); // this function runs the next action
                         }
                     })
                     .catch((err) => {
@@ -174,7 +181,7 @@
             imageReader.readAsText(imageInput.files[0]);
         } else {
             // still call the closure even if there's no image to upload
-            createAction();
+            createAction(); // this function runs the next action
         }
     }
 
@@ -323,7 +330,7 @@
                     </section>
                 {/if}
                 {#if item.ImageItem}
-                    <section>
+                    <section class="mb3">
                         <h3 class="h4 m0 mb2">Show image</h3>
                         <label class="mb1" for="action-lib-new-image-file">Image file:
                             <span class="h6">{item.ImageItem.FilePath}</span>
@@ -332,6 +339,19 @@
                         <label class="mb1" for="action-lib-new-image-delay">Image delay, s:
                             <input type="number" id="action-lib-new-image-delay" name="action-lib-new-image-delay"
                                    bind:value={item.ImageItem.Delay}>
+                        </label>
+                    </section>
+                {/if}
+                {#if item.URLItem}
+                    <section>
+                        <h3 class="h4 m0 mb2">Show URL</h3>
+                        <label class="mb1" for="action-lib-new-url">Web URL:
+                            <input type="text" id="action-lib-new-url" name="action-lib-new-url"
+                                   bind:value={item.URLItem.URL}>
+                        </label>
+                        <label class="mb1" for="action-lib-new-url-delay">URL delay, s:
+                            <input type="number" id="action-lib-new-url-delay" name="action-lib-new-url-delay"
+                                   bind:value={item.URLItem.Delay}>
                         </label>
                     </section>
                 {/if}
