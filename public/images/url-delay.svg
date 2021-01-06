@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="22px" viewBox="0 0 24 22" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 58 (84663) - https://sketch.com -->
+    <title>url-delay@1x</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="url-delay">
+            <g id="url-copy" stroke="#000000">
+                <circle id="Oval" stroke-width="2" cx="11" cy="11" r="10"></circle>
+                <ellipse id="Oval-Copy" stroke-width="1.5" cx="11" cy="11" rx="4.25" ry="10.25"></ellipse>
+                <path d="M19.75,6.41666667 L2.25,6.41666667" id="Line-2" stroke-width="1.5" stroke-linecap="round"></path>
+                <path d="M19.75,15.5833333 L2.25,15.5833333" id="Line-2-Copy" stroke-width="1.5" stroke-linecap="round"></path>
+            </g>
+            <g id="clock-copy" transform="translate(12.000000, 10.000000)">
+                <circle id="Oval" fill="#FFFFFF" cx="6" cy="6" r="5"></circle>
+                <path d="M6,12 C9.3137085,12 12,9.3137085 12,6 C12,2.6862915 9.3137085,0 6,0 C2.6862915,0 0,2.6862915 0,6 C0,9.3137085 2.6862915,12 6,12 Z M6,10 C3.790861,10 2,8.209139 2,6 C2,3.790861 3.790861,2 6,2 C8.209139,2 10,3.790861 10,6 C10,8.209139 8.209139,10 6,10 Z" id="Oval" fill="#000000" fill-rule="nonzero"></path>
+                <path d="M6.17664716,5.65834536 L4.77112958,5.07612809 C4.26088922,4.8647677 3.67591622,5.10705779 3.46455583,5.61729815 C3.25319544,6.12753852 3.49548552,6.71251151 4.00572589,6.92387191 L5.41124347,7.50608917 C5.92148383,7.71744956 6.50645682,7.47515947 6.71781722,6.96491911 C6.92917761,6.45467874 6.68688752,5.86970575 6.17664716,5.65834536 Z" id="Line" fill="#000000" fill-rule="nonzero"></path>
+                <path d="M6.30143546,7.44387482 L8.50111607,6.13595145 C8.9769964,5.85567238 9.13556256,5.24268408 8.85528349,4.76680374 C8.57500442,4.29092341 7.96201611,4.13235726 7.48613578,4.41263633 L5.28645517,5.7205597 C4.81057484,6.00083877 4.65200868,6.61382708 4.93228775,7.08970741 C5.21256682,7.56558774 5.82555513,7.72415389 6.30143546,7.44387482 Z" id="Line" fill="#000000" fill-rule="nonzero"></path>
+            </g>
+        </g>
+    </g>
+</svg>

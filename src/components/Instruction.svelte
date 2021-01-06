@@ -159,6 +159,14 @@
                         <img class="icon" src="/images/image.svg" alt="image is present" title="image is present">
                     {/if}
                 {/if}
+                {#if item.URLItem && item.URLItem.URL.length > 0}
+                    {#if item.URLItem.Delay > 0}
+                        <img class="icon" src="/images/url-delay.svg" alt="URL with delay is present"
+                             title="URL with delay is present">
+                    {:else}
+                        <img class="icon" src="/images/url.svg" alt="URL is present" title="URL is present">
+                    {/if}
+                {/if}
             </div>
             {#if item.SayItem.FilePath.length > 0}
                 <audio id="audio-{item.SayItem.ID}" src="http://{$serverIPStore}:8080/{item.SayItem.FilePath}">
