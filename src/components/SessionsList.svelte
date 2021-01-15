@@ -329,7 +329,7 @@
     {/if}
     <!--    <button on:click|preventDefault={importSessions}>Import sessions</button>-->
 
-    {#if currentSession && currentSession.Items}
+    {#if currentSession && currentSession.Items && currentSession.Items.length > 0}
         {#if inPresentationMode}
             <div class="session-item my2">
                 {#if currentSession.Items[currentPresentationItemIndex].Actions.length > 0}

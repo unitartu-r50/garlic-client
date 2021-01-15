@@ -61,7 +61,7 @@
         }
 
         if (item && item.Actions[actionIndex]) {
-            fetch(`http://` + $serverIPStore + `:8080/api/instructions/${actionID}`, {
+            fetch(`http://` + $serverIPStore + `:8080/api/instruction/${actionID}`, {
                 method: "DELETE"
             })
                 .then(r => r.json())
