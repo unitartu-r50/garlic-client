@@ -280,6 +280,7 @@
 </style>
 
 <section class="mb4">
+    <!-- title and presentation/detailed mode label-->
     {#if currentSession}
         {#if inEditingMode}
             <label for="session-name" class="mb2">Session name:
@@ -295,6 +296,8 @@
     {:else}
         <h2 class="h2 m0 mb1">Choose a session</h2>
     {/if}
+
+    <!-- select field and session control buttons-->
     {#if sessions && sessions.length > 0}
         <select name="sessions" id="sessions" class="m0" bind:value={currentSession} on:blur={editingOff}>
             <option value="">Please, select a session</option>
@@ -329,8 +332,9 @@
     {/if}
     <!--    <button on:click|preventDefault={importSessions}>Import sessions</button>-->
 
-    {#if currentSession && currentSession.Items && currentSession.Items.length > 0}
-        {#if inPresentationMode}
+    <!-- current session list-->
+    {#if currentSession && currentSession.Items}
+        {#if inPresentationMode && currentSession.Items.length > 0}
             <div class="session-item my2">
                 {#if currentSession.Items[currentPresentationItemIndex].Actions.length > 0}
                     <Instruction item="{currentSession.Items[currentPresentationItemIndex].Actions[0]}"
@@ -371,7 +375,7 @@
         {/if}
 
         {#if inEditingMode}
-            <button on:click|preventDefault={addQuestion}>Add a question</button>
+            <div><button on:click|preventDefault={addQuestion}>Add a question</button></div>
         {/if}
     {/if}
 </section>
