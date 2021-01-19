@@ -10,6 +10,7 @@
     let inEditingMode = false;
     let inPresentationMode = true;
     let currentPresentationItemIndex = 0;
+    let currentPresentationItem = null;
 
     $: {
         if (fetchNeeded) {
@@ -43,6 +44,10 @@
 
         if (inEditingMode) {
             inPresentationMode = false;
+        }
+
+        if (currentSession && currentSession.Items.length > 0) {
+            currentPresentationItem = currentSession.Items[currentPresentationItemIndex];
         }
     }
 
@@ -216,6 +221,9 @@
         if (currentPresentationItemIndex >= currentSession.Items.length) {
             currentPresentationItemIndex = currentSession.Items.length - 1;
             console.log("already the last question in the list");
+        } else {
+            console.log("currentPresentationItem = ", currentPresentationItem);
+            currentPresentationItem = currentSession.Items[currentPresentationItemIndex];
         }
     }
 
@@ -224,6 +232,9 @@
         if (currentPresentationItemIndex < 0) {
             currentPresentationItemIndex = 0;
             console.log("already the first question in the list");
+        } else {
+            console.log("currentPresentationItem = ", currentPresentationItem);
+            currentPresentationItem = currentSession.Items[currentPresentationItemIndex];
         }
     }
 </script>
@@ -336,12 +347,12 @@
     {#if currentSession && currentSession.Items}
         {#if inPresentationMode && currentSession.Items.length > 0}
             <div class="session-item my2">
-                {#if currentSession.Items[currentPresentationItemIndex].Actions.length > 0}
-                    <Instruction item="{currentSession.Items[currentPresentationItemIndex].Actions[0]}"
-                                 name="{currentSession.Items[currentPresentationItemIndex].Actions[0].SayItem.Phrase}"
+                {#if currentPresentationItem && currentPresentationItem.Actions.length > 0}
+                    <Instruction item="{currentPresentationItem.Actions[0]}"
+                                 name="{currentPresentationItem.Actions[0].SayItem.Phrase}"
                                  index="{currentPresentationItemIndex}" expanded={true}/>
                     <div class="answers">
-                        {#each currentSession.Items[currentPresentationItemIndex].Actions as action, actionIndex}
+                        {#each currentPresentationItem.Actions as action, actionIndex}
                             {#if actionIndex > 0}
                                 <Instruction item="{action}" index="{currentPresentationItemIndex}"
                                              name="{action.SayItem.Phrase}"/>
