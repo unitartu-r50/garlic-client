@@ -330,7 +330,9 @@
                 {:else}
                     <button on:click={() => {editSession(currentSession.ID)}}>Edit</button>
                 {/if}
-                <button on:click|preventDefault={removeSession} data-id="{currentSession.ID}" data-name="{currentSession.Name}">Remove</button>
+                <button on:click|preventDefault={removeSession} data-id="{currentSession.ID}"
+                        data-name="{currentSession.Name}">Remove
+                </button>
                 <button on:click|preventDefault={addSession}>Add a session</button>
                 <button on:click|preventDefault={() => {inPresentationMode = !inPresentationMode}}>Presentation mode
                 </button>
@@ -350,12 +352,16 @@
                 {#if currentPresentationItem && currentPresentationItem.Actions.length > 0}
                     <Instruction item="{currentPresentationItem.Actions[0]}"
                                  name="{currentPresentationItem.Actions[0].SayItem.Phrase}"
-                                 index="{currentPresentationItemIndex}" expanded={true}/>
+                                 index="{currentPresentationItemIndex}"
+                                 expanded={true}
+                                 clickTracking={!inPresentationMode}/>
                     <div class="answers">
                         {#each currentPresentationItem.Actions as action, actionIndex}
                             {#if actionIndex > 0}
-                                <Instruction item="{action}" index="{currentPresentationItemIndex}"
-                                             name="{action.SayItem.Phrase}"/>
+                                <Instruction item="{action}"
+                                             index="{currentPresentationItemIndex}"
+                                             name="{action.SayItem.Phrase}"
+                                             clickTracking={!inPresentationMode}/>
                             {/if}
                         {/each}
                     </div>
@@ -370,12 +376,18 @@
                 {:else}
                     <div class="session-item my2">
                         {#if item.Actions.length > 0}
-                            <Instruction item="{item.Actions[0]}" name="{item.Actions[0].SayItem.Phrase}" index="{i}"
-                                         expanded={true}/>
+                            <Instruction item="{item.Actions[0]}"
+                                         name="{item.Actions[0].SayItem.Phrase}"
+                                         index="{i}"
+                                         expanded={true}
+                                         clickTracking={!inPresentationMode}/>
                             <div class="answers">
                                 {#each item.Actions as action, actionIndex}
                                     {#if actionIndex > 0}
-                                        <Instruction item="{action}" name="{action.SayItem.Phrase}" index="{i}"/>
+                                        <Instruction item="{action}"
+                                                     name="{action.SayItem.Phrase}"
+                                                     index="{i}"
+                                                     clickTracking={!inPresentationMode}/>
                                     {/if}
                                 {/each}
                             </div>
@@ -386,7 +398,9 @@
         {/if}
 
         {#if inEditingMode}
-            <div><button on:click|preventDefault={addQuestion}>Add a question</button></div>
+            <div>
+                <button on:click|preventDefault={addQuestion}>Add a question</button>
+            </div>
         {/if}
     {/if}
 </section>

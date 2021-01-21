@@ -2,7 +2,7 @@
     import {sendInstruction, notify} from './Helpers.svelte';
     import {serverIPStore} from './stores';
 
-    export let item, index = 0, expanded = false, name, small = false;
+    export let item, index = 0, expanded = false, name, small = false, clickTracking = true;
     let isMobile = false;
     let isSmallMobile = false;
 
@@ -16,6 +16,9 @@
     }
 
     function markVisited(event) {
+        if (!clickTracking) {
+            return;
+        }
         markVisitedRecursive(event.target);
     }
 
