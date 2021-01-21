@@ -15,6 +15,18 @@
         }
     }
 
+    function markVisited(event) {
+        markVisitedRecursive(event.target);
+    }
+
+    function markVisitedRecursive(element) {
+        if (element.tagName.toLowerCase() === "article") {
+            element.style.background = "rgba(159, 241, 255, .15)";
+        } else {
+            markVisitedRecursive(element.parentElement);
+        }
+    }
+
     function playAudio(itemID, delay) {
         let delayMillis = delay * 1000;
         const audioElement = document.getElementById("audio-" + itemID);
@@ -75,6 +87,7 @@
 {#if expanded}
     {#if item && item.SayItem}
         <article class="instruction"
+                 on:click={markVisited}
                  on:click={sendInstruction(item.ID, $serverIPStore)}
                  on:click={playAudio(item.SayItem.ID, item.SayItem.Delay)}>
             <p class="h6 m0 bold caps {isMobile ? 'mb2' : 'mb4'}">Question {index + 1}</p>
@@ -116,6 +129,7 @@
 {:else}
     {#if item}
         <article class="instruction items-start"
+                 on:click={markVisited}
                  on:click={sendInstruction(item.ID, $serverIPStore)}
                  on:click={playAudio(item.SayItem.ID, item.SayItem.Delay)}>
             <p class="m0 mb1" class:instruction-name="{!small}">{truncateLongString(name)}</p>

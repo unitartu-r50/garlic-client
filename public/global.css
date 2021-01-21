@@ -19,9 +19,6 @@ body {
 	border-color: rgba(159, 241, 255, 1);
 }
 
-.instruction:active {
-	background: rgba(159, 241, 255, .15);
-}
 
 .notifications {
 	position: fixed;
