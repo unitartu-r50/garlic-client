@@ -279,8 +279,8 @@
                                 <input type="file" id="{action.SayItem.ID}-filepath" accept="audio/*"
                                        on:change="{audioUpload}" data-index="{i}" data-phrase="{action.SayItem.Phrase}">
                             </label>
-                            <label class="mb1" for="{action.SayItem.ID}-delay">Audio delay, s:
-                                <input type="number" id="{action.SayItem.ID}-delay" name="sayDelay"
+                            <label class="mb1" for="{action.ID}-SayItem.Delay">Audio delay, s:
+                                <input type="number" id="{action.ID}-SayItem.Delay" name="sayDelay"
                                        bind:value={action.SayItem.Delay}
                                        data-index="{i}">
                             </label>
@@ -299,8 +299,8 @@
                                     {action.MoveItem.Name}
                                 </div>
                             </label>
-                            <label class="mb1" for="{action.MoveItem.ID}-delay">Move delay, s:
-                                <input type="number" id="{action.MoveItem.ID}-delay" name="moveDelay"
+                            <label class="mb1" for={action.ID}-MoveItem.Delay>Move delay, s:
+                                <input type="number" id="{action.ID}-MoveItem.Delay" name="moveDelay"
                                        bind:value={action.MoveItem.Delay}
                                        data-index="{i}">
                             </label>
@@ -310,13 +310,13 @@
                     {#if action.ImageItem}
                         <div>
                             <h3 class="h4 m0 mb2">Show image</h3>
-                            <label class="mb1" for="{action.ImageItem.ID}-filepath">Image file:
+                            <label class="mb1" for="{action.ID}-ImageItem.FilePath">Image file:
                                 <span class="h6">{action.ImageItem.FilePath}</span>
-                                <input type="file" id="{action.ImageItem.ID}-filepath" accept="image/*"
+                                <input type="file" id="{action.ID}-ImageItem.FilePath" accept="image/*"
                                        on:change="{imageUpload}" data-index="{i}">
                             </label>
-                            <label class="mb1" for="{action.ImageItem.ID}-delay">Image delay, s:
-                                <input type="number" id="{action.ImageItem.ID}-delay" name="imageDelay"
+                            <label class="mb1" for="{action.ID}-ImageItem.Delay">Image delay, s:
+                                <input type="number" id="{action.ID}-ImageItem.Delay" name="imageDelay"
                                        bind:value={action.ImageItem.Delay}
                                        data-index="{i}">
                             </label>
