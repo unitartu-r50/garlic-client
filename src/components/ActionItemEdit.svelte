@@ -195,7 +195,7 @@
         })
             .then(response => response.json())
             .then((response) => {
-                console.log(response);
+                console.log("server response:", response);
                 if ("error" in response) {
                     let msg = "cannot create the action with such parameters";
                     if (response["error"] && response["error"].length > 0) {
