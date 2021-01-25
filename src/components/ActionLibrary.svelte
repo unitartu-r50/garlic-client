@@ -1,60 +1,13 @@
 <script>
     import {slide} from 'svelte/transition';
-    import {notify, sendInstruction} from './Helpers.svelte';
-    import {serverIPStore} from './stores';
     import ActionItemEdit from "./ActionItemEdit.svelte";
     import ActionLibraryControls from "./ActionLibraryControls.svelte";
     import ActionLibraryGroups from "./ActionLibraryGroups.svelte";
 
-    let actions = [];
-    let groups = [];
-    let actionsByGroups = {};
     let isCollapsed = false;
     let inEditMode = false;
     let inAddMode = false;
-    let isLoading = true;
-
-    let fetchNeeded = true;
-    $: {
-        if (fetchNeeded) {
-            fetch(`http://` + $serverIPStore + `:8080/api/actions/`)
-                .then(r => r.json())
-                .then(d => {
-                    actions = d.data;
-                    populateGroups(actions);
-                    populateActionsByGroups(actions, groups);
-                    fetchNeeded = false;
-                    isLoading = false;
-                })
-                .catch(err => {
-                    console.error("error:", err);
-                    fetchNeeded = false;
-                    isLoading = false;
-                });
-        }
-    }
-
-    function populateGroups(actions) {
-        groups = [];
-        if (!actions || actions.length === 0) {
-            return;
-        }
-        let localGroups = new Set();
-        for (const action of actions) {
-            localGroups.add(action.Group);
-        }
-        groups = localGroups;
-    }
-
-    function populateActionsByGroups(actions, groups) {
-        actionsByGroups = {};
-        if (!actions || actions.length === 0 || !groups || groups.length === 0) {
-            return;
-        }
-        for (const group of groups) {
-            actionsByGroups[group] = actions.filter(item => item.Group === group);
-        }
-    }
+    let fetchNeeded = false;
 
     function handleModeChange(event) {
         if ('inEditMode' in event.detail) {
@@ -66,6 +19,7 @@
     }
 
     function handleCommands(event) {
+        console.log("handleCommands:", event.detail);
         switch (event.detail) {
             case "cancel":
             case "finish":
@@ -116,11 +70,7 @@
             {#if inAddMode}
                 <ActionItemEdit on:command={handleCommands}/>
             {/if}
-            {#if isLoading}
-                <p>Loading...</p>
-            {:else}
-                <ActionLibraryGroups on:command={handleCommands} actionsByGroups={actionsByGroups} inEditMode={inEditMode}/>
-            {/if}
+            <ActionLibraryGroups on:command={handleCommands} inEditMode={inEditMode} isFetchNeeded={fetchNeeded}/>
         </div>
     {/if}
 </section>
