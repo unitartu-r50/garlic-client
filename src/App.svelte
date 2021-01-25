@@ -1,25 +1,4 @@
 <script>
-    // Routing
-    //
-    // import Login from './pages/Login.svelte';
-    // import Home from './pages/Home.svelte';
-    // import About from './pages/About.svelte';
-    // import Sessions from './pages/Sessions.svelte';
-    //
-    // import router from "page";
-    //
-    // let currentPage = Home;
-    //
-    // router('/', () => router.redirect("/sessions"));
-    // router('/login', () => currentPage = Login);
-    // router('/about', () => currentPage = About);
-    // router('/sessions', () => currentPage = Sessions);
-    // router.start();
-
-    // Alternative routing
-
-    // import { onMount } from 'svelte';
-
     import SiteHeader from './components/SiteHeader.svelte';
     import Introduction from './components/Introduction.svelte';
     import SessionsList from './components/SessionsList.svelte';
