@@ -252,32 +252,14 @@
         }
     }
 
-    .positive {
-        color: #6AE57B;
-    }
-
-    .negative {
-        color: #FD8181;
-    }
-
     .answers {
         display: grid;
         grid-template-rows: 1fr 1fr;
         grid-gap: .3rem;
     }
 
-    .drop-area {
-        border: 1px dotted black;
-        padding: 1em;
-        border-radius: 1em;
-    }
-
     button {
         margin: 0;
-    }
-
-    fieldset {
-        border: 4px solid rgba(159, 241, 255, .35);
     }
 
     label {

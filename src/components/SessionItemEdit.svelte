@@ -249,10 +249,6 @@
         padding: .5em .5em;
         border: 1px dashed black;
     }
-
-    .grey {
-        color: darkgray;
-    }
 </style>
 
 <form class="item my2">
@@ -289,7 +285,7 @@
                     {#if action.MoveItem}
                         <div>
                             <h3 class="h4 m0 mb2">Move</h3>
-                            <label>Move name:
+                            <label for="dropzone-{action.MoveItem.ID}">Move name:
                                 <div class="move-dropzone mb2" id="dropzone-{action.MoveItem.ID}"
                                      data-id="{action.MoveItem.ID}"
                                      data-index="{i}"

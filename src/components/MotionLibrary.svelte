@@ -187,7 +187,7 @@
         transition: all .2s;
     }
 
-    .collapsible:hover, collapsible:active {
+    .collapsible:hover, .collapsible:active {
         color: rgb(80, 228, 253);
     }
 
