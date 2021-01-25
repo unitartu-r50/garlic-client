@@ -65,9 +65,7 @@
 
     function cancelForm() {
         resetNewFormItem();
-        dispatch('message', {
-            command: 'cancel',
-        });
+        dispatch("command", "cancel");
     }
 
     function resetMoveItem() {
@@ -212,15 +210,11 @@
                     }
                 } else if ("message" in response) {
                     notify("positive", response["message"]);
-                    dispatch('message', {
-                        command: 'fetch',
-                    });
+                    dispatch("command", "fetch");
                 } else {
                     console.error("unrecognized response:", response);
                 }
-                dispatch('message', {
-                    command: 'edit_done',
-                });
+                dispatch("command", "finish");
                 resetNewFormItem();
             })
             .catch((err) => {

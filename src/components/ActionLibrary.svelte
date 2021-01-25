@@ -3,14 +3,15 @@
     import {notify, sendInstruction} from './Helpers.svelte';
     import {serverIPStore} from './stores';
     import ActionItemEdit from "./ActionItemEdit.svelte";
-    import Instruction from "./Instruction.svelte";
+    import ActionLibraryControls from "./ActionLibraryControls.svelte";
+    import ActionLibraryGroups from "./ActionLibraryGroups.svelte";
 
     let actions = [];
     let groups = [];
     let actionsByGroups = {};
     let isCollapsed = false;
-    let inEditingMode = false;
-    let isAddingAction = false;
+    let inEditMode = false;
+    let inAddMode = false;
     let isLoading = true;
 
     let fetchNeeded = true;
@@ -55,50 +56,27 @@
         }
     }
 
-    function toggleEditMode() {
-        inEditingMode = !inEditingMode;
-    }
-
-    function handleActionItemEditMessage(event) {
-        const command = event.detail.command;
-        console.log("dispatcher", command);
-        if (command === "add") {
-            isAddingAction = false;
-        } else if (command === "cancel" || command === "edit_done") {
-            isAddingAction = false;
-        } else if (command === "fetch") {
-            fetchNeeded = true;
-        } else {
-            console.log("unknown command on dispatch:", command);
+    function handleModeChange(event) {
+        if ('inEditMode' in event.detail) {
+            inEditMode = event.detail.inEditMode;
+        }
+        if ('inAddMode' in event.detail) {
+            inAddMode = event.detail.inAddMode;
         }
     }
 
-    function removeAction(event) {
-        const id = event.target.dataset.id;
-        const name = event.target.dataset.name;
-
-        let confirmation = window.confirm(`Are you sure you want to remove the action: ${name}?`);
-        if (!confirmation) {
-            return;
+    function handleCommands(event) {
+        switch (event.detail) {
+            case "cancel":
+            case "finish":
+                inAddMode = false;
+                break;
+            case "fetch":
+                fetchNeeded = true;
+                break;
+            default:
+                console.log("unknown command:", event.detail);
         }
-
-        fetch(`http://` + $serverIPStore + `:8080/api/actions/${id}`, {
-            method: "DELETE"
-        })
-            .then(response => response.json())
-            .then((response) => {
-                console.log(response);
-                if (response["error"] && response["error"].length > 0) {
-                    notify("negative", response["error"]);
-                } else {
-                    notify("positive", response["message"]);
-                    fetchNeeded = true;
-                }
-            })
-            .catch((err) => {
-                console.error(err);
-                notify("negative", err);
-            });
     }
 </script>
 
@@ -134,41 +112,14 @@
         on:click|preventDefault={() => {isCollapsed = !isCollapsed}}>Quick Actions</h2>
     {#if !isCollapsed}
         <div transition:slide={{duration: 100}}>
-            <div class="mb2">
-                {#if !isAddingAction}
-                    <button class="m0" on:click|preventDefault={() => {isAddingAction = true;}}>Add an action</button>
-                {/if}
-                {#if !inEditingMode}
-                    <button class="m0" on:click|preventDefault={toggleEditMode}>Edit</button>
-                {:else}
-                    <button class="m0" on:click|preventDefault={toggleEditMode}>Done</button>
-                {/if}
-            </div>
-            {#if isAddingAction}
-                <ActionItemEdit on:message={handleActionItemEditMessage}/>
+            <ActionLibraryControls on:modeChanged={handleModeChange} inAddMode={inAddMode} inEditMode={inEditMode}/>
+            {#if inAddMode}
+                <ActionItemEdit on:command={handleCommands}/>
             {/if}
             {#if isLoading}
                 <p>Loading...</p>
-            {/if}
-            {#if actionsByGroups}
-                {#each Object.keys(actionsByGroups) as groupName}
-                    <h3 class="h4">{groupName}</h3>
-                    <div class="actions-grid">
-                        {#each actionsByGroups[groupName] as action}
-                            <div class="action-grid">
-                                <Instruction item="{action}" name="{action.Name}" small="{true}" expanded={false}/>
-                                {#if inEditingMode}
-                                    <div>
-                                        <button class="m0 mb1" on:click|preventDefault={removeAction}
-                                                data-id="{action.ID}" data-name="{action.Name}">
-                                            Remove
-                                        </button>
-                                    </div>
-                                {/if}
-                            </div>
-                        {/each}
-                    </div>
-                {/each}
+            {:else}
+                <ActionLibraryGroups on:command={handleCommands} actionsByGroups={actionsByGroups} inEditMode={inEditMode}/>
             {/if}
         </div>
     {/if}
