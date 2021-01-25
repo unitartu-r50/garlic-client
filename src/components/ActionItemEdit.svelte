@@ -88,6 +88,7 @@
     }
 
     function add(event) {
+        // TODO: check required fields
         audioUploadChainedWithOtherUploads();
     }
 
