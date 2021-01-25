@@ -115,10 +115,10 @@
                 {/if}
                 {#if item.ImageItem && item.ImageItem.FilePath}
                     {#if item.ImageItem.Delay > 0}
-                        <img class="icon" src="/images/image-delay.svg" alt="image with delay is present"
-                             title="image with delay is present">
+                        <img class="icon" src="/images/image-delay.svg" alt="delay is present"
+                             title="delay is present">
                     {:else}
-                        <img class="icon" src="/images/image.svg" alt="image is present" title="image is present">
+                        <img class="icon" src="/images/image.svg" alt="no delay">
                     {/if}
                 {/if}
             </div>
@@ -156,10 +156,10 @@
                 {/if}
                 {#if item.ImageItem && item.ImageItem.FilePath}
                     {#if item.ImageItem.Delay > 0}
-                        <img class="icon" src="/images/image-delay.svg" alt="image with delay is present"
-                             title="image with delay is present">
+                        <img class="icon" src="/images/image-delay.svg" alt="delay is present"
+                             title="delay is present">
                     {:else}
-                        <img class="icon" src="/images/image.svg" alt="image is present" title="image is present">
+                        <img class="icon" src="/images/image.svg" alt="no delay">
                     {/if}
                 {/if}
                 {#if item.URLItem && item.URLItem.URL.length > 0}
