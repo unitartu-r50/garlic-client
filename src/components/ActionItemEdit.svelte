@@ -2,7 +2,10 @@
     import {createEventDispatcher} from 'svelte';
     import {notify} from './Helpers.svelte';
     import {serverIPStore} from './stores';
-    import Select from 'svelte-select';
+    import ActionItemEditSayItem from "./ActionItemEditSayItem.svelte";
+    import ActionItemEditMoveItem from "./ActionItemEditMoveItem.svelte";
+    import ActionItemEditImageItem from "./ActionItemEditImageItem.svelte";
+    import ActionItemEditURLItem from "./ActionItemEditURLItem.svelte";
 
     const dispatch = createEventDispatcher();
 
@@ -39,50 +42,9 @@
         }
     };
 
-    let moves;
-    let movesFetchNeeded = true;
-    let newActionMove;
-
-    // Select extensions
-    const groupBy = (option) => option.Group;
-    const getOptionLabel = (option) => option.Name;
-    const getSelectionLabel = (option) => option.Name;
-
-    $: {
-        if (movesFetchNeeded) {
-            fetch(`http://` + $serverIPStore + `:8080/api/moves/`)
-                .then(r => r.json())
-                .then(d => {
-                    moves = d.data;
-                    movesFetchNeeded = false;
-                })
-                .catch(err => {
-                    console.error("error:", err);
-                    movesFetchNeeded = false;
-                });
-        }
-    }
-
     function cancelForm() {
         resetNewFormItem();
         dispatch("command", "cancel");
-    }
-
-    function resetMoveItem() {
-        if (item.MoveItem) {
-            item.MoveItem.Name = "";
-            item.MoveItem.FilePath = "";
-            // action.MoveItem.Group = "";
-        }
-    }
-
-    function handleMoveSelect() {
-        if (item.MoveItem) {
-            item.MoveItem.Name = newActionMove.Name;
-            item.MoveItem.FilePath = newActionMove.FilePath;
-            item.MoveItem.Delay = newActionMove.Delay;
-            // action.MoveItem.Group = newActionMove.Group;
-        }
     }
 
     function add(event) {
@@ -266,19 +228,6 @@
     label {
         display: block;
     }
-
-    input[type=number] {
-        width: 5em;
-    }
-
-    .searchable-select {
-        --border: 1px solid rgb(185, 185, 185);
-        --borderFocusColor: rgb(120, 120, 120);
-        --borderHoverColor: rgb(120, 120, 120);
-        --inputPadding: .5em;
-        --placeholderColor: rgb(169, 169, 169);
-        --borderRadius: 0;
-    }
 </style>
 
 {#if item}
@@ -294,62 +243,10 @@
                         <input type="text" id="action-lib-new-group" bind:value={item.Group} required>
                     </label>
                 </div>
-                {#if item.SayItem}
-                    <section class="mb3">
-                        <h3 class="h4 m0 mb2">Say</h3>
-                        <label class="mb1" for="action-lib-new-audio-phrase">Phrase
-                            <input id="action-lib-new-audio-phrase" type="text" bind:value={item.SayItem.Phrase}>
-                        </label>
-                        <!--                            <label class="mb1" for="action-lib-new-audio-group">Group-->
-                        <!--                                <input id="action-lib-new-audio-group" type="text" bind:value={item.SayItem.Group}>-->
-                        <!--                            </label>-->
-                        <label class="mb1" for="action-lib-new-audio-file">Audio file
-                            <input id="action-lib-new-audio-file" type="file" accept="audio/*">
-                        </label>
-                        <label class="mb1" for="action-lib-new-audio-delay">Audio delay, s:
-                            <input type="number" id="action-lib-new-audio-delay" name="action-lib-new-audio-delay"
-                                   bind:value={item.SayItem.Delay}>
-                        </label>
-                    </section>
-                {/if}
-                {#if item.MoveItem}
-                    <section class="mb3 searchable-select">
-                        <h3 class="h4 m0 mb2">Move</h3>
-                        <Select items={moves} bind:selectedValue={newActionMove} placeholder="Search for a move"
-                                {groupBy} {getOptionLabel} {getSelectionLabel} on:select={handleMoveSelect}
-                                on:clear={resetMoveItem}></Select>
-                        <label class="my1" for="{item.MoveItem.ID}-delay">Move delay, s:
-                            <input type="number" id="{item.MoveItem.ID}-delay" name="action-lib-new-move-delay"
-                                   bind:value={item.MoveItem.Delay}>
-                        </label>
-                    </section>
-                {/if}
-                {#if item.ImageItem}
-                    <section class="mb3">
-                        <h3 class="h4 m0 mb2">Show image</h3>
-                        <label class="mb1" for="action-lib-new-image-file">Image file:
-                            <span class="h6">{item.ImageItem.FilePath}</span>
-                            <input type="file" id="action-lib-new-image-file" accept="image/*">
-                        </label>
-                        <label class="mb1" for="action-lib-new-image-delay">Image delay, s:
-                            <input type="number" id="action-lib-new-image-delay" name="action-lib-new-image-delay"
-                                   bind:value={item.ImageItem.Delay}>
-                        </label>
-                    </section>
-                {/if}
-                {#if item.URLItem}
-                    <section>
-                        <h3 class="h4 m0 mb2">Show URL</h3>
-                        <label class="mb1" for="action-lib-new-url">Web URL:
-                            <input type="text" id="action-lib-new-url" name="action-lib-new-url"
-                                   bind:value={item.URLItem.URL}>
-                        </label>
-                        <label class="mb1" for="action-lib-new-url-delay">URL delay, s:
-                            <input type="number" id="action-lib-new-url-delay" name="action-lib-new-url-delay"
-                                   bind:value={item.URLItem.Delay}>
-                        </label>
-                    </section>
-                {/if}
+                <ActionItemEditSayItem bind:sayItem={item.SayItem}/>
+                <ActionItemEditMoveItem bind:moveItem={item.MoveItem}/>
+                <ActionItemEditImageItem bind:imageItem={item.ImageItem}/>
+                <ActionItemEditURLItem bind:URLItem={item.URLItem}/>
                 <div class="mt3">
                     <button on:click|preventDefault={add}>Add</button>
                     <button on:click|preventDefault={cancelForm}>Cancel</button>
