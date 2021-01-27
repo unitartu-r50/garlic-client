@@ -13,13 +13,9 @@
             currentPage = "";
         }
     }
-
-    function handlePseudoRedirect(event) {
-        currentPage = event.detail.text;
-    }
 </script>
 
-<SiteHeader on:message={handlePseudoRedirect}/>
+<SiteHeader bind:currentPage={currentPage}/>
 {#if currentPage === ""}
     <HomePage/>
 {:else if currentPage === "sessions" }
