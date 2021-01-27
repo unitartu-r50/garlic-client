@@ -19,7 +19,6 @@
     }
 
     function handleCommands(event) {
-        console.log("handleCommands:", event.detail);
         switch (event.detail) {
             case "cancel":
             case "finish":
