@@ -1,7 +1,7 @@
 <script>
-    import {sendInstruction, notify} from './Helpers.svelte';
     import {serverIPStore} from './stores';
-    import InstructionFooter from "./InstructionFooter.svelte";
+    import {sendInstruction, notify} from "./Helpers.svelte";
+    import InstructionIcon from "./InstructionIcon.svelte";
 
     export let
         item,
@@ -10,6 +10,7 @@
         expanded = false,
         small = false,
         clickTracking = true;
+
     let isMobile = false;
     let isSmallMobile = false;
 
@@ -20,6 +21,17 @@
         if (window.screen.width <= 600) {
             isSmallMobile = true;
         }
+    }
+
+    function truncateLongString(value) {
+        // truncate on desktop, mobile has different layout, no need to truncate there
+        if (!isMobile) {
+            const maxAllowedChars = 40;
+            if (value.length > maxAllowedChars) {
+                return value.substring(0, maxAllowedChars) + "...";
+            }
+        }
+        return value;
     }
 
     function markVisited(event) {
@@ -51,9 +63,8 @@
             }, delayMillis);
         }
     }
-
-
 </script>
+
 
 <style>
     .instruction {
@@ -67,26 +78,48 @@
             justify-content: normal;
         }
     }
+
+    .instruction-name {
+        font-size: 1.5rem;
+    }
+
+    @media (max-width: 600px) {
+        .instruction-name {
+            font-size: 1.25rem;
+        }
+    }
 </style>
 
-{#if expanded}
-    {#if item && item.SayItem}
-        <article class="instruction"
-                 on:click={markVisited}
-                 on:click={sendInstruction(item.ID, $serverIPStore)}
-                 on:click={playAudio(item.SayItem.ID, item.SayItem.Delay)}>
-            <p class="h6 m0 bold caps {isMobile ? 'mb2' : 'mb4'}">Question {index + 1}</p>
-            <InstructionFooter bind:item={item} {name} {expanded}/>
-        </article>
+<article class="instruction" class:items-start={!expanded}
+         on:click={markVisited}
+         on:click={sendInstruction(item.ID, $serverIPStore)}
+         on:click={playAudio(item.SayItem.ID, item.SayItem.Delay)}>
+    {#if expanded}
+        <p class="h6 m0 bold caps {isMobile ? 'mb2' : 'mb4'}">Question {index + 1}</p>
+    {:else}
+        <p class="m0 mb1" class:instruction-name="{!small}">{truncateLongString(name)}</p>
     {/if}
-{:else}
-    {#if item}
-        <article class="instruction items-start"
-                 on:click={markVisited}
-                 on:click={sendInstruction(item.ID, $serverIPStore)}
-                 on:click={playAudio(item.SayItem.ID, item.SayItem.Delay)}>
-            <InstructionFooter bind:item={item} {name} {small} {isMobile}/>
-        </article>
-    {/if}
-{/if}
+    <div>
+        {#if expanded}
+            <p class="m0 mb1 instruction-name">{name}</p>
+        {/if}
+        {#if item.SayItem.FilePath && item.SayItem.FilePath.length > 0}
+            <InstructionIcon item={item.SayItem} iconBaseName="speech" alt="audio is present"/>
+        {/if}
+        {#if item.MoveItem && (item.MoveItem.Name || item.MoveItem.FilePath)}
+            <InstructionIcon item={item.MoveItem} iconBaseName="pepper-icon" alt="movement is present"/>
+        {/if}
+        {#if item.ImageItem && item.ImageItem.FilePath}
+            <InstructionIcon item={item.ImageItem} iconBaseName="image" alt="graphics is present"/>
+        {/if}
+        {#if item.URLItem && item.URLItem.URL.length > 0}
+            <InstructionIcon item={item.URLItem} iconBaseName="url" alt="URL is present"/>
+        {/if}
+        {#if item.SayItem.FilePath.length > 0}
+            <audio id="audio-{item.SayItem.ID}" src="http://{$serverIPStore}:8080/{item.SayItem.FilePath}">
+                Your browser does not support the <code>audio</code> element.
+            </audio>
+        {/if}
+    </div>
+</article>
 
