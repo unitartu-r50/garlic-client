@@ -1,6 +1,6 @@
 <script>
     import ActionItemEdit from "./ActionItemEdit.svelte";
-    import ActionLibraryControls from "./ActionLibraryControls.svelte";
+    import LibraryControls from "./LibraryControls.svelte";
     import ActionLibraryGroups from "./ActionLibraryGroups.svelte";
     import CollapsibleLibrary from "./CollapsibleLibrary.svelte";
 
@@ -24,7 +24,7 @@
 </script>
 
 <CollapsibleLibrary title="Quick Actions" isCollapsed={false}>
-    <ActionLibraryControls bind:inAddMode={inAddMode} bind:inEditMode={inEditMode}/>
+    <LibraryControls bind:inAddMode={inAddMode} bind:inEditMode={inEditMode}/>
     {#if inAddMode}
         <ActionItemEdit on:command={handleCommands}/>
     {/if}

@@ -106,12 +106,11 @@
         <div class="actions-grid">
             {#each actionsByGroups[groupName] as action}
                 <div class="action-grid">
-                    <Instruction item="{action}" name="{action.Name}" small="{true}" expanded={false}/>
+                    <Instruction item={action} name={action.Name} small={true} expanded={false}/>
                     {#if inEditMode}
                         <div>
-                            <button class="m0 mb1" on:click|preventDefault={removeAction}
-                                    data-id="{action.ID}" data-name="{action.Name}">
-                                Remove
+                            <button class="m0 mb1" on:click|preventDefault={removeAction} data-id="{action.ID}"
+                                    data-name="{action.Name}">Remove
                             </button>
                         </div>
                     {/if}
@@ -119,5 +118,4 @@
             {/each}
         </div>
     {/each}
-
 {/if}
