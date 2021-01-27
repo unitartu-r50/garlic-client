@@ -48,4 +48,16 @@
             notify("negative", err);
         })
     }
+
+    export function filterByGroup(items) {
+        let groups = new Set();
+        for (const item of items) {
+            groups.add(item.Group);
+        }
+        let byGroups = {};
+        for (const group of groups) {
+            byGroups[group] = items.filter(item => item.Group === group);
+        }
+        return byGroups;
+    }
 </script>
