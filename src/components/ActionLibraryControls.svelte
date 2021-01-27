@@ -1,30 +1,24 @@
 <script>
-    import {createEventDispatcher} from 'svelte';
-
-    const dispatch = createEventDispatcher();
-
     export let
         inAddMode = false,
         inEditMode = false;
 
-    function toggleEditMode() {
+    function toggleEdit() {
         inEditMode = !inEditMode;
-        dispatch('modeChanged', {'inEditMode': inEditMode});
     }
 
-    function add() {
-        inAddMode = true;
-        dispatch('modeChanged', {'inAddMode': inAddMode});
+    function toggleAdd() {
+        inAddMode = !inAddMode;
     }
 </script>
 
 <div class="mb2">
     {#if !inAddMode}
-        <button class="m0" on:click|preventDefault={add}>Add an action</button>
+        <button class="m0" on:click|preventDefault={toggleAdd}>Add an action</button>
     {/if}
     {#if !inEditMode}
-        <button class="m0" on:click|preventDefault={toggleEditMode}>Edit</button>
+        <button class="m0" on:click|preventDefault={toggleEdit}>Edit</button>
     {:else}
-        <button class="m0" on:click|preventDefault={toggleEditMode}>Done</button>
+        <button class="m0" on:click|preventDefault={toggleEdit}>Done</button>
     {/if}
 </div>
