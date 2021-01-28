@@ -18,6 +18,7 @@
             fetch(`http://` + $serverIPStore + `:8080/api/moves/`)
                 .then(r => r.json())
                 .then(d => {
+                    items = d.data;
                     itemsByGroup = filterByGroup(d.data);
                     isFetchNeeded = false;
                 })
