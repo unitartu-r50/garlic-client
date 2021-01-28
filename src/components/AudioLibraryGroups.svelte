@@ -5,29 +5,8 @@
 
     export let
         itemsByGroup,
-        fetchNeeded,
+        isFetchNeeded,
         inEditMode;
-
-    function markVisited(id) {
-        document.getElementById(id).style.background = "rgba(159, 241, 255, .15)";
-    }
-
-    function playAudio(itemID, delay) {
-        let delayMillis = delay * 1000;
-        const audioElement = document.getElementById("audio-" + itemID);
-        if (audioElement) {
-            // NOTE: this timer could be non-exact, read more at https://stackoverflow.com/questions/29971898/how-to-create-an-accurate-timer-in-javascript
-            setTimeout(() => {
-                audioElement.play()
-                    .catch(err => {
-                        console.error(err);
-                        notify("negative", err);
-                    });
-            }, delayMillis);
-        } else {
-            console.log("no audio element found");
-        }
-    }
 
     function removeAudio(event) {
         const id = event.target.dataset.id;
@@ -48,7 +27,7 @@
                     notify("negative", response["error"]);
                 } else {
                     notify("positive", response["message"]);
-                    fetchNeeded = true;
+                    isFetchNeeded = true;
                 }
             })
             .catch((err) => {
@@ -71,13 +50,15 @@
         <h3 class="h4">{groupName}</h3>
         <section class="audio-group">
             {#each itemsByGroup[groupName] as audio}
-                <Instruction item={{SayItem: audio}} name={audio.Phrase} small={true} expanded={false}/>
-                {#if inEditMode}
-                    <div>
-                        <button class="m0 mb1" on:click|preventDefault={removeAudio} data-id="{audio.ID}">Remove
-                        </button>
-                    </div>
-                {/if}
+                <div>
+                    <Instruction item={{SayItem: audio}} name={audio.Phrase} small={true} expanded={false}/>
+                    {#if inEditMode}
+                        <div>
+                            <button class="m0 mb1" on:click|preventDefault={removeAudio} data-id="{audio.ID}">Remove
+                            </button>
+                        </div>
+                    {/if}
+                </div>
             {/each}
         </section>
     {/each}

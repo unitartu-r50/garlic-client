@@ -1,5 +1,4 @@
 <script>
-    import {createEventDispatcher} from 'svelte';
     import {notify} from './Helpers.svelte';
     import {serverIPStore} from './stores';
     import ActionItemEditSayItem from "./ActionItemEditSayItem.svelte";
@@ -7,9 +6,9 @@
     import ActionItemEditImageItem from "./ActionItemEditImageItem.svelte";
     import ActionItemEditURLItem from "./ActionItemEditURLItem.svelte";
 
-    const dispatch = createEventDispatcher();
+    export let inAddMode, fetchNeeded;
 
-    export let item = {
+    let item = {
         ID: "",
         Name: "",
         Group: "Default",
@@ -44,7 +43,7 @@
 
     function cancelForm() {
         resetNewFormItem();
-        dispatch("command", "cancel");
+        inAddMode = false;
     }
 
     function add(event) {
@@ -172,11 +171,11 @@
                     }
                 } else if ("message" in response) {
                     notify("positive", response["message"]);
-                    dispatch("command", "fetch");
+                    fetchNeeded = true;
                 } else {
                     console.error("unrecognized response:", response);
                 }
-                dispatch("command", "finish");
+                inAddMode = false;
                 resetNewFormItem();
             })
             .catch((err) => {
@@ -230,28 +229,26 @@
     }
 </style>
 
-{#if item}
-    <form class="my2">
-        <fieldset class="m0 mb2">
-            <legend class="h5 m0 bold caps mb1">Adding an action</legend>
-            <div class="full-width">
-                <div class="mb3">
-                    <label for="action-lib-new-name" class="mb1">Name:
-                        <input type="text" id="action-lib-new-name" bind:value={item.Name} required>
-                    </label>
-                    <label for="action-lib-new-group" class="mb1">Group:
-                        <input type="text" id="action-lib-new-group" bind:value={item.Group} required>
-                    </label>
-                </div>
-                <ActionItemEditSayItem bind:sayItem={item.SayItem}/>
-                <ActionItemEditMoveItem bind:moveItem={item.MoveItem}/>
-                <ActionItemEditImageItem bind:imageItem={item.ImageItem}/>
-                <ActionItemEditURLItem bind:URLItem={item.URLItem}/>
-                <div class="mt3">
-                    <button on:click|preventDefault={add}>Add</button>
-                    <button on:click|preventDefault={cancelForm}>Cancel</button>
-                </div>
+<form class="my2">
+    <fieldset class="m0 mb2">
+        <legend class="h5 m0 bold caps mb1">Adding an action</legend>
+        <div class="full-width">
+            <div class="mb3">
+                <label for="action-lib-new-name" class="mb1">Name:
+                    <input type="text" id="action-lib-new-name" bind:value={item.Name} required>
+                </label>
+                <label for="action-lib-new-group" class="mb1">Group:
+                    <input type="text" id="action-lib-new-group" bind:value={item.Group} required>
+                </label>
             </div>
-        </fieldset>
-    </form>
-{/if}
+            <ActionItemEditSayItem bind:sayItem={item.SayItem}/>
+            <ActionItemEditMoveItem bind:moveItem={item.MoveItem}/>
+            <ActionItemEditImageItem bind:imageItem={item.ImageItem}/>
+            <ActionItemEditURLItem bind:URLItem={item.URLItem}/>
+            <div class="mt3">
+                <button on:click|preventDefault={add}>Add</button>
+                <button on:click|preventDefault={cancelForm}>Cancel</button>
+            </div>
+        </div>
+    </fieldset>
+</form>
