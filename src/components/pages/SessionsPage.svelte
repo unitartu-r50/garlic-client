@@ -1,10 +1,10 @@
 <script>
-    import {serverIPStore} from "./stores";
-    import Introduction from './Introduction.svelte';
-    import SessionsList from './SessionsList.svelte';
-    import AudioLibrary from './AudioLibrary.svelte';
-    import MotionLibrary from './MotionLibrary.svelte';
-    import ActionLibrary from './ActionLibrary.svelte';
+    import {serverIPStore} from "../stores";
+    import Introduction from '../Introduction.svelte';
+    import SessionsList from '../sessions/SessionsList.svelte';
+    import AudioLibrary from '../audio/AudioLibrary.svelte';
+    import MotionLibrary from '../motions/MotionLibrary.svelte';
+    import ActionLibrary from '../actions/ActionLibrary.svelte';
 
     let isPepperConnected = false;
     let serverIP = "unknown";

@@ -1,8 +1,8 @@
 <script>
-    import {notify} from './Helpers.svelte';
-    import Instruction from './Instruction.svelte';
+    import {notify} from '../Helpers.svelte';
+    import Instruction from '../Instruction.svelte';
     import SessionItemEdit from './SessionItemEdit.svelte';
-    import {serverIPStore} from './stores';
+    import {serverIPStore} from '../stores';
 
     let sessions = [];
     let fetchNeeded = true;

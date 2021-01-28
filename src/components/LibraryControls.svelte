@@ -14,7 +14,7 @@
 
 <div class="mb2">
     {#if !inAddMode}
-        <button class="m0" on:click|preventDefault={toggleAdd}>Add an action</button>
+        <button class="m0" on:click|preventDefault={toggleAdd}>Add</button>
     {/if}
     {#if !inEditMode}
         <button class="m0" on:click|preventDefault={toggleEdit}>Edit</button>

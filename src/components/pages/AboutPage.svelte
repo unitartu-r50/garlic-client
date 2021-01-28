@@ -1,5 +1,5 @@
 <script>
-    import Introduction from './Introduction.svelte';
+    import Introduction from '../Introduction.svelte';
 </script>
 
 <Introduction title="Pepper Project"

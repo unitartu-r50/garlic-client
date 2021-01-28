@@ -1,11 +1,11 @@
 <script>
-    import {serverIPStore} from "./stores";
-    import {filterByGroup} from "./Helpers.svelte";
-    import ActionItemEdit from "./ActionItemEdit.svelte";
-    import LibraryControls from "./LibraryControls.svelte";
-    import ActionLibraryGroups from "./ActionLibraryGroups.svelte";
-    import CollapsibleLibrary from "./CollapsibleLibrary.svelte";
-    import Search from "./Search.svelte";
+    import {filterByGroup} from '../Helpers.svelte';
+    import {serverIPStore} from '../stores';
+    import CollapsibleLibrary from "../CollapsibleLibrary.svelte";
+    import LibraryControls from "../LibraryControls.svelte";
+    import MotionLibraryItemEdit from "./MotionLibraryItemEdit.svelte";
+    import Search from "../Search.svelte";
+    import MotionLibraryGroups from "./MotionLibraryGroups.svelte";
 
     let inAddMode = false;
     let inEditMode = false;
@@ -15,7 +15,7 @@
 
     $: {
         if (isFetchNeeded) {
-            fetch(`http://` + $serverIPStore + `:8080/api/actions/`)
+            fetch(`http://` + $serverIPStore + `:8080/api/moves/`)
                 .then(r => r.json())
                 .then(d => {
                     items = d.data;
@@ -40,11 +40,12 @@
     }
 </script>
 
-<CollapsibleLibrary title="Quick Actions" isCollapsed={false}>
+<CollapsibleLibrary title="Motions">
     <LibraryControls bind:inAddMode={inAddMode} bind:inEditMode={inEditMode}/>
     {#if inAddMode}
-        <ActionItemEdit bind:inAddMode={inAddMode} bind:fetchNeeded={isFetchNeeded}/>
+        <MotionLibraryItemEdit bind:inAddMode={inAddMode} bind:fetchNeeded={isFetchNeeded} search={search}/>
     {/if}
     <Search {search}/>
-    <ActionLibraryGroups bind:isFetchNeeded={isFetchNeeded} bind:itemsByGroup={itemsByGroup} {inEditMode}/>
+    <MotionLibraryGroups bind:itemsByGroup={itemsByGroup} bind:isFetchNeeded={isFetchNeeded}
+                         {inEditMode}/>
 </CollapsibleLibrary>

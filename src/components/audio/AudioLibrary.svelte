@@ -1,11 +1,11 @@
 <script>
-    import {filterByGroup} from './Helpers.svelte';
-    import {serverIPStore} from './stores';
-    import CollapsibleLibrary from "./CollapsibleLibrary.svelte";
-    import LibraryControls from "./LibraryControls.svelte";
-    import MotionLibraryItemEdit from "./MotionLibraryItemEdit.svelte";
-    import Search from "./Search.svelte";
-    import MotionLibraryGroups from "./MotionLibraryGroups.svelte";
+    import {filterByGroup} from '../Helpers.svelte';
+    import {serverIPStore} from '../stores';
+    import CollapsibleLibrary from "../CollapsibleLibrary.svelte";
+    import LibraryControls from "../LibraryControls.svelte";
+    import AudioItemEdit from "./AudioItemEdit.svelte";
+    import Search from "../Search.svelte";
+    import AudioLibraryGroups from "./AudioLibraryGroups.svelte";
 
     let inAddMode = false;
     let inEditMode = false;
@@ -15,7 +15,7 @@
 
     $: {
         if (isFetchNeeded) {
-            fetch(`http://` + $serverIPStore + `:8080/api/moves/`)
+            fetch(`http://` + $serverIPStore + `:8080/api/audio/`)
                 .then(r => r.json())
                 .then(d => {
                     items = d.data;
@@ -32,7 +32,7 @@
     function search(query) {
         let filteredItems = [];
         for (const item of items) {
-            if (item.Name.toLowerCase().includes(query.toLowerCase())) {
+            if (item.Phrase.toLowerCase().includes(query.toLowerCase())) {
                 filteredItems.push(item);
             }
         }
@@ -40,12 +40,11 @@
     }
 </script>
 
-<CollapsibleLibrary title="Motions">
+<CollapsibleLibrary title="Audio">
     <LibraryControls bind:inAddMode={inAddMode} bind:inEditMode={inEditMode}/>
     {#if inAddMode}
-        <MotionLibraryItemEdit bind:inAddMode={inAddMode} bind:fetchNeeded={isFetchNeeded} search={search}/>
+        <AudioItemEdit bind:inAddMode={inAddMode} bind:fetchNeeded={isFetchNeeded}/>
     {/if}
     <Search {search}/>
-    <MotionLibraryGroups bind:itemsByGroup={itemsByGroup} bind:isFetchNeeded={isFetchNeeded}
-                         {inEditMode}/>
+    <AudioLibraryGroups bind:itemsByGroup={itemsByGroup} bind:isFetchNeeded={isFetchNeeded} {inEditMode}/>
 </CollapsibleLibrary>

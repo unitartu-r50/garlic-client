@@ -1,5 +1,5 @@
 <script>
-    import {serverIPStore} from "./stores";
+    import {serverIPStore} from "../stores";
     import Select from 'svelte-select';
 
     export let moveItem;

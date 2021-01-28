@@ -1,9 +1,9 @@
 <script>
     import SiteHeader from './components/SiteHeader.svelte';
-    import HomePage from './components/HomePage.svelte';
-    import SessionsPage from './components/SessionsPage.svelte';
-    import AboutPage from "./components/AboutPage.svelte";
-    import LoginPage from "./components/LoginPage.svelte";
+    import HomePage from './components/pages/HomePage.svelte';
+    import SessionsPage from './components/pages/SessionsPage.svelte';
+    import AboutPage from "./components/pages/AboutPage.svelte";
+    import LoginPage from "./components/pages/LoginPage.svelte";
 
     let currentPage = "";
 

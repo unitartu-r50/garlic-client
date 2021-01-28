@@ -1,6 +1,6 @@
 <script>
-    import {notify} from "./Helpers.svelte";
-    import {serverIPStore} from "./stores";
+    import {notify} from "../Helpers.svelte";
+    import {serverIPStore} from "../stores";
 
     export let inAddMode, fetchNeeded;
 

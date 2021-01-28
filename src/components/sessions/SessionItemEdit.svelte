@@ -1,7 +1,7 @@
 <script>
     import {createEventDispatcher} from 'svelte';
-    import {notify} from './Helpers.svelte';
-    import {serverIPStore} from './stores';
+    import {notify} from '../Helpers.svelte';
+    import {serverIPStore} from '../stores';
 
     const dispatch = createEventDispatcher();
     export let item, index;

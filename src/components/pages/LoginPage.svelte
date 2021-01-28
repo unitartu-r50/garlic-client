@@ -1,5 +1,5 @@
 <script>
-    import Introduction from './Introduction.svelte';
+    import Introduction from '../Introduction.svelte';
 </script>
 
 <Introduction title="Login" description="To get access to the system, please, enter the password given to you."/>

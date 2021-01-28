@@ -1,6 +1,6 @@
 <script>
-    import {notify} from './Helpers.svelte';
-    import {serverIPStore} from './stores';
+    import {notify} from '../Helpers.svelte';
+    import {serverIPStore} from '../stores';
     import ActionItemEditSayItem from "./ActionItemEditSayItem.svelte";
     import ActionItemEditMoveItem from "./ActionItemEditMoveItem.svelte";
     import ActionItemEditImageItem from "./ActionItemEditImageItem.svelte";
