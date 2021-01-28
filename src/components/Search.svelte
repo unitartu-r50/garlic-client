@@ -1,5 +1,5 @@
 <script>
-    import {makeID} from "./Helpers";
+    import {makeID} from './Helpers.svelte';
 
     export let search;
 
