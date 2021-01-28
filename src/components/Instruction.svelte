@@ -63,6 +63,29 @@
             }, delayMillis);
         }
     }
+
+    // allows execute playAudio only if an item contains the .SayItem field
+    function playAudioPlaceholder(item) {
+        if (item.SayItem) {
+            return playAudio(item.SayItem.ID, item.SayItem.Delay);
+        }
+        return () => {
+            console.log("placeholder triggered")
+        };
+    }
+
+    // determines the instruction correct ID dynamically
+    function getID(item) {
+        if (item.ID) {
+            return item.ID;
+        } else if (item.SayItem && item.SayItem.ID) {
+            return item.SayItem.ID;
+        } else if (item.MoveItem && item.MoveItem.ID) {
+            return item.MoveItem.ID;
+        } else {
+            console.log("getID can't determine the ID of", item);
+        }
+    }
 </script>
 
 
@@ -92,8 +115,8 @@
 
 <article class="instruction" class:items-start={!expanded}
          on:click={markVisited}
-         on:click={sendInstruction(item.ID, $serverIPStore)}
-         on:click={playAudio(item.SayItem.ID, item.SayItem.Delay)}>
+         on:click={sendInstruction(getID(item), $serverIPStore)}
+         on:click={playAudioPlaceholder(item)}>
     {#if expanded}
         <p class="h6 m0 bold caps {isMobile ? 'mb2' : 'mb4'}">Question {index + 1}</p>
     {:else}
@@ -103,7 +126,7 @@
         {#if expanded}
             <p class="m0 mb1 instruction-name">{name}</p>
         {/if}
-        {#if item.SayItem.FilePath && item.SayItem.FilePath.length > 0}
+        {#if item.SayItem && item.SayItem.FilePath && item.SayItem.FilePath.length > 0}
             <InstructionIcon item={item.SayItem} iconBaseName="speech" alt="audio is present"/>
         {/if}
         {#if item.MoveItem && (item.MoveItem.Name || item.MoveItem.FilePath)}
@@ -115,7 +138,7 @@
         {#if item.URLItem && item.URLItem.URL.length > 0}
             <InstructionIcon item={item.URLItem} iconBaseName="url" alt="URL is present"/>
         {/if}
-        {#if item.SayItem.FilePath.length > 0}
+        {#if item.SayItem && item.SayItem.FilePath.length > 0}
             <audio id="audio-{item.SayItem.ID}" src="http://{$serverIPStore}:8080/{item.SayItem.FilePath}">
                 Your browser does not support the <code>audio</code> element.
             </audio>
