@@ -4,7 +4,7 @@
     import CollapsibleLibrary from "./CollapsibleLibrary.svelte";
     import LibraryControls from "./LibraryControls.svelte";
     import MotionLibraryItemEdit from "./MotionLibraryItemEdit.svelte";
-    import MotionSearch from "./MotionSearch.svelte";
+    import Search from "./Search.svelte";
     import MotionLibraryGroups from "./MotionLibraryGroups.svelte";
 
     let inAddMode = false;
@@ -28,14 +28,24 @@
                 });
         }
     }
+
+    function search(query) {
+        let filteredItems = [];
+        for (const item of items) {
+            if (item.Name.toLowerCase().includes(query.toLowerCase())) {
+                filteredItems.push(item);
+            }
+        }
+        itemsByGroup = filterByGroup(filteredItems);
+    }
 </script>
 
 <CollapsibleLibrary title="Motions">
     <LibraryControls bind:inAddMode={inAddMode} bind:inEditMode={inEditMode}/>
     {#if inAddMode}
-        <MotionLibraryItemEdit bind:inAddMode={inAddMode} bind:fetchNeeded={isFetchNeeded}/>
+        <MotionLibraryItemEdit bind:inAddMode={inAddMode} bind:fetchNeeded={isFetchNeeded} search={search}/>
     {/if}
-    <MotionSearch bind:items={items} bind:itemsByGroup={itemsByGroup}/>
+    <Search {search}/>
     <MotionLibraryGroups bind:itemsByGroup={itemsByGroup} bind:isFetchNeeded={isFetchNeeded}
                          {inEditMode}/>
 </CollapsibleLibrary>

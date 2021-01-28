@@ -4,7 +4,7 @@
     import CollapsibleLibrary from "./CollapsibleLibrary.svelte";
     import LibraryControls from "./LibraryControls.svelte";
     import AudioItemEdit from "./AudioItemEdit.svelte";
-    import AudioSearch from "./AudioSearch.svelte";
+    import Search from "./Search.svelte";
     import AudioLibraryGroups from "./AudioLibraryGroups.svelte";
 
     let inAddMode = false;
@@ -28,6 +28,16 @@
                 });
         }
     }
+
+    function search(query) {
+        let filteredItems = [];
+        for (const item of items) {
+            if (item.Phrase.toLowerCase().includes(query.toLowerCase())) {
+                filteredItems.push(item);
+            }
+        }
+        itemsByGroup = filterByGroup(filteredItems);
+    }
 </script>
 
 <CollapsibleLibrary title="Audio">
@@ -35,6 +45,6 @@
     {#if inAddMode}
         <AudioItemEdit bind:inAddMode={inAddMode} bind:fetchNeeded={isFetchNeeded}/>
     {/if}
-    <AudioSearch bind:items={items} bind:itemsByGroup={itemsByGroup}/>
+    <Search {search}/>
     <AudioLibraryGroups bind:itemsByGroup={itemsByGroup} bind:isFetchNeeded={isFetchNeeded} {inEditMode}/>
 </CollapsibleLibrary>
