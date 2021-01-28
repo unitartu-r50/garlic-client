@@ -60,4 +60,19 @@
         }
         return byGroups;
     }
+
+    export function fetchWith(dataHolder) {
+        console.log("fetching", `http://${dataHolder.host}:8080/api/${dataHolder.kind}/`);
+        fetch(`http://${dataHolder.host}:8080/api/${dataHolder.kind}/`)
+            .then(r => r.json())
+            .then(d => {
+                dataHolder.items = d.data;
+                dataHolder.itemsByGroup = filterByGroup(d.data);
+                dataHolder.isFetchNeeded = false;
+            })
+            .catch(err => {
+                console.error("error:", err);
+                dataHolder.isFetchNeeded = false;
+            });
+    }
 </script>
