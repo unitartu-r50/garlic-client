@@ -3,19 +3,23 @@
 
     export let
         currentSession,
-        currentPresentationItem,
-        currentPresentationItemIndex,
         inPresentationMode;
+
+    let currentPresentationItem;
+    let currentPresentationItemIndex = 0;
+
+    $: if (currentSession) {
+        currentPresentationItem = currentSession.Items[currentPresentationItemIndex];
+    }
 
     function nextQuestion() {
         currentPresentationItemIndex += 1;
         if (currentPresentationItemIndex >= currentSession.Items.length) {
             currentPresentationItemIndex = currentSession.Items.length - 1;
             console.log("already the last question in the list");
-        } else {
-            console.log("currentPresentationItem = ", currentPresentationItem);
-            currentPresentationItem = currentSession.Items[currentPresentationItemIndex];
+            return;
         }
+        currentPresentationItem = currentSession.Items[currentPresentationItemIndex];
     }
 
     function previousQuestion() {
@@ -23,10 +27,9 @@
         if (currentPresentationItemIndex < 0) {
             currentPresentationItemIndex = 0;
             console.log("already the first question in the list");
-        } else {
-            console.log("currentPresentationItem = ", currentPresentationItem);
-            currentPresentationItem = currentSession.Items[currentPresentationItemIndex];
+            return;
         }
+        currentPresentationItem = currentSession.Items[currentPresentationItemIndex];
     }
 </script>
 

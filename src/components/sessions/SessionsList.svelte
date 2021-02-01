@@ -1,7 +1,4 @@
 <script>
-    import {notify} from '../Helpers.svelte';
-    import Instruction from '../Instruction.svelte';
-    import SessionItemEdit from './SessionItemEdit.svelte';
     import {serverIPStore} from '../stores';
     import SessionTitle from "./SessionTitle.svelte";
     import SessionControls from "./SessionControls.svelte";
@@ -12,8 +9,6 @@
     let currentSession;
     let inEditMode = false;
     let inPresentationMode = true;
-    let currentPresentationItemIndex = 0;
-    let currentPresentationItem = null;
 
     $: {
         if (fetchNeeded) {
@@ -48,16 +43,7 @@
         if (inEditMode) {
             inPresentationMode = false;
         }
-
-        if (currentSession && currentSession.Items.length > 0) {
-            currentPresentationItem = currentSession.Items[currentPresentationItemIndex];
-        }
     }
-
-    function markVisited(id) {
-        document.getElementById(id).style.background = "rgba(159, 241, 255, .15)";
-    }
-
 
     function addQuestion() {
         currentSession.Items.push({
@@ -109,8 +95,6 @@
 
     {#if currentSession && currentSession.Items}
         <SessionItems bind:currentSession={currentSession}
-                      bind:currentPresentationItem={currentPresentationItem}
-                      bind:currentPresentationItemIndex={currentPresentationItemIndex}
                       bind:inEditMode={inEditMode}
                       bind:inPresentationMode={inPresentationMode}/>
         {#if inEditMode}

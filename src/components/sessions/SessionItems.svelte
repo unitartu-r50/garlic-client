@@ -6,9 +6,7 @@
     export let
         currentSession,
         inEditMode,
-        inPresentationMode,
-        currentPresentationItem,
-        currentPresentationItemIndex;
+        inPresentationMode;
 
 
     function handleItemEditMessage(event) {
@@ -71,10 +69,7 @@
 </style>
 
 {#if inPresentationMode && currentSession.Items.length > 0}
-    <PresentationMode {currentSession}
-                      {inPresentationMode}
-                      bind:currentPresentationItem={currentPresentationItem}
-                      bind:currentPresentationItemIndex={currentPresentationItemIndex}/>
+    <PresentationMode {currentSession} {inPresentationMode}/>
 {:else}
     {#each currentSession.Items as item, i}
         {#if inEditMode}
