@@ -5,38 +5,31 @@
     import SessionItems from "./SessionItems.svelte";
 
     let sessions = [];
-    let fetchNeeded = true;
     let currentSession;
+    let currentSessionIndex = window.localStorage.getItem("currentSessionIndex") ? window.localStorage.getItem("currentSessionIndex") : 0;
+    let isFetchNeeded = true;
     let inEditMode = false;
     let inPresentationMode = true;
 
+    $: if (sessions && sessions.length - 1 >= currentSessionIndex) {
+        currentSession = sessions[currentSessionIndex];
+        window.localStorage.setItem("currentSessionIndex", currentSessionIndex);
+    }
+
     $: {
-        if (fetchNeeded) {
+        if (isFetchNeeded) {
             fetch(`http://` + $serverIPStore + `:8080/api/sessions/`)
                 .then(r => r.json())
                 .then(d => {
                     sessions = d.data;
-                    fetchNeeded = false;
+                    isFetchNeeded = false;
                     if (!currentSession) {
-                        currentSession = sessions[0];
-                    } else if (!currentSession.ID || currentSession.ID.length === 0) {
-                        for (let el of sessions) {
-                            if (el.Name === currentSession.Name) {
-                                currentSession = el;
-                            }
-                        }
-                    } else {
-                        for (let el of sessions) {
-                            if (el.ID === currentSession.ID) {
-                                currentSession = el;
-                            }
-                        }
+                        currentSession = sessions[currentSessionIndex];
                     }
-                    console.log("current session", currentSession);
                 })
                 .catch(err => {
                     console.error("error:", err);
-                    fetchNeeded = false;
+                    isFetchNeeded = false;
                 });
         }
 
@@ -51,21 +44,6 @@
         });
         currentSession.Items = currentSession.Items;
     }
-
-    function addSession() {
-        let session = {
-            "Name": "New Session",
-            "Items": [{
-                "Actions": [],
-            }]
-        };
-        currentSession = session;
-        sessions.push(session);
-        sessions = sessions;
-        inEditMode = true;
-    }
-
-
 </script>
 
 <style>
@@ -81,16 +59,15 @@
         <SessionTitle title="No session is selected" {inEditMode} {inPresentationMode}/>
     {/if}
 
-    {#if sessions && sessions.length > 0}
-        <SessionControls bind:sessions={sessions}
-                         bind:currentSession={currentSession}
-                         bind:inEditMode={inEditMode}
-                         bind:inPresentationMode={inPresentationMode}
-                         bind:fetchNeeded={fetchNeeded}/>
+    <SessionControls bind:sessions={sessions}
+                     bind:currentSession={currentSession}
+                     bind:currentSessionIndex={currentSessionIndex}
+                     bind:inEditMode={inEditMode}
+                     bind:inPresentationMode={inPresentationMode}
+                     bind:isFetchNeeded={isFetchNeeded}/>
 
-    {:else}
+    {#if !sessions && sessions.length === 0}
         <p><em>No sessions found.</em></p>
-        <button on:click|preventDefault={addSession}>Add a session</button>
     {/if}
 
     {#if currentSession && currentSession.Items}

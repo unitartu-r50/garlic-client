@@ -5,9 +5,10 @@
     export let
         inPresentationMode,
         inEditMode,
-        currentSession,
+        currentSession = null,
+        currentSessionIndex,
         sessions,
-        fetchNeeded;
+        isFetchNeeded;
 
     function add() {
         let session = {
@@ -16,9 +17,9 @@
                 "Actions": [],
             }]
         };
-        currentSession = session;
         sessions.push(session);
         sessions = sessions;
+        currentSessionIndex = sessions.length - 1;
         inEditMode = true;
     }
 
@@ -41,13 +42,13 @@
                 .then(r => {
                     notify("positive", r.message);
                     inEditMode = false;
-                    fetchNeeded = true;
+                    isFetchNeeded = true;
                 })
                 .catch(err => {
                     console.error(err);
                     notify("negative", err);
                     inEditMode = false;
-                    fetchNeeded = true;
+                    isFetchNeeded = true;
                 })
         } else {
             console.log("saving session", currentSession);
@@ -69,13 +70,13 @@
                 .then(r => {
                     notify("positive", r.message);
                     inEditMode = false;
-                    fetchNeeded = true;
+                    isFetchNeeded = true;
                 })
                 .catch(err => {
                     console.error(err);
                     notify("negative", err);
                     inEditMode = false;
-                    fetchNeeded = true;
+                    isFetchNeeded = true;
                 })
         }
     }
@@ -108,7 +109,7 @@
                 inEditMode = false;
                 currentSession = null;
                 sessions = [];
-                fetchNeeded = true;
+                isFetchNeeded = true;
             })
             .catch(err => {
                 console.error(err);
@@ -118,16 +119,19 @@
 </script>
 
 
-<select name="sessions" id="sessions" class="m0" bind:value={currentSession} on:blur={() => {inEditMode = false}}>
-    <option value="">Please, select a session</option>
-    {#each sessions as session, i}
-        {#if session.ID === currentSession.ID}
-            <option value="{session}" selected>{session.Name}</option>
-        {:else}
-            <option value="{session}">{session.Name}</option>
-        {/if}
-    {/each}
-</select>
+{#if sessions && sessions.length > 0}
+    <select name="sessions" id="sessions" class="m0" bind:value={currentSessionIndex}
+            on:blur={() => {inEditMode = false}}>
+        <option value="">Please, select a session</option>
+        {#each sessions as session, i}
+            {#if i === currentSessionIndex}
+                <option value="{i}" selected>{session.Name}</option>
+            {:else}
+                <option value="{i}">{session.Name}</option>
+            {/if}
+        {/each}
+    </select>
+{/if}
 
 {#if currentSession}
     {#if inPresentationMode}
@@ -146,4 +150,8 @@
         <button on:click|preventDefault={() => {inPresentationMode = !inPresentationMode}}>Presentation mode
         </button>
     {/if}
+{/if}
+
+{#if !sessions || sessions.length === 0}
+    <button on:click|preventDefault={add}>Add a session</button>
 {/if}
