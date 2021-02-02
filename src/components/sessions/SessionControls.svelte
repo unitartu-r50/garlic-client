@@ -6,7 +6,7 @@
         inPresentationMode,
         inEditMode,
         currentSession = null,
-        currentSessionIndex,
+        currentSessionIndex = 0,
         sessions,
         isFetchNeeded;
 
@@ -118,13 +118,12 @@
     }
 </script>
 
-
 {#if sessions && sessions.length > 0}
     <select name="sessions" id="sessions" class="m0" bind:value={currentSessionIndex}
             on:blur={() => {inEditMode = false}}>
         <option value="">Please, select a session</option>
         {#each sessions as session, i}
-            {#if i === currentSessionIndex}
+            {#if i == currentSessionIndex}
                 <option value="{i}" selected>{session.Name}</option>
             {:else}
                 <option value="{i}">{session.Name}</option>
