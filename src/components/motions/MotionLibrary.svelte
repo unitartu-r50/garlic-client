@@ -43,9 +43,12 @@
 <CollapsibleLibrary title="Motions">
     <LibraryControls bind:inAddMode={inAddMode} bind:inEditMode={inEditMode}/>
     {#if inAddMode}
-        <MotionLibraryItemEdit bind:inAddMode={inAddMode} bind:fetchNeeded={isFetchNeeded} search={search}/>
+        <MotionLibraryItemEdit bind:inAddMode={inAddMode}
+                               bind:fetchNeeded={isFetchNeeded}
+                               search={search}/>
     {/if}
     <Search {search}/>
-    <MotionLibraryGroups bind:itemsByGroup={itemsByGroup} bind:isFetchNeeded={isFetchNeeded}
+    <MotionLibraryGroups bind:itemsByGroup={itemsByGroup}
+                         bind:isFetchNeeded={isFetchNeeded}
                          {inEditMode}/>
 </CollapsibleLibrary>
