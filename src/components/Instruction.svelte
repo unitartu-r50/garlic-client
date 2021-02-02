@@ -9,7 +9,8 @@
         index = 0,
         expanded = false,
         small = false,
-        clickTracking = true;
+        clickTracking = true,
+        isDraggable = false;
 
     let isMobile = false;
     let isSmallMobile = false;
@@ -86,6 +87,11 @@
             console.log("getID can't determine the ID of", item);
         }
     }
+
+    function dragStartHandler(event) {
+        event.dataTransfer.setData("text/plain", event.target.dataset.moveid);
+        event.dataTransfer.dropEffect = "copy";
+    }
 </script>
 
 
@@ -113,7 +119,11 @@
     }
 </style>
 
-<article class="instruction" class:items-start={!expanded}
+<article class="instruction"
+         class:items-start={!expanded}
+         draggable="{isDraggable ? 'true' : 'false'}"
+         on:dragstart={dragStartHandler}
+         data-moveid="{(item.MoveItem ? item.MoveItem.ID : 'undefined ID')}"
          on:click={markVisited}
          on:click={sendInstruction(getID(item), $serverIPStore)}
          on:click={playAudioPlaceholder(item)}>

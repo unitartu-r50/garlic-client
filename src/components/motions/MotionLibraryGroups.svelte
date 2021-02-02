@@ -53,7 +53,7 @@
         <section class="move-group">
             {#each itemsByGroup[groupName] as item}
                 <div>
-                    <Instruction item={{MoveItem: item}} name={item.Name} small={true} expanded={false}/>
+                    <Instruction item={{MoveItem: item}} name={item.Name} small={true} expanded={false} isDraggable={true}/>
                     {#if inEditMode}
                         <div>
                             <button class="m0 mb1" on:click|preventDefault={removeMove} data-id="{item.ID}"
