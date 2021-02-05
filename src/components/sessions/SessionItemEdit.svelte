@@ -1,27 +1,28 @@
 <script>
-    import {createEventDispatcher} from 'svelte';
     import {notify} from '../Helpers.svelte';
     import {serverIPStore} from '../stores';
 
-    const dispatch = createEventDispatcher();
-    export let item, index;
+    export let
+        item,
+        index,
+        currentSession;
 
-    let fetchNeeded = false;
+    let isFetchNeeded = false;
 
     $: {
-        if (fetchNeeded) {
+        if (isFetchNeeded) {
             fetch(`http://` + $serverIPStore + `:8080/api/session_items/${item.ID}`)
                 .then(r => r.json())
                 .then(response => {
                     item = response.data;
-                    fetchNeeded = false;
+                    isFetchNeeded = false;
                     if (response["error"] && response["error"].length > 0) {
                         notify("negative", response["error"]);
                     }
                 })
                 .catch(err => {
                     console.error("error:", err);
-                    fetchNeeded = false;
+                    isFetchNeeded = false;
                 });
         }
     }
@@ -73,32 +74,35 @@
                     }
                     item.Actions.splice(actionIndex, 1);
                     item = item;
-                    fetchNeeded = true;
+                    isFetchNeeded = true;
                 })
                 .catch(err => console.log(err));
         }
     }
 
-    function removeItem(event) {
-        dispatch('message', {
-            command: 'remove',
-            id: event.target.dataset.id,
-            index: event.target.dataset.index
-        });
+    function removeItem() {
+        currentSession.Items.splice(index, 1);
+        currentSession.Items = currentSession.Items;
     }
 
-    function moveUp(event) {
-        dispatch('message', {
-            command: 'move-up',
-            index: event.target.dataset.index
-        });
+    function moveUp() {
+        if (index === 0) {
+            console.log("already the first");
+            return;
+        }
+        currentSession.Items.splice(index, 1);
+        currentSession.Items.splice(index - 1, 0, item);
+        currentSession.Items = currentSession.Items;
     }
 
-    function moveDown(event) {
-        dispatch('message', {
-            command: 'move-down',
-            index: event.target.dataset.index
-        });
+    function moveDown() {
+        if (index >= currentSession.Items.length - 1) {
+            console.log("already the last");
+            return;
+        }
+        currentSession.Items.splice(index, 1);
+        currentSession.Items.splice(index + 1, 0, item);
+        currentSession.Items = currentSession.Items;
     }
 
     function dragOverHandler(event) {
