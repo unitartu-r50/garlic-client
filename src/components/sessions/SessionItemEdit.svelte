@@ -1,6 +1,10 @@
 <script>
     import {notify} from '../Helpers.svelte';
     import {serverIPStore} from '../stores';
+    import SayItemEdit from "../SayItemEdit.svelte";
+    import MoveItemEdit from "../MoveItemEdit.svelte";
+    import ImageItemEdit from "../ImageItemEdit.svelte";
+    import {onMount} from "svelte";
 
     export let
         item,
@@ -9,23 +13,27 @@
 
     let isFetchNeeded = false;
 
-    $: {
-        if (isFetchNeeded) {
-            fetch(`http://` + $serverIPStore + `:8080/api/session_items/${item.ID}`)
-                .then(r => r.json())
-                .then(response => {
-                    item = response.data;
-                    isFetchNeeded = false;
-                    if (response["error"] && response["error"].length > 0) {
-                        notify("negative", response["error"]);
-                    }
-                })
-                .catch(err => {
-                    console.error("error:", err);
-                    isFetchNeeded = false;
-                });
-        }
+    $: if (isFetchNeeded) {
+        fetch(`http://` + $serverIPStore + `:8080/api/session_items/${item.ID}`)
+            .then(r => r.json())
+            .then(response => {
+                item = response.data;
+                isFetchNeeded = false;
+                if (response["error"] && response["error"].length > 0) {
+                    notify("negative", response["error"]);
+                }
+            })
+            .catch(err => {
+                console.error("error:", err);
+                isFetchNeeded = false;
+            });
     }
+
+    $: console.log("item", item);
+
+    onMount(() => {
+        console.log("mount SessionItemEdit", item.ID);
+    });
 
     function addAction() {
         const length = item.Actions.push({
@@ -266,62 +274,65 @@
                     <legend class="h5 m0 bold caps mb1">Action</legend>
                 {/if}
                 <div class="col-2 full-width">
-                    {#if action.SayItem}
-                        <div>
-                            <h3 class="h4 m0 mb2">Say</h3>
-                            <div class="mb1">
-                                <label for="{action.SayItem.ID}">Phrase:</label>
-                                <textarea class="full-width" name="phrase" id="{action.SayItem.ID}" rows="3"
-                                          bind:value={action.SayItem.Phrase}></textarea>
-                            </div>
-                            <label class="mb1" for="{action.SayItem.ID}-filepath">Audio file:
-                                <span class="h6">{action.SayItem.FilePath}</span>
-                                <input type="file" id="{action.SayItem.ID}-filepath" accept="audio/*"
-                                       on:change="{audioUpload}" data-index="{i}" data-phrase="{action.SayItem.Phrase}">
-                            </label>
-                            <label class="mb1" for="{action.ID}-SayItem.Delay">Audio delay, s:
-                                <input type="number" id="{action.ID}-SayItem.Delay" name="sayDelay"
-                                       bind:value={action.SayItem.Delay}
-                                       data-index="{i}">
-                            </label>
-                        </div>
-                    {/if}
-                    {#if action.MoveItem}
-                        <div>
-                            <h3 class="h4 m0 mb2">Move</h3>
-                            <label for="dropzone-{action.MoveItem.ID}">Move name:
-                                <div class="move-dropzone mb2" id="dropzone-{action.MoveItem.ID}"
-                                     data-id="{action.MoveItem.ID}"
-                                     data-index="{i}"
-                                     on:dragover|preventDefault={dragOverHandler}
-                                     on:drop|preventDefault={dropHandler}
-                                     on:dragleave|preventDefault={dragLeave}>
-                                    {action.MoveItem.Name}
-                                </div>
-                            </label>
-                            <label class="mb1" for={action.ID}-MoveItem.Delay>Move delay, s:
-                                <input type="number" id="{action.ID}-MoveItem.Delay" name="moveDelay"
-                                       bind:value={action.MoveItem.Delay}
-                                       data-index="{i}">
-                            </label>
-                            <button class="m0" on:click|preventDefault={resetMoveItem} data-index="{i}">Reset move</button>
-                        </div>
-                    {/if}
-                    {#if action.ImageItem}
-                        <div>
-                            <h3 class="h4 m0 mb2">Show image</h3>
-                            <label class="mb1" for="{action.ID}-ImageItem.FilePath">Image file:
-                                <span class="h6">{action.ImageItem.FilePath}</span>
-                                <input type="file" id="{action.ID}-ImageItem.FilePath" accept="image/*"
-                                       on:change="{imageUpload}" data-index="{i}">
-                            </label>
-                            <label class="mb1" for="{action.ID}-ImageItem.Delay">Image delay, s:
-                                <input type="number" id="{action.ID}-ImageItem.Delay" name="imageDelay"
-                                       bind:value={action.ImageItem.Delay}
-                                       data-index="{i}">
-                            </label>
-                        </div>
-                    {/if}
+                    <SayItemEdit bind:sayItem={action.SayItem} isReactiveUpload={true}/>
+                    <!--{#if action.SayItem}-->
+                    <!--    <div>-->
+                    <!--        <h3 class="h4 m0 mb2">Say</h3>-->
+                    <!--        <div class="mb1">-->
+                    <!--            <label for="{action.SayItem.ID}">Phrase:</label>-->
+                    <!--            <textarea class="full-width" name="phrase" id="{action.SayItem.ID}" rows="3"-->
+                    <!--                      bind:value={action.SayItem.Phrase}></textarea>-->
+                    <!--        </div>-->
+                    <!--        <label class="mb1" for="{action.SayItem.ID}-filepath">Audio file:-->
+                    <!--            <span class="h6">{action.SayItem.FilePath}</span>-->
+                    <!--            <input type="file" id="{action.SayItem.ID}-filepath" accept="audio/*"-->
+                    <!--                   on:change="{audioUpload}" data-index="{i}" data-phrase="{action.SayItem.Phrase}">-->
+                    <!--        </label>-->
+                    <!--        <label class="mb1" for="{action.ID}-SayItem.Delay">Audio delay, s:-->
+                    <!--            <input type="number" id="{action.ID}-SayItem.Delay" name="sayDelay"-->
+                    <!--                   bind:value={action.SayItem.Delay}-->
+                    <!--                   data-index="{i}">-->
+                    <!--        </label>-->
+                    <!--    </div>-->
+                    <!--{/if}-->
+                    <MoveItemEdit bind:moveItem={action.MoveItem}/>
+                    <!--{#if action.MoveItem}-->
+                    <!--    <div>-->
+                    <!--        <h3 class="h4 m0 mb2">Move</h3>-->
+                    <!--        <label for="dropzone-{action.MoveItem.ID}">Move name:-->
+                    <!--            <div class="move-dropzone mb2" id="dropzone-{action.MoveItem.ID}"-->
+                    <!--                 data-id="{action.MoveItem.ID}"-->
+                    <!--                 data-index="{i}"-->
+                    <!--                 on:dragover|preventDefault={dragOverHandler}-->
+                    <!--                 on:drop|preventDefault={dropHandler}-->
+                    <!--                 on:dragleave|preventDefault={dragLeave}>-->
+                    <!--                {action.MoveItem.Name}-->
+                    <!--            </div>-->
+                    <!--        </label>-->
+                    <!--        <label class="mb1" for={action.ID}-MoveItem.Delay>Move delay, s:-->
+                    <!--            <input type="number" id="{action.ID}-MoveItem.Delay" name="moveDelay"-->
+                    <!--                   bind:value={action.MoveItem.Delay}-->
+                    <!--                   data-index="{i}">-->
+                    <!--        </label>-->
+                    <!--        <button class="m0" on:click|preventDefault={resetMoveItem} data-index="{i}">Reset move</button>-->
+                    <!--    </div>-->
+                    <!--{/if}-->
+                    <ImageItemEdit bind:imageItem={action.ImageItem}/>
+                    <!--{#if action.ImageItem}-->
+                    <!--    <div>-->
+                    <!--        <h3 class="h4 m0 mb2">Show image</h3>-->
+                    <!--        <label class="mb1" for="{action.ID}-ImageItem.FilePath">Image file:-->
+                    <!--            <span class="h6">{action.ImageItem.FilePath}</span>-->
+                    <!--            <input type="file" id="{action.ID}-ImageItem.FilePath" accept="image/*"-->
+                    <!--                   on:change="{imageUpload}" data-index="{i}">-->
+                    <!--        </label>-->
+                    <!--        <label class="mb1" for="{action.ID}-ImageItem.Delay">Image delay, s:-->
+                    <!--            <input type="number" id="{action.ID}-ImageItem.Delay" name="imageDelay"-->
+                    <!--                   bind:value={action.ImageItem.Delay}-->
+                    <!--                   data-index="{i}">-->
+                    <!--        </label>-->
+                    <!--    </div>-->
+                    <!--{/if}-->
                 </div>
                 <button on:click|preventDefault={removeAction} data-index="{i}" class="m0 mt3">Remove the action
                 </button>
