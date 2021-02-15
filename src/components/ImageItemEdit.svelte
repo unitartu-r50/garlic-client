@@ -1,5 +1,44 @@
 <script>
-    export let imageItem;
+    import {serverIPStore} from "./stores";
+    import {notify} from "./Helpers.svelte";
+
+    export let
+        imageItem,
+        // reactive upload uploads a file before the form is submitted
+        isReactiveUpload = false;
+
+    function imageUpload(event) {
+        if (!isReactiveUpload) {
+            return
+        }
+
+        console.log("uploading image", event);
+        const reader = new FileReader();
+        reader.addEventListener('load', (e) => {
+            let data = new FormData();
+            data.append("file_content", event.target.files[0]);
+
+            fetch(`http://` + $serverIPStore + `:8080/api/upload/image`, {
+                method: "POST",
+                body: data
+            })
+                .then(response => response.json())
+                .then((response) => {
+                    console.log(response);
+                    imageItem.FilePath = response["filepath"];
+                    if (response["error"] && response["error"].length > 0) {
+                        notify("negative", response["error"]);
+                    } else {
+                        notify("positive", response["message"]);
+                    }
+                })
+                .catch((err) => {
+                    console.error(err);
+                    notify("negative", err);
+                })
+        })
+        reader.readAsArrayBuffer(event.target.files[0]);
+    }
 </script>
 
 <style>
@@ -17,7 +56,8 @@
         <h3 class="h4 m0 mb2">Show image</h3>
         <label class="mb1" for="{imageItem.ID}-ImageItem.FilePath">Image file:
             <span class="h6">{imageItem.FilePath}</span>
-            <input type="file" id="{imageItem.ID}-ImageItem.FilePath" accept="image/*">
+            <input type="file" id="{imageItem.ID}-ImageItem.FilePath" accept="image/*"
+                   on:change={imageUpload}>
         </label>
         <label class="mb1" for="{imageItem.ID}-ImageItem.Delay">Image delay, s:
             <input type="number" id="{imageItem.ID}-ImageItem.Delay" name="ImageItem.Delay"
