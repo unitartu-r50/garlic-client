@@ -25,11 +25,9 @@
             .catch(err => console.error(err))
     }
 
-
     function setServerIP() {
         const value = window.localStorage.getItem("server-ip");
         if (!value || value === 0) {
-            console.log("fetching server IP from localhost probably server location");
             fetch(`http://0.0.0.0:8080/api/server_ip`)
                 .then(response => response.json())
                 .then((response) => {
@@ -40,7 +38,6 @@
                 })
                 .catch(err => console.error(err))
         } else {
-            console.log("got serverIP from localStorage", value);
             serverIPStore.set(value);
             serverIP = value;
         }

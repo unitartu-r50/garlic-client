@@ -31,10 +31,6 @@
 
     $: console.log("item", item);
 
-    onMount(() => {
-        console.log("mount SessionItemEdit", item.ID);
-    });
-
     function addAction() {
         const length = item.Actions.push({
             SayItem: {
