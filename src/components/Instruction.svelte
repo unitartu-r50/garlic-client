@@ -114,7 +114,7 @@
          class:items-start={!expanded}
          draggable="{isDraggable ? 'true' : 'false'}"
          on:dragstart={dragStartHandler}
-         data-moveid="{(item.MoveItem ? item.MoveItem.ID : 'undefined ID')}"
+         data-moveid="{(isDraggable && item.MoveItem) ? item.MoveItem.ID : 'undefined ID'}"
          on:click={markVisited}
          on:click={sendInstruction(getID(item), $serverIPStore)}
          on:click={playAudioPlaceholder(item)}>
