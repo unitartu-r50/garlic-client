@@ -59,7 +59,7 @@
 
     // allows execute playAudio only if an item contains the .SayItem field
     function playAudioPlaceholder(item) {
-        if (item.SayItem) {
+        if (item.SayItem && item.SayItem.FilePath.length > 0) {
             return playAudio(item.SayItem.ID, item.SayItem.Delay);
         }
         return () => {
