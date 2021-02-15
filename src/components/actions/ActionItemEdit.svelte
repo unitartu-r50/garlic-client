@@ -132,6 +132,13 @@
                 FilePath: "",
                 Delay: 0,
                 Group: ""
+            },
+            URLItem: {
+                ID: "",
+                Name: "",
+                URL: "",
+                Delay: 0,
+                Group: ""
             }
         };
     }
