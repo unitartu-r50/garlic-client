@@ -165,9 +165,9 @@
                     <input type="text" id="action-lib-new-group" bind:value={item.Group} required>
                 </label>
             </div>
-            <SayItemEdit bind:sayItem={item.SayItem} isReactiveUpload={true}/>
+            <SayItemEdit bind:sayItem={item.SayItem}/>
             <MoveItemEdit bind:moveItem={item.MoveItem}/>
-            <ImageItemEdit bind:imageItem={item.ImageItem} isReactiveUpload={true}/>
+            <ImageItemEdit bind:imageItem={item.ImageItem}/>
             <URLItemEdit bind:URLItem={item.URLItem}/>
             <div class="mt3">
                 <button on:click|preventDefault={add}>Add</button>

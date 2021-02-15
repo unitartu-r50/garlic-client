@@ -3,15 +3,9 @@
     import {notify} from "./Helpers.svelte";
 
     export let
-        imageItem,
-        // reactive upload uploads a file before the form is submitted
-        isReactiveUpload = false;
+        imageItem;
 
     function imageUpload(event) {
-        if (!isReactiveUpload) {
-            return
-        }
-
         console.log("uploading image", event);
         const reader = new FileReader();
         reader.addEventListener('load', (e) => {

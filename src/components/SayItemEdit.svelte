@@ -3,13 +3,9 @@
     import {notify} from "./Helpers.svelte";
 
     export let
-        sayItem,
-        // reactive upload uploads a file before the form is submitted
-        isReactiveUpload = false;
+        sayItem;
 
     function audioUpload(event) {
-        if (!isReactiveUpload) { return }
-
         const reader = new FileReader();
         reader.addEventListener('load', (e) => {
             let data = new FormData();

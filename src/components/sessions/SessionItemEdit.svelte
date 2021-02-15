@@ -163,9 +163,9 @@
                     <legend class="h5 m0 bold caps mb1">Action</legend>
                 {/if}
                 <div class="col-2 full-width">
-                    <SayItemEdit bind:sayItem={action.SayItem} isReactiveUpload={true}/>
+                    <SayItemEdit bind:sayItem={action.SayItem}/>
                     <MoveItemEdit bind:moveItem={action.MoveItem}/>
-                    <ImageItemEdit bind:imageItem={action.ImageItem} isReactiveUpload={true}/>
+                    <ImageItemEdit bind:imageItem={action.ImageItem}/>
                 </div>
                 <button on:click|preventDefault={removeAction} data-index="{i}" class="m0 mt3">Remove the action
                 </button>
