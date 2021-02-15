@@ -4,7 +4,7 @@
     import SayItemEdit from "../SayItemEdit.svelte";
     import MoveItemEdit from "../MoveItemEdit.svelte";
     import ImageItemEdit from "../ImageItemEdit.svelte";
-    import {onMount} from "svelte";
+    import URLItemEdit from "../URLItemEdit.svelte";
 
     export let
         item,
@@ -51,6 +51,13 @@
             ImageItem: {
                 Name: "",
                 FilePath: "",
+                Delay: 0,
+                Group: ""
+            },
+            URLItem: {
+                ID: "",
+                Name: "",
+                URL: "",
                 Delay: 0,
                 Group: ""
             }
@@ -166,6 +173,7 @@
                     <SayItemEdit bind:sayItem={action.SayItem}/>
                     <MoveItemEdit bind:moveItem={action.MoveItem}/>
                     <ImageItemEdit bind:imageItem={action.ImageItem}/>
+                    <URLItemEdit bind:URLItem={action.URLItem}/>
                 </div>
                 <button on:click|preventDefault={removeAction} data-index="{i}" class="m0 mt3">Remove the action
                 </button>
