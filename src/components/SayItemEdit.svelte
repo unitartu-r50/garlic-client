@@ -4,6 +4,7 @@
 
     export let
         sayItem,
+        // reactive upload uploads a file before the form is submitted
         isReactiveUpload = false;
 
     function audioUpload(event) {
@@ -62,7 +63,8 @@
                       rows="3"
                       bind:value={sayItem.Phrase}></textarea>
         </label>
-        <label class="mb1" for="{sayItem.ID}.SayItem.FilePath">Audio file
+        <label class="mb1" for="{sayItem.ID}.SayItem.FilePath">Audio file:
+            <span class="h6">{sayItem.FilePath}</span>
             <input type="file" id="{sayItem.ID}.SayItem.FilePath" accept="audio/*"
                 on:change={audioUpload}/>
         </label>
