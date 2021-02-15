@@ -13,16 +13,8 @@
         isDraggable = false;
 
     let isMobile = false;
-    let isSmallMobile = false;
 
-    $: {
-        if (window.screen.width <= 1280) {
-            isMobile = true;
-        }
-        if (window.screen.width <= 600) {
-            isSmallMobile = true;
-        }
-    }
+    $: isMobile = window.screen.width <= 1280;
 
     function truncateLongString(value) {
         // truncate on desktop, mobile has different layout, no need to truncate there
@@ -93,7 +85,6 @@
         event.dataTransfer.dropEffect = "copy";
     }
 </script>
-
 
 <style>
     .instruction {
