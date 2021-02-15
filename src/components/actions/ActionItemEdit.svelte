@@ -1,10 +1,10 @@
 <script>
     import {notify} from '../Helpers.svelte';
     import {serverIPStore} from '../stores';
-    import ActionItemEditSayItem from "./ActionItemEditSayItem.svelte";
-    import ActionItemEditMoveItem from "./ActionItemEditMoveItem.svelte";
-    import ActionItemEditImageItem from "./ActionItemEditImageItem.svelte";
-    import ActionItemEditURLItem from "./ActionItemEditURLItem.svelte";
+    import SayItemEdit from "../SayItemEdit.svelte";
+    import MoveItemEdit from "../MoveItemEdit.svelte";
+    import ImageItemEdit from "../ImageItemEdit.svelte";
+    import URLItemEdit from "../URLItemEdit.svelte";
 
     export let inAddMode, fetchNeeded;
 
@@ -46,107 +46,9 @@
         inAddMode = false;
     }
 
-    function add(event) {
+    function add() {
         // TODO: check required fields
-        audioUploadChainedWithOtherUploads();
-    }
-
-    function removeUpload(kind, filepath) {
-        console.log("removing", kind, filepath);
-        fetch(`http://` + $serverIPStore + `:8080/api/upload/${kind}`, {
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({"filepath": filepath})
-        })
-            .then(response => response.json())
-            .then((response) => {
-                console.log(response);
-                if (response["error"] && response["error"].length > 0) {
-                    notify("negative", response["error"]);
-                }
-            })
-            .catch((err) => {
-                console.error(err);
-                notify("negative", err);
-            });
-    }
-
-    function audioUploadChainedWithOtherUploads() {
-        console.log("running audioUpload");
-        const audioInput = document.getElementById("action-lib-new-audio-file");
-        if (audioInput.files.length > 0) {
-            const audioReader = new FileReader();
-            audioReader.addEventListener('loadend', (e) => {
-                let data = new FormData();
-                data.append("file_content", audioInput.files[0]);
-                fetch(`http://` + $serverIPStore + `:8080/api/upload/audio`, {
-                    method: "POST",
-                    body: data
-                })
-                    .then(response => response.json())
-                    .then((response) => {
-                        console.log(response);
-                        if (response["error"] && response["error"].length > 0) {
-                            notify("negative", response["error"]);
-                            imageUpload(); // this function runs the next action
-                        } else {
-                            item.SayItem.ID = response["id"];
-                            item.SayItem.FilePath = response["filepath"];
-                            imageUpload(); // this function runs the next action
-                        }
-                    })
-                    .catch((err) => {
-                        console.error(err);
-                        notify("negative", err);
-                    });
-            });
-            audioReader.readAsText(audioInput.files[0]);
-        } else {
-            // still call the closure even if there's no audio to upload
-            imageUpload(); // this function runs the next action
-        }
-    }
-
-    function imageUpload() {
-        console.log("running imageUpload");
-        const imageInput = document.getElementById("action-lib-new-image-file");
-        if (imageInput.files.length > 0) {
-            const imageReader = new FileReader();
-            imageReader.addEventListener('loadend', (e) => {
-                let data = new FormData();
-                data.append("file_content", imageInput.files[0]);
-                fetch(`http://` + $serverIPStore + `:8080/api/upload/image`, {
-                    method: "POST",
-                    body: data
-                })
-                    .then(response => response.json())
-                    .then((response) => {
-                        console.log(response);
-                        if (response["error"] && response["error"].length > 0) {
-                            notify("negative", response["error"]);
-                            createAction(); // this function runs the next action
-                        } else {
-                            item.ImageItem.ID = response["id"];
-                            item.ImageItem.FilePath = response["filepath"];
-                            createAction(); // this function runs the next action
-                        }
-                    })
-                    .catch((err) => {
-                        console.error(err);
-                        notify("negative", err);
-                    });
-            });
-            imageReader.readAsText(imageInput.files[0]);
-        } else {
-            // still call the closure even if there's no image to upload
-            createAction(); // this function runs the next action
-        }
-    }
-
-    function createAction() {
-        console.log("running create action:", item);
+        console.log("adding the action:", item);
         fetch(`http://` + $serverIPStore + `:8080/api/actions/`, {
             method: "POST",
             headers: {
@@ -177,6 +79,28 @@
                 }
                 inAddMode = false;
                 resetNewFormItem();
+            })
+            .catch((err) => {
+                console.error(err);
+                notify("negative", err);
+            });
+    }
+
+    function removeUpload(kind, filepath) {
+        console.log("removing", kind, filepath);
+        fetch(`http://` + $serverIPStore + `:8080/api/upload/${kind}`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({"filepath": filepath})
+        })
+            .then(response => response.json())
+            .then((response) => {
+                console.log(response);
+                if (response["error"] && response["error"].length > 0) {
+                    notify("negative", response["error"]);
+                }
             })
             .catch((err) => {
                 console.error(err);
@@ -241,10 +165,10 @@
                     <input type="text" id="action-lib-new-group" bind:value={item.Group} required>
                 </label>
             </div>
-            <ActionItemEditSayItem bind:sayItem={item.SayItem}/>
-            <ActionItemEditMoveItem bind:moveItem={item.MoveItem}/>
-            <ActionItemEditImageItem bind:imageItem={item.ImageItem}/>
-            <ActionItemEditURLItem bind:URLItem={item.URLItem}/>
+            <SayItemEdit bind:sayItem={item.SayItem} isReactiveUpload={true}/>
+            <MoveItemEdit bind:moveItem={item.MoveItem}/>
+            <ImageItemEdit bind:imageItem={item.ImageItem} isReactiveUpload={true}/>
+            <URLItemEdit bind:URLItem={item.URLItem}/>
             <div class="mt3">
                 <button on:click|preventDefault={add}>Add</button>
                 <button on:click|preventDefault={cancelForm}>Cancel</button>
