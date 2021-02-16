@@ -116,6 +116,37 @@
                 notify("negative", err);
             })
     }
+
+    function exportSession() {
+        if (currentSession == null) {
+            return;
+        }
+
+        console.log("exporting");
+        fetch(`http://` + $serverIPStore + `:8080/api/sessions/${currentSession.ID}/export`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+            .then(r => {
+                if (!r.ok) {
+                    throw Error(r.statusText);
+                }
+                return r.json();
+            })
+            .then(r => {
+                notify("positive", r.message);
+                inEditMode = false;
+                isFetchNeeded = true;
+            })
+            .catch(err => {
+                console.error(err);
+                notify("negative", err);
+                inEditMode = false;
+                isFetchNeeded = true;
+            })
+    }
 </script>
 
 {#if sessions && sessions.length > 0}
@@ -148,6 +179,7 @@
         <button on:click|preventDefault={add}>Add a session</button>
         <button on:click|preventDefault={() => {inPresentationMode = !inPresentationMode}}>Presentation mode
         </button>
+        <button on:click={exportSession}>Export session</button>
     {/if}
 {/if}
 
