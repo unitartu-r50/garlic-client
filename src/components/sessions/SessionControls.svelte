@@ -122,7 +122,6 @@
             return;
         }
 
-        console.log("exporting");
         fetch(`http://` + $serverIPStore + `:8080/api/sessions/${currentSession.ID}/export`, {
             method: "GET",
             headers: {
@@ -142,7 +141,7 @@
             .catch(err => {
                 console.error(err);
                 notify("negative", err);
-            })
+            });
     }
 </script>
 
@@ -176,7 +175,6 @@
         <button on:click|preventDefault={add}>Add a session</button>
         <button on:click|preventDefault={() => {inPresentationMode = !inPresentationMode}}>Presentation mode
         </button>
-        <button on:click={exportSession}>Export session</button>
     {/if}
 {/if}
 
