@@ -137,14 +137,11 @@
             })
             .then(r => {
                 notify("positive", r.message);
-                inEditMode = false;
-                isFetchNeeded = true;
+                window.open(`http://` + $serverIPStore + `:8080/${r.relative_path}`);
             })
             .catch(err => {
                 console.error(err);
                 notify("negative", err);
-                inEditMode = false;
-                isFetchNeeded = true;
             })
     }
 </script>
