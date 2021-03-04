@@ -1,13 +1,14 @@
 <script>
     import {serverIPStore} from '../stores';
     import SessionTitle from "./SessionTitle.svelte";
-    import SessionControls from "./SessionControls.svelte";
     import SessionItems from "./SessionItems.svelte";
+    import SessionControls from "./SessionControls.svelte";
+
+    export let isFetchNeeded = true;
 
     let sessions = [];
     let currentSession;
     let currentSessionIndex = window.localStorage.getItem("currentSessionIndex") ? window.localStorage.getItem("currentSessionIndex") : 0;
-    let isFetchNeeded = true;
     let inEditMode = false;
     let inPresentationMode = true;
 
