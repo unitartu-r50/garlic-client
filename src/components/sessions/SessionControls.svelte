@@ -122,7 +122,7 @@
             return;
         }
 
-        fetch(`http://` + $serverIPStore + `:8080/api/sessions/${currentSession.ID}/export`, {
+        fetch(`http://` + $serverIPStore + `:8080/api/session_export/${currentSession.ID}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json"
@@ -172,9 +172,9 @@
         <button on:click|preventDefault={remove} data-id="{currentSession.ID}"
                 data-name="{currentSession.Name}">Remove
         </button>
+        <button on:click|preventDefault={exportSession}>Export the session</button>
         <button on:click|preventDefault={add}>Add a session</button>
-        <button on:click|preventDefault={() => {inPresentationMode = !inPresentationMode}}>Presentation mode
-        </button>
+        <button on:click|preventDefault={() => {inPresentationMode = !inPresentationMode}}>Presentation mode</button>
     {/if}
 {/if}
 
