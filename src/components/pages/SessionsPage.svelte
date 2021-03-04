@@ -9,6 +9,8 @@
 
     let isPepperConnected = false;
     let serverIP = "unknown";
+    let overwrite = false;
+    let isSessionsFetchNeeded = true;
 
     $: {
         setPepperStatus();
@@ -51,13 +53,20 @@
         console.log("server IP set to", serverIP);
     }
 
-    function importSession(event) {
+    function importSession() {
+        const el = document.getElementById("import-session-file");
+        if (!el) {
+            console.error("can't find #import-session-file in the document");
+            return
+        }
+
         const reader = new FileReader();
         reader.addEventListener('load', (e) => {
             let data = new FormData();
-            data.append("file_content", event.target.files[0]);
+            data.append("file_content", el.files[0]);
+            data.append("overwrite", String(overwrite));
 
-            fetch(`http://` + $serverIPStore + `:8080/api/sessions/import`, {
+            fetch(`http://` + $serverIPStore + `:8080/api/session_import`, {
                 method: "POST",
                 body: data
             })
@@ -73,13 +82,17 @@
                 .then(r => {
                     console.log(r);
                     notify("positive", r.message);
+                    isSessionsFetchNeeded = true;
+                    // resetting the form
+                    overwrite = false;
+                    el.value = "";
                 })
                 .catch(err => {
                     console.error(err);
                     notify("negative", err);
                 })
         })
-        reader.readAsArrayBuffer(event.target.files[0]);
+        reader.readAsArrayBuffer(el.files[0]);
     }
 </script>
 
@@ -119,15 +132,23 @@
         <button on:click={setServerIPManually}>set</button>
     </div>
     <div class="mb1">
-        <label for="import-session"><abbr title="You can import an already composed session by uploading its zip-archive">Import session</abbr>:</label>
-        <input type="file" id="import-session"
-               accept="zip,application/octet-stream,application/zip,application/x-zip,application/x-zip-compressed"
-               on:change={importSession}/>
+        <label for="import-session-file"><abbr title="You can import an already composed session by uploading its zip-archive">Import session</abbr>:</label>
+        <div class="block">
+            <input class="block mt1 ml2" type="file" id="import-session-file"
+                   accept="zip,application/octet-stream,application/zip,application/x-zip,application/x-zip-compressed"/>
+            <div class="mt1 ml2 flex items-center">
+                <button on:click={importSession}>Import</button>
+                <label class="ml1 h6" for="overwrite-on-import" title="Overwrite a session if it exists already">
+                    <input type="checkbox" id="overwrite-on-import" bind:checked={overwrite} />
+                    overwrite
+                </label>
+            </div>
 
+        </div>
     </div>
 </Introduction>
 <main class="p2 mt4">
-    <SessionsList/>
+    <SessionsList bind:isFetchNeeded={isSessionsFetchNeeded} />
     <div>
         <div class="sticky">
             <ActionLibrary/>
