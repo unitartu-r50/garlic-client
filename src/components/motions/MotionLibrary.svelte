@@ -7,26 +7,25 @@
     import Search from "../Search.svelte";
     import MotionLibraryGroups from "./MotionLibraryGroups.svelte";
 
+    export let isFetchNeeded = true;
+
     let inAddMode = false;
     let inEditMode = false;
-    let isFetchNeeded = true;
     let items = [];
     let itemsByGroup = null;
 
-    $: {
-        if (isFetchNeeded) {
-            fetch(`http://` + $serverIPStore + `:8080/api/moves/`)
-                .then(r => r.json())
-                .then(d => {
-                    items = d.data;
-                    itemsByGroup = filterByGroup(d.data);
-                    isFetchNeeded = false;
-                })
-                .catch(err => {
-                    console.error("error:", err);
-                    isFetchNeeded = false;
-                });
-        }
+    $: if (isFetchNeeded) {
+        fetch(`http://` + $serverIPStore + `:8080/api/moves/`)
+            .then(r => r.json())
+            .then(d => {
+                items = d.data;
+                itemsByGroup = filterByGroup(d.data);
+                isFetchNeeded = false;
+            })
+            .catch(err => {
+                console.error("error:", err);
+                isFetchNeeded = false;
+            });
     }
 
     function search(query) {

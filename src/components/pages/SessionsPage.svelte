@@ -11,10 +11,15 @@
     let serverIP = "unknown";
     let overwrite = false;
     let isSessionsFetchNeeded = true;
+    let isMovesFetchNeeded = true;
 
     $: {
         setPepperStatus();
         setServerIP();
+    }
+
+    $: if (isPepperConnected) {
+        isMovesFetchNeeded = true;
     }
 
     setInterval(() => setPepperStatus(), 5000);
@@ -153,7 +158,7 @@
         <div class="sticky">
             <ActionLibrary/>
             <AudioLibrary/>
-            <MotionLibrary/>
+            <MotionLibrary bind:isFetchNeeded={isMovesFetchNeeded}/>
         </div>
     </div>
 </main>
