@@ -13,20 +13,18 @@
     let items = [];
     let itemsByGroup = null;
 
-    $: {
-        if (isFetchNeeded) {
-            fetch(`http://` + $serverIPStore + `:8080/api/actions/`)
-                .then(r => r.json())
-                .then(d => {
-                    items = d.data;
-                    itemsByGroup = filterByGroup(d.data);
-                    isFetchNeeded = false;
-                })
-                .catch(err => {
-                    console.error("error:", err);
-                    isFetchNeeded = false;
-                });
-        }
+    $: if (isFetchNeeded) {
+        fetch(`http://` + $serverIPStore + `:8080/api/actions/`)
+            .then(r => r.json())
+            .then(d => {
+                items = d.data;
+                itemsByGroup = filterByGroup(d.data);
+                isFetchNeeded = false;
+            })
+            .catch(err => {
+                console.error("error:", err);
+                isFetchNeeded = false;
+            });
     }
 
     function search(query) {
