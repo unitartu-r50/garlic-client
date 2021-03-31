@@ -1,5 +1,5 @@
 <script>
-    export let title, description;
+    export let title, description = "";
 </script>
 
 <style>
@@ -11,6 +11,8 @@
 
 <section class="px2 my2">
     <h1 class="h1 m0">{title}</h1>
-    <p>{description}</p>
+    {#if description}
+        <p>{description}</p>
+    {/if}
     <slot/>
 </section>
