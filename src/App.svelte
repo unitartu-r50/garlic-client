@@ -4,6 +4,7 @@
     import SessionsPage from './components/pages/SessionsPage.svelte';
     import AboutPage from "./components/pages/AboutPage.svelte";
     import LoginPage from "./components/pages/LoginPage.svelte";
+    import SynthPage from "./components/pages/SynthPage.svelte";
 
     let currentPage = "";
 
@@ -20,6 +21,8 @@
     <HomePage/>
 {:else if currentPage === "sessions" }
     <SessionsPage/>
+{:else if currentPage === "synthesis" }
+    <SynthPage/>
 {:else if currentPage === "about" }
     <AboutPage/>
 {:else if currentPage === "login" }
