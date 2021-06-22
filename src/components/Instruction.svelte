@@ -61,10 +61,11 @@
     function playAudioPlaceholder(item) {
         if (item.SayItem && item.SayItem.FilePath.length > 0) {
             return playAudio(item.SayItem.ID, item.SayItem.Delay);
+        } else {
+            return () => {
+                console.log("placeholder triggered")
+            };
         }
-        return () => {
-            console.log("placeholder triggered")
-        };
     }
 
     // determines the instruction correct ID dynamically
