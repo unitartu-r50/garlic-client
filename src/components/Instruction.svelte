@@ -2,6 +2,7 @@
     import {serverIPStore} from './stores';
     import {sendInstruction, notify} from "./Helpers.svelte";
     import InstructionIcon from "./InstructionIcon.svelte";
+    import {onMount} from 'svelte';
 
     export let
         item,
@@ -15,6 +16,46 @@
     let isMobile = false;
 
     $: isMobile = window.screen.width <= 1280;
+
+    onMount(() => {
+        const element = document.getElementById("instruction-" + item.ID);
+        if (element) {
+            element.addEventListener("touchstart", setupPlayEvent);
+            element.addEventListener("click", setupPlayEvent);
+        }
+    });
+
+    function setupPlayEvent() {
+        if (!item || !item.SayItem) {
+            return;
+        }
+
+        const audioElement = document.getElementById("audio-" + item.SayItem.ID);
+        let delayMillis = item.SayItem.Delay * 1000;
+
+        // playing the element muted to be allowed to play this element later by iOS, iPadOS and new Safari in macOS Monterey
+        audioElement.muted = true;
+        audioElement.play()
+
+        if (audioElement) {
+            // NOTE: this timer could be non-exact, read more at https://stackoverflow.com/questions/29971898/how-to-create-an-accurate-timer-in-javascript
+            setTimeout(() => {
+                // actual playing
+                audioElement.muted = false;
+                audioElement.play()
+                    .catch(err => {
+                        console.error(err);
+                        notify("negative", err);
+                    });
+            }, delayMillis);
+        } else {
+            console.log("audio element doesnot exist");
+        }
+    }
+
+    function isiPhoneOriPad() {
+        return navigator.platform === "MacIntel" && navigator.maxTouchPoints > 0;
+    }
 
     function truncateLongString(value) {
         // truncate on desktop, mobile has different layout, no need to truncate there
@@ -39,32 +80,6 @@
             element.style.background = "rgba(159, 241, 255, .15)";
         } else {
             markVisitedRecursive(element.parentElement);
-        }
-    }
-
-    function playAudio(itemID, delay) {
-        let delayMillis = delay * 1000;
-        const audioElement = document.getElementById("audio-" + itemID);
-        if (audioElement) {
-            // NOTE: this timer could be non-exact, read more at https://stackoverflow.com/questions/29971898/how-to-create-an-accurate-timer-in-javascript
-            setTimeout(() => {
-                audioElement.play()
-                    .catch(err => {
-                        console.error(err);
-                        notify("negative", err);
-                    });
-            }, delayMillis);
-        }
-    }
-
-    // allows execute playAudio only if an item contains the .SayItem field
-    function playAudioPlaceholder(item) {
-        if (item.SayItem && item.SayItem.FilePath.length > 0) {
-            return playAudio(item.SayItem.ID, item.SayItem.Delay);
-        } else {
-            return () => {
-                console.log("placeholder triggered")
-            };
         }
     }
 
@@ -111,14 +126,14 @@
     }
 </style>
 
-<article class="instruction"
+<article id="instruction-{item.ID}"
+         class="instruction"
          class:items-start={!expanded}
-         draggable="{isDraggable ? 'true' : 'false'}"
+         draggable={isDraggable}
          on:dragstart={dragStartHandler}
-         data-moveid="{(isDraggable && item.MoveItem) ? item.MoveItem.ID : 'undefined ID'}"
+         data-moveid={(isDraggable && item.MoveItem) ? item.MoveItem.ID : 'undefined ID'}
          on:click={markVisited}
-         on:click={sendInstruction(getID(item), $serverIPStore)}
-         on:click={playAudioPlaceholder(item)}>
+         on:click={sendInstruction(getID(item), $serverIPStore)}>
     {#if expanded}
         <p class="h6 m0 bold caps {isMobile ? 'mb2' : 'mb4'}">Question {index + 1}</p>
     {:else}
