@@ -87,7 +87,7 @@
 
 <Introduction title="Estonian Speech Synthesizer">
     <slot>
-        <p>This page uses the public HTTP-service located at <a href='https://www.eki.ee/heli/index.php'>https://www.eki.ee/heli/</a>
+        <p>This page uses the public HTTP-service located at <a href='https://www.eki.ee/heli/index.php'>www.eki.ee/heli/</a>
             and kindly provided by <a href="https://www.eki.ee/">Eesti Keele Instituut</a>.</p>
     </slot>
 </Introduction>
