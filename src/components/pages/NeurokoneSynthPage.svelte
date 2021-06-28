@@ -63,7 +63,7 @@
 <Introduction title="Neurokõne Speech Synthesizer">
     <slot>
         <p>This page uses the public HTTP-service located at <a href="https://neurokone.ee">neurokone.ee</a>
-            and kindly provided by <a href="https://tartunlp.ai">NLP research group</a> at the University of Tartu.</p>
+            which is kindly provided by <a href="https://tartunlp.ai">NLP research group</a> at the University of Tartu.</p>
     </slot>
 </Introduction>
 
