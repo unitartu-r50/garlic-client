@@ -35,13 +35,14 @@
 
         // playing the element muted to be allowed to play this element later by iOS, iPadOS and new Safari in macOS Monterey
         audioElement.muted = true;
-        audioElement.play()
+        audioElement.play();
 
         if (audioElement) {
             // NOTE: this timer could be non-exact, read more at https://stackoverflow.com/questions/29971898/how-to-create-an-accurate-timer-in-javascript
             setTimeout(() => {
                 // actual playing
                 audioElement.muted = false;
+                audioElement.currentTime = 0;
                 audioElement.play()
                     .catch(err => {
                         console.error(err);
