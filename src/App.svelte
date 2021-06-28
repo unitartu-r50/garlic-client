@@ -4,7 +4,8 @@
     import SessionsPage from './components/pages/SessionsPage.svelte';
     import AboutPage from "./components/pages/AboutPage.svelte";
     import LoginPage from "./components/pages/LoginPage.svelte";
-    import SynthPage from "./components/pages/SynthPage.svelte";
+    import EKISynthPage from "./components/pages/EKISynthPage.svelte";
+    import NeurokoneSynthPage from "./components/pages/NeurokoneSynthPage.svelte";
 
     let currentPage = "";
 
@@ -22,7 +23,9 @@
 {:else if currentPage === "sessions" }
     <SessionsPage/>
 {:else if currentPage === "synthesis" }
-    <SynthPage/>
+    <EKISynthPage/>
+{:else if currentPage === "neurokone" }
+    <NeurokoneSynthPage/>
 {:else if currentPage === "about" }
     <AboutPage/>
 {:else if currentPage === "login" }

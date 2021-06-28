@@ -77,6 +77,10 @@
                class="p1 self-center mx2 caps h6">Home</a>
             <a on:click|preventDefault={pseudoRedirect} data-loc="sessions" href="/sessions" title="Sessions"
                class:active="{current === 'sessions'}" class="p1 self-center mx2 caps h6">sessions</a>
+            <a on:click|preventDefault={pseudoRedirect} data-loc="synthesis" href="/synthesis" title="EKI Speech Synthesis"
+               class:active="{current === 'synthesis'}" class="p1 self-center mx2 caps h6">EKI</a>
+            <a on:click|preventDefault={pseudoRedirect} data-loc="neurokone" href="/synthesis" title="Neurokõne Speech Synthesis"
+               class:active="{current === 'neurokone'}" class="p1 self-center mx2 caps h6">Neurokõne</a>
             <a on:click|preventDefault={pseudoRedirect} data-loc="about" href="/about" title="About"
                class:active="{current === 'about'}" class="p1 self-center mx2 caps h6">about</a>
         </nav>

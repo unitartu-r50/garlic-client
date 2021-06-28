@@ -64,8 +64,10 @@
                class="logotype-title self-center mr3 bold italic">pepper</a>
             <a on:click|preventDefault={redirect} data-loc="sessions" href="/sessions" title="Sessions"
                class:active="{currentPage === 'sessions'}" class="self-center mx2 caps h6">sessions</a>
-            <a on:click|preventDefault={redirect} data-loc="synthesis" href="/synthesis" title="Synthesis"
-               class:active="{currentPage === 'synthesis'}" class="self-center mx2 caps h6">EKI speech synthesis</a>
+            <a on:click|preventDefault={redirect} data-loc="synthesis" href="/synthesis" title="EKI Speech Synthesis"
+               class:active="{currentPage === 'synthesis'}" class="self-center mx2 caps h6">EKI</a>
+            <a on:click|preventDefault={redirect} data-loc="neurokone" href="/synthesis" title="Neurokõne Speech Synthesis"
+               class:active="{currentPage === 'neurokone'}" class="self-center mx2 caps h6">Neurokõne</a>
             <a on:click|preventDefault={redirect} data-loc="about" href="/about" title="About"
                class:active="{currentPage === 'about'}" class="self-center mx2 caps h6">about</a>
         </nav>
