@@ -1,6 +1,5 @@
 <script>
     import Introduction from '../Introduction.svelte';
-    import {serverIPStore} from "../stores";
     import {notify} from "../Helpers.svelte";
 
     let payload = {
@@ -8,15 +7,10 @@
         "speaker": "Albert",
         "speed": 1.0
     };
-    let audioFormat = "wav";
 
     const speakers = [
         "Albert", "Kalev", "Külli", "Meelis", "Vesta"
     ]
-
-    const formats = [
-        "wav"
-    ];
 
     let downloadURL = null;
 
