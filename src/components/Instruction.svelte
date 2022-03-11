@@ -157,9 +157,9 @@
             <InstructionIcon item={item.URLItem} iconBaseName="url" alt="URL is present"/>
         {/if}
         {#if item.SayItem && item.SayItem.FilePath.length > 0}
-            <audio id="audio-{item.SayItem.ID}" src="http://{$serverIPStore}:8080/{item.SayItem.FilePath}">
+            <!-- <audio id="audio-{item.SayItem.ID}" src="http://{$serverIPStore}:8080/{item.SayItem.FilePath}">
                 Your browser does not support the <code>audio</code> element.
-            </audio>
+            </audio> -->
         {/if}
     </div>
 </article>
