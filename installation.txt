@@ -1,0 +1,20 @@
+## Installation assuming that go and npm are already installed
+```
+mkdir -p build/release/pepper-0.10.0/server
+cd garlic
+go get .
+go build -o ../build/release/pepper-0.10.0/server/ .
+cd ..
+cd garlic-client
+npm install
+npm run build
+cp -r garlic-client/public build/release/pepper-0.10.0/site
+```
+### To run garlic server in server directory: 
+```
+./garlic 
+```
+### To run client assuming that caddy is installed: 
+```
+caddy file-server --root ~/pepper-meta-package/build/release/pepper-0.10.0/site/ --listen :2016
+```
