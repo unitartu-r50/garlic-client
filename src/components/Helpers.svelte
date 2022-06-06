@@ -12,7 +12,7 @@
 
         // conditional timeout
         let timeout = 3000;
-        if (label === "negative") {
+        if (label !== "positive") {
             timeout = 5000;
         }
 
@@ -21,32 +21,6 @@
             window.clearTimeout(timeoutID);
             notifications.removeChild(notification);
         }, timeout);
-    }
-
-    export function sendInstruction(id, serverIP) {
-        const payload = {
-            "item_id": id
-        }
-        console.log("sending instruction", payload)
-        fetch(`http://${serverIP}:8080/api/pepper/send_command`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(payload)
-        })
-            .then(response => response.json())
-            .then((response) => {
-                if (response["error"] && response["error"].length > 0) {
-                    notify("negative", response["error"]);
-                } else if (response["message"]) {
-                    notify("positive", response["message"]);
-                }
-            })
-            .catch((err) => {
-                console.error(err);
-                notify("negative", err);
-            })
     }
 
     export function filterByGroup(items) {

@@ -1,8 +1,6 @@
 <script>
-    import {serverIPStore} from './stores';
-    import {sendInstruction, notify} from "./Helpers.svelte";
+    import {notify} from "./Helpers.svelte";
     import InstructionIcon from "./InstructionIcon.svelte";
-    import {onMount} from 'svelte';
 
     export let
         item,
@@ -17,47 +15,6 @@
 
     $: isMobile = window.screen.width <= 1280;
 
-    onMount(() => {
-        const element = document.getElementById("instruction-" + item.ID);
-        if (element) {
-            element.addEventListener("touchstart", setupPlayEvent);
-            element.addEventListener("click", setupPlayEvent);
-        }
-    });
-
-    function setupPlayEvent() {
-        if (!item || !item.SayItem) {
-            return;
-        }
-
-        const audioElement = document.getElementById("audio-" + item.SayItem.ID);
-        let delayMillis = item.SayItem.Delay * 1000;
-
-        // playing the element muted to be allowed to play this element later by iOS, iPadOS and new Safari in macOS Monterey
-        audioElement.muted = true;
-        audioElement.play();
-
-        if (audioElement) {
-            // NOTE: this timer could be non-exact, read more at https://stackoverflow.com/questions/29971898/how-to-create-an-accurate-timer-in-javascript
-            setTimeout(() => {
-                // actual playing
-                audioElement.muted = false;
-                audioElement.currentTime = 0;
-                audioElement.play()
-                    .catch(err => {
-                        console.error(err);
-                        notify("negative", err);
-                    });
-            }, delayMillis);
-        } else {
-            console.log("audio element doesnot exist");
-        }
-    }
-
-    function isiPhoneOriPad() {
-        return navigator.platform === "MacIntel" && navigator.maxTouchPoints > 0;
-    }
-
     function truncateLongString(value) {
         // truncate on desktop, mobile has different layout, no need to truncate there
         if (!isMobile) {
@@ -69,18 +26,52 @@
         return value;
     }
 
-    function markVisited(event) {
+    async function sendInstruction(id, serverIP, target) {
+        const payload = {
+            "item_id": id
+        }
+        console.log("sending instruction", payload)
+        fetch(`http://${serverIP}:8080/api/pepper/send_command`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
+        })
+            .then(response => response.json())
+            .then((response) => {
+                _markInactive(target);
+                if (response[id] !== "action_success") {
+                    notify("warning", response[id]);
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+                notify("negative", err);
+            })
+    }
+
+
+    function markActive(event) {
         if (!clickTracking) {
             return;
         }
-        markVisitedRecursive(event.target);
+        _markActive(event.target);
     }
 
-    function markVisitedRecursive(element) {
+    function _markActive(element) {
         if (element.tagName.toLowerCase() === "article") {
             element.style.background = "rgba(159, 241, 255, .15)";
         } else {
-            markVisitedRecursive(element.parentElement);
+            _markActive(element.parentElement);
+        }
+    }
+
+    function _markInactive(element) {
+        if (element.tagName.toLowerCase() === "article") {
+            element.style.background = "";
+        } else {
+            _markInactive(element.parentElement);
         }
     }
 
@@ -88,10 +79,12 @@
     function getID(item) {
         if (item.ID) {
             return item.ID;
-        } else if (item.SayItem && item.SayItem.ID) {
-            return item.SayItem.ID;
-        } else if (item.MoveItem && item.MoveItem.ID) {
-            return item.MoveItem.ID;
+        } else if (item.UtteranceItem && item.UtteranceItem.ID) {
+            return item.UtteranceItem.ID;
+        } else if (item.MotionItem && item.MotionItem.ID) {
+            return item.MotionItem.ID;
+        //} else if (item.ImageItem && item.ImageItem.ID) {
+        //    return item.ImageItem.ID;
         } else {
             console.log("getID can't determine the ID of", item);
         }
@@ -101,6 +94,7 @@
         event.dataTransfer.setData("text/plain", event.target.dataset.moveid);
         event.dataTransfer.dropEffect = "copy";
     }
+
 </script>
 
 <style>
@@ -127,14 +121,14 @@
     }
 </style>
 
-<article id="instruction-{item.ID}"
+<article id="instruction-{getID(item)}"
          class="instruction"
          class:items-start={!expanded}
          draggable={isDraggable}
          on:dragstart={dragStartHandler}
-         data-moveid={(isDraggable && item.MoveItem) ? item.MoveItem.ID : 'undefined ID'}
-         on:click={markVisited}
-         on:click={sendInstruction(getID(item), $serverIPStore)}>
+         data-moveid={(isDraggable && item.MotionItem) ? item.MotionItem.ID : 'undefined ID'}
+         on:click={markActive}
+         on:click={sendInstruction(getID(item), window.location.hostname, this)}>
     {#if expanded}
         <p class="h6 m0 bold caps {isMobile ? 'mb2' : 'mb4'}">Question {index + 1}</p>
     {:else}
@@ -144,22 +138,17 @@
         {#if expanded}
             <p class="m0 mb1 instruction-name">{name}</p>
         {/if}
-        {#if item.SayItem && item.SayItem.FilePath && item.SayItem.FilePath.length > 0}
-            <InstructionIcon item={item.SayItem} iconBaseName="speech" alt="audio is present"/>
+        {#if item.UtteranceItem && item.UtteranceItem.FilePath && item.UtteranceItem.FilePath.length > 0}
+            <InstructionIcon item={item.UtteranceItem} iconBaseName="speech" alt="audio is present"/>
         {/if}
-        {#if item.MoveItem && (item.MoveItem.Name || item.MoveItem.FilePath)}
-            <InstructionIcon item={item.MoveItem} iconBaseName="pepper-icon" alt="movement is present"/>
+        {#if item.MotionItem && (item.MotionItem.Name || item.MotionItem.FilePath)}
+            <InstructionIcon item={item.MotionItem} iconBaseName="pepper-icon" alt="motion is present"/>
         {/if}
         {#if item.ImageItem && item.ImageItem.FilePath}
             <InstructionIcon item={item.ImageItem} iconBaseName="image" alt="graphics is present"/>
         {/if}
         {#if item.URLItem && item.URLItem.URL.length > 0}
             <InstructionIcon item={item.URLItem} iconBaseName="url" alt="URL is present"/>
-        {/if}
-        {#if item.SayItem && item.SayItem.FilePath.length > 0}
-            <audio id="audio-{item.SayItem.ID}" src="http://{$serverIPStore}:8080/{item.SayItem.FilePath}">
-                Your browser does not support the <code>audio</code> element.
-            </audio>
         {/if}
     </div>
 </article>

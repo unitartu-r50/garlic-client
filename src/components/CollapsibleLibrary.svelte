@@ -1,7 +1,14 @@
 <script>
     import {slide} from 'svelte/transition';
+    import { motionsFetchNeeded } from './stores'
 
     export let title, isCollapsed = true;
+
+    $: {
+        if (title === 'Motions' && !isCollapsed) {
+            $motionsFetchNeeded = true;
+        }
+    }
 </script>
 
 <style>

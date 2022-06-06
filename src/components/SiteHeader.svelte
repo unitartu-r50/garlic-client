@@ -1,42 +1,24 @@
 <script>
     import SiteHeaderMobile from "./SiteHeaderMobile.svelte";
-
-    export let currentPage;
+    import { isPepperConnected } from "./stores"
 
     let isMobileMenuShown = false;
 
-    function redirect(event) {
-        const location = event.target.dataset.loc;
-        localStorage.setItem("location", location);
-        currentPage = location;
-
-        // hiding mobile menu on any click
-        if (isMobileMenuShown) {
-            isMobileMenuShown = false;
-        }
+    function openSidebar() {
+        jQuery('.ui.sidebar').sidebar('toggle');
     }
 </script>
 
 <style>
-    a {
-        color: black;
-        text-decoration: none;
-        transition: all .2s ease-in-out;
-    }
-
-    a:hover, a:focus {
+    span:hover, span:focus {
         font-style: italic;
     }
 
-    .active {
-        font-style: italic;
-    }
-
-    .logotype {
+    .logo {
         height: 40px;
     }
 
-    .logotype-title {
+    #logo-title {
         color: black;
         text-decoration: none;
         font-size: 1.25em;
@@ -45,36 +27,49 @@
 
     header {
         background: #9FF1FF;
+        width: 100%;
+        height: 57px;
+        margin-bottom: 10px;
     }
 
-    @media (max-width: 800px) {
-        .bt-700 {
-            display: none;
-        }
+    .span {
+        display: inline-flex;
+        align-items: center;
+        background: #9FF1FF;
+        text-align: center;
+    }
+
+    .button, .button:hover, .button:focus {
+        background: #9FF1FF;
+    }
+
+    .serverbutton {
+        background: #61D2E6;
+    }
+
+    .serverbutton:hover, .serverbutton:focus {
+        background: #71DBEE;
     }
 </style>
 
-<header class="flex flex-wrap align-baseline justify-between px1">
-    <div class="flex bt-700">
-        <img class="logotype m1" srcset="/images/pepper.svg, /images/pepper.png, /images/pepper@2x.png"
-             src="/images/pepper.png"
-             alt="Pepper Control">
-        <nav class="flex">
-            <a on:click|preventDefault={redirect} data-loc="" href="/" title="Home"
-               class="logotype-title self-center mr3 bold italic">pepper</a>
-            <a on:click|preventDefault={redirect} data-loc="sessions" href="/sessions" title="Sessions"
-               class:active="{currentPage === 'sessions'}" class="self-center mx2 caps h6">sessions</a>
-            <a on:click|preventDefault={redirect} data-loc="synthesis" href="/synthesis" title="EKI Speech Synthesis"
-               class:active="{currentPage === 'synthesis'}" class="self-center mx2 caps h6">EKI</a>
-            <a on:click|preventDefault={redirect} data-loc="neurokone" href="/synthesis" title="Neurokõne Speech Synthesis"
-               class:active="{currentPage === 'neurokone'}" class="self-center mx2 caps h6">Neurokõne</a>
-            <a on:click|preventDefault={redirect} data-loc="about" href="/about" title="About"
-               class:active="{currentPage === 'about'}" class="self-center mx2 caps h6">about</a>
-        </nav>
+<header>
+    <div style="display: flex; justify-content: space-between; height: 100%;">
+        <span class="ui compact button span" on:click|preventDefault={openSidebar}>
+            {#if $isPepperConnected}
+            <img src="/images/pepper.png" class="logo" alt="Pepper Control">
+            {:else}
+            <img src="/images/pepper_silhouette.png" class="logo" alt="Pepper Control">
+            {/if}
+            <span id="logo-title" class="ui float right">Pepper</span>
+        </span>
+        <span class="span">
+            <button data-tooltip="Check for updates" data-position="bottom right" data-inverted="" class="ui icon button serverbutton">
+                <i class="large sync alternate icon"></i>
+            </button>
+            <button data-tooltip="Shut Raspberry down" data-position="bottom right" data-inverted="" class="ui icon button serverbutton">
+                <i class="large power off icon"></i>
+            </button>
+            <i class="big grey server icon"></i>
+        </span>
     </div>
-    <nav class="flex bt-700">
-        <a on:click|preventDefault={redirect} data-loc="login" href="/login" title="Login"
-           class:active="{currentPage === 'login'}" class="self-center mx2 caps h6">login</a>
-    </nav>
-    <SiteHeaderMobile bind:current={currentPage} bind:isMobileMenuShown={isMobileMenuShown}/>
 </header>

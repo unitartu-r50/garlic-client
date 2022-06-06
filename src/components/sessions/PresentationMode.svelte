@@ -1,36 +1,10 @@
 <script>
     import Instruction from "../Instruction.svelte";
+    import EmptyInstruction from "../EmptyInstruction.svelte";
 
-    export let
-        currentSession,
-        inPresentationMode;
-
-    let currentPresentationItem;
-    let currentPresentationItemIndex = 0;
-
-    $: if (currentSession) {
-        currentPresentationItem = currentSession.Items[currentPresentationItemIndex];
-    }
-
-    function nextQuestion() {
-        currentPresentationItemIndex += 1;
-        if (currentPresentationItemIndex >= currentSession.Items.length) {
-            currentPresentationItemIndex = currentSession.Items.length - 1;
-            console.log("already the last question in the list");
-            return;
-        }
-        currentPresentationItem = currentSession.Items[currentPresentationItemIndex];
-    }
-
-    function previousQuestion() {
-        currentPresentationItemIndex -= 1;
-        if (currentPresentationItemIndex < 0) {
-            currentPresentationItemIndex = 0;
-            console.log("already the first question in the list");
-            return;
-        }
-        currentPresentationItem = currentSession.Items[currentPresentationItemIndex];
-    }
+    export let inPresentationMode,
+               currentPresentationItem,
+               currentPresentationItemIndex;
 </script>
 
 <style>
@@ -56,21 +30,23 @@
 <div class="session-item my2">
     {#if currentPresentationItem && currentPresentationItem.Actions.length > 0}
         <Instruction item="{currentPresentationItem.Actions[0]}"
-                     name="{currentPresentationItem.Actions[0].SayItem.Phrase}"
+                     name="{currentPresentationItem.Actions[0].UtteranceItem.Phrase}"
                      index="{currentPresentationItemIndex}"
                      expanded={true}
                      clickTracking={!inPresentationMode}/>
-        <div class="answers">
-            {#each currentPresentationItem.Actions as action, actionIndex}
-                {#if actionIndex > 0}
-                    <Instruction item="{action}"
-                                 index="{currentPresentationItemIndex}"
-                                 name="{action.SayItem.Phrase}"
-                                 clickTracking={!inPresentationMode}/>
-                {/if}
-            {/each}
-        </div>
+        {#if currentPresentationItem.Actions.length > 1}
+            <div class="answers">
+                {#each currentPresentationItem.Actions as action, actionIndex}
+                    {#if actionIndex > 0}
+                        <Instruction item="{action}"
+                                    index="{currentPresentationItemIndex}"
+                                    name="{action.UtteranceItem.Phrase}"
+                                    clickTracking={!inPresentationMode}/>
+                    {/if}
+                {/each}
+            </div>
+        {/if}
+    {:else}
+        <EmptyInstruction index={currentPresentationItemIndex}></EmptyInstruction>
     {/if}
 </div>
-<button on:click|preventDefault={previousQuestion}>&larr;</button>
-<button on:click|preventDefault={nextQuestion}>&rarr;</button>

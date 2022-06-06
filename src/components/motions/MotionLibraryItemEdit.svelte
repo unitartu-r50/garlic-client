@@ -1,10 +1,9 @@
 <script>
     import {notify} from "../Helpers.svelte";
-    import {serverIPStore} from "../stores";
+    import { motionsFetchNeeded } from "../stores";
 
     export let
-        inAddMode,
-        fetchNeeded;
+        inAddMode;
 
     let motionName = "";
     let motionGroup = "";
@@ -28,18 +27,17 @@
             data.append("name", motionName);
             data.append("group", motionGroup);
 
-            fetch(`http://` + $serverIPStore + `:8080/api/upload/move`, {
+            fetch(`http://` + window.location.hostname + `:8080/api/upload/move`, {
                 method: "POST",
                 body: data
             })
                 .then(response => response.json())
                 .then((response) => {
-                    console.log(response);
                     if (response["error"] && response["error"].length > 0) {
                         notify("negative", response["error"]);
                     } else {
                         notify("positive", response["message"]);
-                        fetchNeeded = true;
+                        $motionsFetchNeeded = true;
                         motionName = "";
                         motionGroup = "";
                     }

@@ -1,5 +1,4 @@
 <script>
-    import {serverIPStore} from "../stores";
     import {notify} from "../Helpers.svelte";
     import Instruction from "../Instruction.svelte";
 
@@ -17,7 +16,7 @@
             return;
         }
 
-        fetch(`http://` + $serverIPStore + `:8080/api/actions/${id}`, {
+        fetch(`http://` + window.location.hostname + `:8080/api/actions/${id}`, {
             method: "DELETE"
         })
             .then(response => response.json())

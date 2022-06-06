@@ -1,8 +1,7 @@
 <script>
     import {notify} from '../Helpers.svelte';
-    import {serverIPStore} from '../stores';
-    import SayItemEdit from "../SayItemEdit.svelte";
-    import MoveItemEdit from "../MoveItemEdit.svelte";
+    import UtteranceItemEdit from "../UtteranceItemEdit.svelte";
+    import MotionItemEdit from "../MotionItemEdit.svelte";
     import ImageItemEdit from "../ImageItemEdit.svelte";
     import URLItemEdit from "../URLItemEdit.svelte";
 
@@ -14,10 +13,10 @@
     let isFetchNeeded = false;
 
     $: if (isFetchNeeded) {
-        fetch(`http://` + $serverIPStore + `:8080/api/session_items/${item.ID}`)
+        fetch(`http://` + window.location.hostname + `:8080/api/session_items/${item.ID}`)
             .then(r => r.json())
             .then(response => {
-                item = response.data;
+                item = response.session_item;
                 isFetchNeeded = false;
                 if (response["error"] && response["error"].length > 0) {
                     notify("negative", response["error"]);
@@ -29,16 +28,15 @@
             });
     }
 
-    $: console.log("item", item);
-
     function addAction() {
         const length = item.Actions.push({
-            SayItem: {
+            ID: null,
+            UtteranceItem: {
                 Phrase: "",
                 FilePath: "",
                 Delay: 0
             },
-            MoveItem: {
+            MotionItem: {
                 Name: "",
                 FilePath: "",
                 Delay: 0,
@@ -51,7 +49,7 @@
                 Group: ""
             },
             URLItem: {
-                ID: "",
+                // ID: "",
                 Name: "",
                 URL: "",
                 Delay: 0,
@@ -73,7 +71,7 @@
         }
 
         if (item && item.Actions[actionIndex]) {
-            fetch(`http://` + $serverIPStore + `:8080/api/instruction/${actionID}`, {
+            fetch(`http://` + window.location.hostname + `:8080/api/instruction/${actionID}`, {
                 method: "DELETE"
             })
                 .then(r => r.json())
@@ -82,6 +80,7 @@
                         notify("negative", response["error"]);
                     } else {
                         notify("positive", response["message"]);
+                        console.log("positive!");
                     }
                     item.Actions.splice(actionIndex, 1);
                     item = item;
@@ -91,7 +90,7 @@
         }
     }
 
-    function removeItem() {
+    function remotionItem() {
         currentSession.Items.splice(index, 1);
         currentSession.Items = currentSession.Items;
     }
@@ -134,24 +133,10 @@
         width: 100%;
     }
 
-    label {
-        display: block;
-    }
-
-    input[type=number] {
-        width: 5em;
-    }
-
     .item {
         border: 4px solid rgba(159, 241, 255, .35);
         border-radius: .5em;
         padding: 1em;
-    }
-
-    .move-dropzone {
-        background: white;
-        padding: .5em .5em;
-        border: 1px dashed black;
     }
 </style>
 
@@ -166,19 +151,20 @@
                     <legend class="h5 m0 bold caps mb1">Action</legend>
                 {/if}
                 <div class="col-2 full-width">
-                    <SayItemEdit bind:sayItem={action.SayItem}/>
-                    <MoveItemEdit bind:moveItem={action.MoveItem}/>
+                    <UtteranceItemEdit bind:utteranceItem={action.UtteranceItem}/>
+                    <MotionItemEdit bind:motionItem={action.MotionItem}/>
                     <ImageItemEdit bind:imageItem={action.ImageItem}/>
                     <URLItemEdit bind:URLItem={action.URLItem}/>
                 </div>
-                <button on:click|preventDefault={removeAction} data-index="{i}" class="m0 mt3">Remove the action
+                <button on:click|preventDefault={removeAction} data-index="{i}" class="m0 mt3">
+                    Remove the action
                 </button>
             </fieldset>
         {/each}
 
         <button on:click|preventDefault={addAction} class="m0">Add an action</button>
-        <button on:click|preventDefault={removeItem} data-id="{item.ID}" data-index="{index}" class="m0">Remove the
-            question
+        <button on:click|preventDefault={remotionItem} data-id="{item.ID}" data-index="{index}" class="m0">
+            Remove the question
         </button>
         <button on:click|preventDefault={moveUp} data-index="{index}">&uarr;</button>
         <button on:click|preventDefault={moveDown} data-index="{index}">&darr;</button>

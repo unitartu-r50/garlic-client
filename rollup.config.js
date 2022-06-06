@@ -4,6 +4,7 @@ import resolve from '@rollup/plugin-node-resolve';
 import livereload from 'rollup-plugin-livereload';
 import { terser } from 'rollup-plugin-terser';
 import css from 'rollup-plugin-css-only';
+import copy from 'rollup-plugin-copy';
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -46,6 +47,12 @@ export default {
 		// we'll extract any component CSS out into
 		// a separate file - better for performance
 		css({ output: 'bundle.css' }),
+
+		// Copy Fomantic files to the build
+		copy({targets: [
+			{ src: "node_modules/jquery/dist/jquery.js", dest: "public/build" },
+			{ src: "node_modules/fomantic-ui-css/themes", dest: "public/build" }
+		]}),
 
 		// If you have external dependencies installed from
 		// npm, you'll most likely need these plugins. In

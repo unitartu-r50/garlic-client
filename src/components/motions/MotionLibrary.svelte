@@ -1,36 +1,33 @@
 <script>
     import {filterByGroup} from '../Helpers.svelte';
-    import {serverIPStore} from '../stores';
     import CollapsibleLibrary from "../CollapsibleLibrary.svelte";
     import LibraryControls from "../LibraryControls.svelte";
     import MotionLibraryItemEdit from "./MotionLibraryItemEdit.svelte";
     import Search from "../Search.svelte";
     import MotionLibraryGroups from "./MotionLibraryGroups.svelte";
-
-    export let isFetchNeeded = true;
+    import { motionsFetchNeeded, motions } from '../stores'
 
     let inAddMode = false;
     let inEditMode = false;
-    let items = [];
     let itemsByGroup = null;
 
-    $: if (isFetchNeeded) {
-        fetch(`http://` + $serverIPStore + `:8080/api/moves/`)
+    $: if ($motionsFetchNeeded) {
+        fetch(`http://` + window.location.hostname + `:8080/api/motions/`)
             .then(r => r.json())
             .then(d => {
-                items = d.data;
-                itemsByGroup = filterByGroup(d.data);
-                isFetchNeeded = false;
+                $motions = d.motions;
+                itemsByGroup = filterByGroup(d.motions);
+                $motionsFetchNeeded = false;
             })
             .catch(err => {
                 console.error("error:", err);
-                isFetchNeeded = false;
+                $motionsFetchNeeded = false;
             });
     }
 
     function search(query) {
         let filteredItems = [];
-        for (const item of items) {
+        for (const item of $motions) {
             if (item.Name.toLowerCase().includes(query.toLowerCase())) {
                 filteredItems.push(item);
             }
@@ -42,12 +39,8 @@
 <CollapsibleLibrary title="Motions">
     <LibraryControls bind:inAddMode={inAddMode} bind:inEditMode={inEditMode}/>
     {#if inAddMode}
-        <MotionLibraryItemEdit bind:inAddMode={inAddMode}
-                               bind:fetchNeeded={isFetchNeeded}
-                               search={search}/>
+        <MotionLibraryItemEdit bind:inAddMode={inAddMode} search={search}/>
     {/if}
     <Search {search}/>
-    <MotionLibraryGroups bind:itemsByGroup={itemsByGroup}
-                         bind:isFetchNeeded={isFetchNeeded}
-                         {inEditMode}/>
+    <MotionLibraryGroups bind:itemsByGroup={itemsByGroup} {inEditMode}/>
 </CollapsibleLibrary>

@@ -1,6 +1,5 @@
 <script>
     import {filterByGroup} from '../Helpers.svelte';
-    import {serverIPStore} from '../stores';
     import CollapsibleLibrary from "../CollapsibleLibrary.svelte";
     import LibraryControls from "../LibraryControls.svelte";
     import AudioItemEdit from "./AudioItemEdit.svelte";
@@ -15,7 +14,7 @@
 
     $: {
         if (isFetchNeeded) {
-            fetch(`http://` + $serverIPStore + `:8080/api/audio/`)
+            fetch(`http://` + window.location.hostname + `:8080/api/audio/`)
                 .then(r => r.json())
                 .then(d => {
                     items = d.data;

@@ -30,7 +30,7 @@
 <div class="session-item my2">
     {#if item.Actions.length > 0}
         <Instruction item="{item.Actions[0]}"
-                     name="{item.Actions[0].SayItem.Phrase}"
+                     name="{item.Actions[0].UtteranceItem.Phrase}"
                      index="{itemIndex}"
                      expanded={true}
                      clickTracking={!inPresentationMode}/>
@@ -38,7 +38,7 @@
             {#each item.Actions as action, actionIndex}
                 {#if actionIndex > 0}
                     <Instruction item="{action}"
-                                 name="{action.SayItem.Phrase}"
+                                 name="{action.UtteranceItem.Phrase}"
                                  index="{itemIndex}"
                                  clickTracking={!inPresentationMode}/>
                 {/if}

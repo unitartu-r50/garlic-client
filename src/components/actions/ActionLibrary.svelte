@@ -1,5 +1,4 @@
 <script>
-    import {serverIPStore} from "../stores";
     import {filterByGroup} from "../Helpers.svelte";
     import ActionItemEdit from "./ActionItemEdit.svelte";
     import LibraryControls from "../LibraryControls.svelte";
@@ -14,7 +13,7 @@
     let itemsByGroup = null;
 
     $: if (isFetchNeeded) {
-        fetch(`http://` + $serverIPStore + `:8080/api/actions/`)
+        fetch(`http://` + window.location.hostname + `:8080/api/actions/`)
             .then(r => r.json())
             .then(d => {
                 items = d.data;
@@ -38,7 +37,7 @@
     }
 </script>
 
-<CollapsibleLibrary title="Quick Actions" isCollapsed={false}>
+<CollapsibleLibrary title="Actions" isCollapsed={false}>
     <LibraryControls bind:inAddMode={inAddMode} bind:inEditMode={inEditMode}/>
     {#if inAddMode}
         <ActionItemEdit bind:inAddMode={inAddMode} bind:fetchNeeded={isFetchNeeded}/>

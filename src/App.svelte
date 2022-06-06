@@ -1,35 +1,35 @@
 <script>
+    import { isPepperConnected, motionsFetchNeeded } from "./components/stores";
     import SiteHeader from './components/SiteHeader.svelte';
-    import HomePage from './components/pages/HomePage.svelte';
-    import SessionsPage from './components/pages/SessionsPage.svelte';
-    import AboutPage from "./components/pages/AboutPage.svelte";
-    import LoginPage from "./components/pages/LoginPage.svelte";
-    import EKISynthPage from "./components/pages/EKISynthPage.svelte";
-    import NeurokoneSynthPage from "./components/pages/NeurokoneSynthPage.svelte";
+    import ConnectionSidebar from './components/ConnectionSidebar.svelte';
+    import SessionsPage from './components/sessions/SessionsPage.svelte';
+    import AudioLibrary from './components/audio/AudioLibrary.svelte';
+    import MotionLibrary from './components/motions/MotionLibrary.svelte';
+    import ActionLibrary from './components/actions/ActionLibrary.svelte';
 
-    let currentPage = "";
+    let isSessionsFetchNeeded = true;
 
-    $: {
-        currentPage = localStorage.getItem("location");
-        if (!currentPage) {
-            currentPage = "";
-        }
+    $: if ($isPepperConnected) {
+        $motionsFetchNeeded = true;
     }
 </script>
 
-<SiteHeader bind:currentPage={currentPage}/>
-{#if currentPage === ""}
-    <HomePage/>
-{:else if currentPage === "sessions" }
-    <SessionsPage/>
-{:else if currentPage === "synthesis" }
-    <EKISynthPage/>
-{:else if currentPage === "neurokone" }
-    <NeurokoneSynthPage/>
-{:else if currentPage === "about" }
-    <AboutPage/>
-{:else if currentPage === "login" }
-    <LoginPage/>
-{/if}
+<ConnectionSidebar/>
+<div class="pusher">
+    <SiteHeader/>
+    <div class="ui grid" style="width: 100%;">
+        <div class="eleven wide column">
+            <SessionsPage bind:isFetchNeeded={isSessionsFetchNeeded}/>
+        </div>
+        <div class="five wide column">
+            <div style="position: sticky; top: 0;">
+                <div class="ui fitted horizontal divider">Shortcuts</div>
+                <ActionLibrary/>
+                <AudioLibrary/>
+                <MotionLibrary/>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div id="notifications" class="notifications"></div>

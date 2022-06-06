@@ -16,13 +16,12 @@
             return;
         }
 
-        fetch(`http://` + $serverIPStore + `:8080/api/audio/${id}`, {
+        fetch(`http://` + window.location.hostname + `:8080/api/audio/${id}`, {
             method: "DELETE",
             headers: {"Content-Type": "application/json"}
         })
             .then(response => response.json())
             .then((response) => {
-                console.log(response);
                 if (response["error"] && response["error"].length > 0) {
                     notify("negative", response["error"]);
                 } else {
@@ -51,7 +50,7 @@
         <section class="audio-group">
             {#each itemsByGroup[groupName] as audio}
                 <div>
-                    <Instruction item={{SayItem: audio}} name={audio.Phrase} small={true} expanded={false}/>
+                    <Instruction item={{UtteranceItem: audio}} name={audio.Phrase} small={true} expanded={false}/>
                     {#if inEditMode}
                         <div>
                             <button class="m0 mb1" on:click|preventDefault={removeAudio} data-id="{audio.ID}">Remove

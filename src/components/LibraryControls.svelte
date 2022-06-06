@@ -1,13 +1,17 @@
 <script>
+    import { motionsFetchNeeded } from './stores'
+
     export let
         inAddMode = false,
         inEditMode = false;
 
     function toggleEdit() {
+        $motionsFetchNeeded = true;
         inEditMode = !inEditMode;
     }
 
     function toggleAdd() {
+        $motionsFetchNeeded = true;
         inAddMode = !inAddMode;
     }
 </script>

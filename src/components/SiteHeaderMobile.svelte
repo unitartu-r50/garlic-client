@@ -3,7 +3,7 @@
 
     const dispatch = createEventDispatcher();
 
-    export let current, isMobileMenuShown;
+    export let current = "SessionsPagemin", isMobileMenuShown;
 
     function pseudoRedirect(event) {
         const loc = event.target.dataset.loc;

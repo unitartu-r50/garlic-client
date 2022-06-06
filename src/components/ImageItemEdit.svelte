@@ -1,24 +1,22 @@
 <script>
-    import {serverIPStore} from "./stores";
     import {notify} from "./Helpers.svelte";
 
     export let
         imageItem;
 
     function imageUpload(event) {
-        console.log("uploading image", event);
+        // console.log("uploading image", event);
         const reader = new FileReader();
         reader.addEventListener('load', (e) => {
             let data = new FormData();
             data.append("file_content", event.target.files[0]);
 
-            fetch(`http://` + $serverIPStore + `:8080/api/upload/image`, {
+            fetch(`http://` + window.location.hostname + `:8080/api/upload/image`, {
                 method: "POST",
                 body: data
             })
                 .then(response => response.json())
                 .then((response) => {
-                    console.log(response);
                     imageItem.FilePath = response["filepath"];
                     if (response["error"] && response["error"].length > 0) {
                         notify("negative", response["error"]);

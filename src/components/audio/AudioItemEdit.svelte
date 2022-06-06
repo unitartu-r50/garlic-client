@@ -1,6 +1,5 @@
 <script>
     import {notify} from "../Helpers.svelte";
-    import {serverIPStore} from "../stores";
 
     export let inAddMode, fetchNeeded;
 
@@ -32,13 +31,12 @@
             data.append("phrase", audioPhrase);
             data.append("group", audioGroup);
 
-            fetch(`http://` + $serverIPStore + `:8080/api/audio/`, {
+            fetch(`http://` + window.location.hostname + `:8080/api/audio/`, {
                 method: "POST",
                 body: data
             })
                 .then(response => response.json())
                 .then((response) => {
-                    console.log(response);
                     if (response["error"] && response["error"].length > 0) {
                         notify("negative", response["error"]);
                     } else {

@@ -1,10 +1,10 @@
 <script>
     import {notify} from '../Helpers.svelte';
-    import {serverIPStore} from '../stores';
-    import SayItemEdit from "../SayItemEdit.svelte";
-    import MoveItemEdit from "../MoveItemEdit.svelte";
+    import UtteranceItemEdit from "../UtteranceItemEdit.svelte";
+    import MotionItemEdit from "../MotionItemEdit.svelte";
     import ImageItemEdit from "../ImageItemEdit.svelte";
     import URLItemEdit from "../URLItemEdit.svelte";
+    import { motionsFetchNeeded } from '../stores'
 
     export let inAddMode, fetchNeeded;
 
@@ -12,13 +12,13 @@
         ID: "",
         Name: "",
         Group: "Default",
-        SayItem: {
+        UtteranceItem: {
             ID: "",
             Phrase: "",
             FilePath: "",
             Delay: 0
         },
-        MoveItem: {
+        MotionItem: {
             ID: "",
             Name: "",
             FilePath: "",
@@ -47,9 +47,10 @@
     }
 
     function add() {
+        $motionsFetchNeeded = true;
         // TODO: check required fields
         console.log("adding the action:", item);
-        fetch(`http://` + $serverIPStore + `:8080/api/actions/`, {
+        fetch(`http://` + window.location.hostname + `:8080/api/actions/`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -65,8 +66,8 @@
                         msg = response["error"];
                     }
                     notify("negative", msg);
-                    if (item.SayItem && item.SayItem.FilePath.length > 0) {
-                        removeUpload("audio", item.SayItem.FilePath);
+                    if (item.UtteranceItem && item.UtteranceItem.FilePath.length > 0) {
+                        removeUpload("audio", item.UtteranceItem.FilePath);
                     }
                     if (item.ImageItem && item.ImageItem.FilePath.length > 0) {
                         removeUpload("image", item.ImageItem.FilePath);
@@ -88,7 +89,7 @@
 
     function removeUpload(kind, filepath) {
         console.log("removing", kind, filepath);
-        fetch(`http://` + $serverIPStore + `:8080/api/upload/${kind}`, {
+        fetch(`http://` + window.location.hostname + `:8080/api/upload/${kind}`, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json"
@@ -97,7 +98,6 @@
         })
             .then(response => response.json())
             .then((response) => {
-                console.log(response);
                 if (response["error"] && response["error"].length > 0) {
                     notify("negative", response["error"]);
                 }
@@ -113,13 +113,13 @@
             ID: "",
             Name: "",
             Group: "Default",
-            SayItem: {
+            UtteranceItem: {
                 ID: "",
                 Phrase: "",
                 FilePath: "",
                 Delay: 0
             },
-            MoveItem: {
+            MotionItem: {
                 ID: "",
                 Name: "",
                 FilePath: "",
@@ -172,8 +172,8 @@
                     <input type="text" id="action-lib-new-group" bind:value={item.Group} required>
                 </label>
             </div>
-            <SayItemEdit bind:sayItem={item.SayItem}/>
-            <MoveItemEdit bind:moveItem={item.MoveItem}/>
+            <UtteranceItemEdit bind:UtteranceItem={item.UtteranceItem}/>
+            <MotionItemEdit bind:motionItem={item.MotionItem}/>
             <ImageItemEdit bind:imageItem={item.ImageItem}/>
             <URLItemEdit bind:URLItem={item.URLItem}/>
             <div class="mt3">
