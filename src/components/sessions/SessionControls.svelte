@@ -34,7 +34,7 @@
         fetch(`http://` + window.location.hostname + `:8080/api/sessions/`)
             .then(r => r.json())
             .then(d => {
-                sessions = d.data;
+                sessions = d.sessions;
                 if (currentSessionIndex >= sessions.length) {
                     setCurrentSessionIndex(0);
                 }

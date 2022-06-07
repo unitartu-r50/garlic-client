@@ -16,8 +16,8 @@
         fetch(`http://` + window.location.hostname + `:8080/api/actions/`)
             .then(r => r.json())
             .then(d => {
-                items = d.data;
-                itemsByGroup = filterByGroup(d.data);
+                items = d.action_shortcuts;
+                itemsByGroup = filterByGroup(d.action_shortcuts);
                 isFetchNeeded = false;
             })
             .catch(err => {

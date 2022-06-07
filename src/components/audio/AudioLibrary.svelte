@@ -17,8 +17,8 @@
             fetch(`http://` + window.location.hostname + `:8080/api/audio/`)
                 .then(r => r.json())
                 .then(d => {
-                    items = d.data;
-                    itemsByGroup = filterByGroup(d.data);
+                    items = d.audio_shortcuts;
+                    itemsByGroup = filterByGroup(d.audio_shortcuts);
                     isFetchNeeded = false;
                 })
                 .catch(err => {
