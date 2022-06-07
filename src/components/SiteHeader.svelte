@@ -21,7 +21,14 @@
     }
 
     function update() {
-        fetch(`http://` + window.location.hostname + `:8080/api/check_updates/`)
+        fetch(`http://` + window.location.hostname + `:8080/api/update`)
+            .catch(err => {
+                console.error("error:", err);
+            });
+    }
+
+    function shutdown() {
+        fetch(`http://` + window.location.hostname + `:8080/api/shutdown`)
             .catch(err => {
                 console.error("error:", err);
             });
@@ -85,7 +92,7 @@
             <button id="update" data-tooltip="Update" data-position="bottom right" data-inverted="" class="ui hidden icon button serverbutton" on:click={update}>
                 <i class="large arrow circle down icon"></i>
             </button>
-            <button data-tooltip="Shut Raspberry down" data-position="bottom right" data-inverted="" class="ui icon button serverbutton">
+            <button data-tooltip="Shut Raspberry down" data-position="bottom right" data-inverted="" class="ui icon button serverbutton" on:click={shutdown}>
                 <i class="large power off icon"></i>
             </button>
             <i class="big grey server icon"></i>
