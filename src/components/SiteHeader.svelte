@@ -89,7 +89,7 @@
             <span id="logo-title" class="ui float right">Pepper</span>
         </span>
         <span class="span">
-            <button id="update" data-tooltip="Update" data-position="bottom right" data-inverted="" class="ui hidden icon button serverbutton" on:click={update}>
+            <button id="update" data-tooltip="Update" data-position="bottom right" class="ui hidden icon button serverbutton" on:click={update}>
                 <i class="large arrow circle down icon"></i>
             </button>
             <button data-tooltip="Shut Raspberry down" data-position="bottom right" data-inverted="" class="ui icon button serverbutton" on:click={shutdown}>
