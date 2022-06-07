@@ -7,6 +7,25 @@
     function openSidebar() {
         jQuery('.ui.sidebar').sidebar('toggle');
     }
+
+    function check_update() {
+        fetch(`http://` + window.location.hostname + `:8080/api/check_update`)
+            .then(r => r.json())
+            .then(d => {
+                console.log(d.update_available);
+                update_ready = d.update_available;
+            })
+            .catch(err => {
+                console.error("error:", err);
+            });
+    }
+
+    function update() {
+        fetch(`http://` + window.location.hostname + `:8080/api/check_updates/`)
+            .catch(err => {
+                console.error("error:", err);
+            });
+    }
 </script>
 
 <style>
@@ -63,8 +82,8 @@
             <span id="logo-title" class="ui float right">Pepper</span>
         </span>
         <span class="span">
-            <button data-tooltip="Check for updates" data-position="bottom right" data-inverted="" class="ui icon button serverbutton">
-                <i class="large sync alternate icon"></i>
+            <button id="update" data-tooltip="Update" data-position="bottom right" data-inverted="" class="ui hidden icon button serverbutton" on:click={update}>
+                <i class="large arrow circle down icon"></i>
             </button>
             <button data-tooltip="Shut Raspberry down" data-position="bottom right" data-inverted="" class="ui icon button serverbutton">
                 <i class="large power off icon"></i>
