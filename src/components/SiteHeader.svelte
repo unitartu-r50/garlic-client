@@ -110,7 +110,7 @@
                 </button>
             {:else if checking}
                 <button id="checking" data-tooltip="Checking for updates..." data-position="bottom right" data-inverted="" class="ui icon button serverbutton">
-                    <i class="large question circle icon"></i>
+                    <i class="large notched circle loading icon"></i>
                 </button>
             {:else}
                 <button id="check" data-tooltip="Check for updates" data-position="bottom right" data-inverted="" class="ui icon button serverbutton" on:click={check_update}>
