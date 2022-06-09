@@ -48,6 +48,9 @@
                 if (currentSession && currentSessionIndex) {
                     selectItem = {value: currentSessionIndex, label: currentSession.Name};
                 }
+                if (sessions.length === 0) {
+                    selectItem = null;
+                }
                 isFetchNeeded = false;
             })
             .catch(err => {
