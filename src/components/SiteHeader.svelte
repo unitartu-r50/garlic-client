@@ -1,27 +1,42 @@
 <script>
     import SiteHeaderMobile from "./SiteHeaderMobile.svelte";
     import { isPepperConnected } from "./stores"
+    import { notify } from "./Helpers.svelte";
 
     let isMobileMenuShown = false;
+    let update_ready = false;
+    let checking = false;
 
     function openSidebar() {
         jQuery('.ui.sidebar').sidebar('toggle');
     }
 
     function check_update() {
+        checking = true;
         fetch(`http://` + window.location.hostname + `:8080/api/check_update`)
             .then(r => r.json())
             .then(d => {
-                console.log(d.update_available);
                 update_ready = d.update_available;
+                if (update_ready) {
+                    notify("warning", "Update available!")
+                } else {
+                    notify("positive", "Up to date!")
+                }
             })
             .catch(err => {
                 console.error("error:", err);
+            })
+            .finally(() => {
+                checking = false;
             });
     }
 
     function update() {
         fetch(`http://` + window.location.hostname + `:8080/api/update`)
+            .then(r => {
+                update_ready = false;
+                location.reload();
+            })
             .catch(err => {
                 console.error("error:", err);
             });
@@ -89,9 +104,19 @@
             <span id="logo-title" class="ui float right">Pepper</span>
         </span>
         <span class="span">
-            <button id="update" data-tooltip="Update" data-position="bottom right" class="ui hidden icon button serverbutton" on:click={update}>
-                <i class="large arrow circle down icon"></i>
-            </button>
+            {#if update_ready}
+                <button id="update" data-tooltip="Update" data-position="bottom right" data-inverted="" class="ui icon button serverbutton" on:click={update}>
+                    <i class="large arrow circle down icon"></i>
+                </button>
+            {:else if checking}
+                <button id="checking" data-tooltip="Checking for updates..." data-position="bottom right" data-inverted="" class="ui icon button serverbutton">
+                    <i class="large question circle icon"></i>
+                </button>
+            {:else}
+                <button id="check" data-tooltip="Check for updates" data-position="bottom right" data-inverted="" class="ui icon button serverbutton" on:click={check_update}>
+                    <i class="large sync alternate icon"></i>
+                </button>
+            {/if}
             <button data-tooltip="Shut Raspberry down" data-position="bottom right" data-inverted="" class="ui icon button serverbutton" on:click={shutdown}>
                 <i class="large power off icon"></i>
             </button>
