@@ -9,31 +9,31 @@
     export let inAddMode, fetchNeeded;
 
     let item = {
-        ID: "",
+        ID: null,
         Name: "",
         Group: "Default",
         UtteranceItem: {
-            ID: "",
+            ID: null,
             Phrase: "",
             FilePath: "",
             Delay: 0
         },
         MotionItem: {
-            ID: "",
+            ID: null,
             Name: "",
             FilePath: "",
             Delay: 0,
             Group: ""
         },
         ImageItem: {
-            ID: "",
+            ID: null,
             Name: "",
             FilePath: "",
             Delay: 0,
             Group: ""
         },
         URLItem: {
-            ID: "",
+            ID: null,
             Name: "",
             URL: "",
             Delay: 0,
@@ -110,31 +110,31 @@
 
     function resetNewFormItem() {
         item = {
-            ID: "",
+            ID: null,
             Name: "",
             Group: "Default",
             UtteranceItem: {
-                ID: "",
+                ID: null,
                 Phrase: "",
                 FilePath: "",
                 Delay: 0
             },
             MotionItem: {
-                ID: "",
+                ID: null,
                 Name: "",
                 FilePath: "",
                 Delay: 0,
                 Group: ""
             },
             ImageItem: {
-                ID: "",
+                ID: null,
                 Name: "",
                 FilePath: "",
                 Delay: 0,
                 Group: ""
             },
             URLItem: {
-                ID: "",
+                ID: null,
                 Name: "",
                 URL: "",
                 Delay: 0,
@@ -172,7 +172,7 @@
                     <input type="text" id="action-lib-new-group" bind:value={item.Group} required>
                 </label>
             </div>
-            <UtteranceItemEdit bind:UtteranceItem={item.UtteranceItem}/>
+            <UtteranceItemEdit bind:utteranceItem={item.UtteranceItem}/>
             <MotionItemEdit bind:motionItem={item.MotionItem}/>
             <ImageItemEdit bind:imageItem={item.ImageItem}/>
             <URLItemEdit bind:URLItem={item.URLItem}/>
