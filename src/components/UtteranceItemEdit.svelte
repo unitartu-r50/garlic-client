@@ -54,10 +54,6 @@
             notify("negative", "Enter a phrase to synthesize!");
             return;
         }
-        if (audioLinked) {
-            notify("negative", "Audio already present!");
-            return;
-        }
         fetch('http://' + window.location.hostname + ':8080/api/synthesis', {
             method: 'POST',
             headers: {
@@ -123,10 +119,10 @@
                     <i class="red times icon"></i>
                 {/if}
                 <div class="ui buttons">
-                    <button class="ui{audioLinked === true ? ' disabled' : ''} button" on:click|preventDefault={synthesize}><i class="magic icon"></i>Synthesize</button>
+                    <button class="ui button" on:click|preventDefault={synthesize}><i class="magic icon"></i>Synthesize</button>
                     <div class="or"></div>
                     <form class="ui form" style="display: inline;">
-                        <label for="textupload" class="ui{audioLinked === true ? ' disabled' : ''} icon button">
+                        <label for="textupload" class="ui icon button">
                             <i class="upload icon"></i>
                             Upload
                         </label>
