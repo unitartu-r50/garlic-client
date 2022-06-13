@@ -1,5 +1,6 @@
 <script>
     import Instruction from "../Instruction.svelte";
+    import EmptyInstruction from "../EmptyInstruction.svelte";
 
     export let
         item,
@@ -44,5 +45,7 @@
                 {/if}
             {/each}
         </div>
+    {:else}
+        <EmptyInstruction index={itemIndex}></EmptyInstruction>
     {/if}
 </div>
