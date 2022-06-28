@@ -136,7 +136,8 @@
                 </form>
             </span>
             <span>
-                <button class="ui icon {audioLinked ? '' : 'disabled'} button" on:click|preventDefault={playAudio}><i class="play icon"></i></button>
+                <button data-tooltip="Preview audio" data-inverted="" data-position="bottom center"
+                        class="ui icon {audioLinked ? '' : 'disabled'} button" on:click|preventDefault={playAudio}><i class="play icon"></i></button>
                 <label style="display: inline;" for="{utteranceItem.ID}.UtteranceItem.FilePath">Audio linked:</label>
                 {#if audioLinked}
                     <i class="green check icon"></i>
