@@ -1,5 +1,6 @@
 <script>
     import {notify} from "./Helpers.svelte";
+    import { speaker } from "./stores";
 
     export let
         utteranceItem;
@@ -54,7 +55,7 @@
             notify("negative", "Enter a phrase to synthesize!");
             return;
         }
-        fetch('http://' + window.location.hostname + ':8080/api/synthesis', {
+        fetch('http://' + window.location.hostname + ':8080/api/synthesis?' + new URLSearchParams({voice: $speaker}), {
             method: 'POST',
             headers: {
                 'Content-Type': 'text/strings'

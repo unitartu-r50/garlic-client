@@ -41,7 +41,6 @@
             .then(response => response.json())
             .then((response) => {
                 _markInactive(target);
-                console.log(response);
                 if (response[id] === "action_error") {
                     notify("negative", response["message"])
                 } else if (response[id] !== "action_success") {

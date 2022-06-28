@@ -2,7 +2,7 @@
     import {notify} from "../Helpers.svelte";
     import { afterUpdate } from 'svelte';
     import Select from "svelte-select";
-    import { motionsFetchNeeded } from '../stores'
+    import { motionsFetchNeeded, speaker } from '../stores'
 
     export let inPresentationMode,
                inEditMode,
@@ -11,26 +11,28 @@
                currentPresentationItem,
                currentPresentationItemIndex;
     
+    let voices = [];
+    let currentVoiceIndex = 0;
+    let selectVoice = null;
     let sessions = [];
     let sessions_list = [];
     let selectItem;
     let currentSessionIndex = 0;
+    let forceCurrentSessionReload = false;
 
-    // If another client changes server state, the session index stored in the browser might be wrong
     if (window.localStorage.getItem("currentSessionIndex")) {
         currentSessionIndex = window.localStorage.getItem("currentSessionIndex")
-    }
-    else {
+    } else {
         setCurrentSessionIndex(0);
     }
 
     $: {
         if (isFetchNeeded) {
-            fetchSessions();
+            fetchSessions(forceCurrentSessionReload);
         }
     }
 
-    function fetchSessions() {
+    function fetchSessions(force_reload_current) {
         fetch(`http://` + window.location.hostname + `:8080/api/sessions/`)
             .then(r => r.json())
             .then(d => {
@@ -38,7 +40,7 @@
                 if (currentSessionIndex >= sessions.length) {
                     setCurrentSessionIndex(0);
                 }
-                if (!currentSession || (currentSession && !currentSession.ID)) {
+                if (force_reload_current || !currentSession || (currentSession && !currentSession.ID)) {
                     currentSession = sessions[currentSessionIndex];
                 }
                 sessions_list = [];
@@ -51,12 +53,14 @@
                 if (sessions.length === 0) {
                     selectItem = null;
                 }
-                isFetchNeeded = false;
             })
             .catch(err => {
                 console.error("error:", err);
+            })
+            .finally(() => {
                 isFetchNeeded = false;
-            });
+                forceCurrentSessionReload = false;
+            })
     }
 
     function add() {
@@ -157,7 +161,7 @@
             sessions.pop();
         }
         else {
-            let confirmation = window.confirm(`Are you sure you want to remove the session: ${currentSession.Name}?`);
+            let confirmation = window.confirm(`Are you sure you want to remove ${currentSession.Name}?`);
             if (!confirmation) {
                 return;
             }
@@ -217,7 +221,6 @@
                     return r.json();
                 })
                 .then(r => {
-                    console.log(r);
                     notify("positive", r.message);
                     el.value = "";
                     currentSessionIndex = sessions.length;
@@ -232,6 +235,7 @@
         reader.readAsArrayBuffer(el.files[0]);
     }
 
+    // TODO: USE ME
     function exportSession() {
         if (currentSession == null) {
             return;
@@ -259,6 +263,40 @@
             });
     }
 
+    function confirmBatchSynthesis() {
+        jQuery('.ui.basic.modal').modal('show');
+    }
+
+    function batchSynthesis() {
+        jQuery('.dimmer').dimmer('show');
+        fetch(`http://` + window.location.hostname + ':8080/api/synthesis/batch?' + new URLSearchParams({voice: selectVoice.label}), {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(currentSession)
+        })
+            .then(r => {
+                if (!r.ok) {
+                    throw Error(r.statusText);
+                }
+                return r.json();
+            })
+            .then(r => {
+                notify("positive", r.message);
+                inEditMode = false;
+                forceCurrentSessionReload = true;
+                isFetchNeeded = true;
+            })
+            .catch(err => {
+                console.error(err);
+                notify("negative", err);
+            })
+            .finally(() => {
+                jQuery('.dimmer').dimmer('hide');
+            })
+    }
+
     function setCurrentSessionIndex(index) {
         currentSessionIndex = index;
         window.localStorage.setItem("currentSessionIndex", currentSessionIndex);
@@ -270,10 +308,16 @@
         }
     })
 
-    function handleChange() {
+    function handleSessionChange() {
         setCurrentSessionIndex(selectItem.value);
         currentSession = sessions[currentSessionIndex];
         currentPresentationItemIndex = 0;
+    }
+
+    function handleVoiceChange() {
+        currentVoiceIndex = selectVoice.value;
+        window.localStorage.setItem("currentVoiceIndex", currentVoiceIndex);
+        $speaker = voices[currentVoiceIndex].label;
     }
 
     function nextQuestion() {
@@ -296,7 +340,26 @@
         currentPresentationItem = currentSession.Items[currentPresentationItemIndex];
     }
 
-    fetchSessions();
+    fetchSessions(false);
+
+    fetch('http://' + window.location.hostname + ':8080/api/voices')
+        .then(r => r.json())
+        .then(d => {
+            for (let index = 0; index < d['voices'].length; index ++) {
+                    voices.push({value: index, label: d['voices'].at(index)})
+                }
+            if (window.localStorage.getItem("currentVoiceIndex")) {
+                currentVoiceIndex = window.localStorage.getItem("currentVoiceIndex");
+            } else {
+                currentVoiceIndex = 0;
+                window.localStorage.setItem("currentVoiceIndex", 0);
+            }
+            selectVoice = voices[currentVoiceIndex];
+            $speaker = selectVoice.label;
+        })
+        .catch(err => {
+            console.error("Error fetching voices: ", err)
+        });
 </script>
 <style>
     .mode-label {
@@ -310,16 +373,38 @@
         position: absolute;
     }
 </style>
+<div class="ui page dimmer">
+    <div class="content">
+        <i class="asterisk loading icon"></i>Synthesizing, please wait...
+    </div>
+  </div>
+<div class="ui basic mini modal">
+    <div class="ui icon header">
+        <i class="wave square icon"></i>
+        Batch synthesis
+    </div>
+    <div class="content">
+        <p>You are about to re-synthesize all voicelines. Proceed?
+    </div>
+    <div class="actions" style="display: flex; justify-content: space-between;">
+        <span class="ui green ok inverted button" on:click={batchSynthesis}>
+            <i class="checkmark icon"></i>Yes
+        </span>
+        <span class="ui red basic cancel inverted button">
+            <i class="remove icon"></i>No
+        </span>
+    </div>
+</div>
 <div>
     <div style="display: flex; justify-content: space-between;">
         {#if !inEditMode}
             <span style="font-weight: bold; font-size: 20px; width: 30%;">
-                <Select id="session-select" items={sessions_list} showIndicator={true} isDisabled={!sessions_list} bind:value={selectItem} on:select={handleChange} isClearable={false}
-                        containerStyles="listAudoWidth{false}" listOffset={0} placeholder="Select a session..."></Select>
+                <Select id="session-select" items={sessions_list} showIndicator={true} isDisabled={!sessions_list} bind:value={selectItem} on:select={handleSessionChange}
+                    isClearable={false} listOffset={0} placeholder="Select a session..."></Select>
             </span>
         {:else}
-            <span class="ui labeled input" style="font-size: 15px; margin-top: 1px;">
-                <span class="ui label">Session name:</span>
+            <span class="ui labeled input">
+                <span class="ui label" style="font-size: 15px;">Session name:</span>
                 <input type="text" bind:value={currentSession.Name}>
             </span>
         {/if}
@@ -334,9 +419,9 @@
         </h2>
     </div>
 </div>
-<div class="ui clearing divider"></div>
+<div class="ui clearing divider" style="margin: 8px 0 5px 0;"></div>
 <div style="display: flex; justify-content: space-between;">
-    <span>
+    <span style="margin-top: 3px;">
         <span data-tooltip={inEditMode ? "Finish editing first!" : null} data-inverted="" class="display: inline">
             <button class="ui{inEditMode === true ? ' disabled' : ''} button" on:click|preventDefault={add}>Create session</button>
         </span>
@@ -375,9 +460,17 @@
         {/if}
     </span>
     {#if inPresentationMode}
-        <span>
+        <span style="margin-top: 3px;">
             <button on:click|preventDefault={previousQuestion} class="ui icon button"><i class="arrow left icon"></i></button>
             <button on:click|preventDefault={nextQuestion} class="ui icon button"><i class="arrow right icon"></i></button>
+        </span>
+    {:else if inEditMode}
+        <span>
+            <span style="display: inline-flex;">
+                <Select id="voice-select" containerStyles="font-size: 14px; width: 100px;" items={voices} showIndicator={true} bind:value={selectVoice}
+                        on:select={handleVoiceChange} isClearable={false} listOffset={0} isSearchable={false}></Select>
+            </span>
+            <button class="ui button" style="display: inline;" on:click={confirmBatchSynthesis}>Save & Synthesize</button>
         </span>
     {/if}
 </div>
