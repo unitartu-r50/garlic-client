@@ -8,7 +8,6 @@
         index = 0,
         expanded = false,
         small = false,
-        clickTracking = true,
         isDraggable = false;
 
     let isMobile = false;
@@ -27,6 +26,7 @@
     }
 
     async function sendInstruction(id, serverIP, target) {
+        markActive(target);
         const payload = {
             "item_id": id
         }
@@ -40,7 +40,6 @@
         })
             .then(response => response.json())
             .then((response) => {
-                _markInactive(target);
                 if (response[id] === "action_error") {
                     notify("negative", response["message"])
                 } else if (response[id] !== "action_success") {
@@ -51,29 +50,30 @@
                 console.error(err);
                 notify("negative", err);
             })
+            .finally(() => {
+                markComplete(target);
+            })
     }
 
-
-    function markActive(event) {
-        if (!clickTracking) {
-            return;
-        }
-        _markActive(event.target);
-    }
-
-    function _markActive(element) {
+    function markActive(element) {
         if (element.tagName.toLowerCase() === "article") {
-            element.style.background = "rgba(159, 241, 255, .15)";
+            console.log(element.style.border === "4px solid rgba(159, 255, 159, 0.35)", element.style.border);
+            if (element.style.border === "4px solid rgba(159, 255, 159, .35)") {
+                element.style.background = "rgba(159, 255, 159, .15)";
+            } else {
+                element.style.background = "rgba(159, 241, 255, .15)";
+            }
         } else {
-            _markActive(element.parentElement);
+            markActive(element.parentElement);
         }
     }
 
-    function _markInactive(element) {
+    function markComplete(element) {
         if (element.tagName.toLowerCase() === "article") {
-            element.style.background = "";
+            element.style.background = "rgba(159, 255, 159, .05)";
+            element.style.border = "4px solid rgba(159, 255, 159, .35)";
         } else {
-            _markInactive(element.parentElement);
+            markComplete(element.parentElement);
         }
     }
 
@@ -129,7 +129,6 @@
          draggable={isDraggable}
          on:dragstart={dragStartHandler}
          data-moveid={(isDraggable && item.MotionItem) ? item.MotionItem.ID : 'undefined ID'}
-         on:click={markActive}
          on:click={sendInstruction(getID(item), window.location.hostname, this)}>
     {#if expanded}
         <p class="h6 m0 bold caps {isMobile ? 'mb2' : 'mb4'}">Question {index + 1}</p>

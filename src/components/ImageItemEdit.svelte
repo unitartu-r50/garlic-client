@@ -44,7 +44,7 @@
 </style>
 
 {#if imageItem}
-    <section class="mb3">
+    <section>
         <h3 class="h4 m0 mb2">Show image</h3>
         <label class="mb1" for="{imageItem.ID}-ImageItem.FilePath">Image file:
             <span class="h6">{imageItem.FilePath}</span>

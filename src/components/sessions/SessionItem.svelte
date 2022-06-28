@@ -2,10 +2,8 @@
     import Instruction from "../Instruction.svelte";
     import EmptyInstruction from "../EmptyInstruction.svelte";
 
-    export let
-        item,
-        itemIndex,
-        inPresentationMode;
+    export let item,
+               itemIndex;
 </script>
 
 <style>
@@ -33,15 +31,13 @@
         <Instruction item="{item.Actions[0]}"
                      name="{item.Actions[0].UtteranceItem.Phrase}"
                      index="{itemIndex}"
-                     expanded={true}
-                     clickTracking={!inPresentationMode}/>
+                     expanded={true}/>
         <div class="answers">
             {#each item.Actions as action, actionIndex}
                 {#if actionIndex > 0}
                     <Instruction item="{action}"
                                  name="{action.UtteranceItem.Phrase}"
-                                 index="{itemIndex}"
-                                 clickTracking={!inPresentationMode}/>
+                                 index="{itemIndex}"/>
                 {/if}
             {/each}
         </div>

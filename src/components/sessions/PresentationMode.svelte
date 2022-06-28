@@ -2,8 +2,7 @@
     import Instruction from "../Instruction.svelte";
     import EmptyInstruction from "../EmptyInstruction.svelte";
 
-    export let inPresentationMode,
-               currentPresentationItem,
+    export let currentPresentationItem,
                currentPresentationItemIndex;
 </script>
 
@@ -32,16 +31,14 @@
         <Instruction item="{currentPresentationItem.Actions[0]}"
                      name="{currentPresentationItem.Actions[0].UtteranceItem.Phrase}"
                      index="{currentPresentationItemIndex}"
-                     expanded={true}
-                     clickTracking={!inPresentationMode}/>
+                     expanded={true}/>
         {#if currentPresentationItem.Actions.length > 1}
             <div class="answers">
                 {#each currentPresentationItem.Actions as action, actionIndex}
                     {#if actionIndex > 0}
                         <Instruction item="{action}"
                                     index="{currentPresentationItemIndex}"
-                                    name="{action.UtteranceItem.Phrase}"
-                                    clickTracking={!inPresentationMode}/>
+                                    name="{action.UtteranceItem.Phrase}"/>
                     {/if}
                 {/each}
             </div>

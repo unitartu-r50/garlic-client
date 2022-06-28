@@ -4,41 +4,29 @@
 
     export let motionItem;
 
-    let selectedMove = (motionItem && (motionItem.Name.length > 0 || motionItem.FilePath.length > 0)) ? motionItem : null;
+    let motions_list = [];
+    for (let index = 0; index < $motions.length; index++) {
+        motions_list.push({value: index, label: $motions.at(index).Name, group: $motions.at(index).Group})
+    }
 
-    // Select extensions
-    const groupBy = (option) => option.Group;
-    const getOptionLabel = (option) => option.Name;
-    const getSelectionLabel = (option) => option.Name;
+    let selectedMove = (motionItem && (motionItem.Name.length > 0 || motionItem.FilePath.length > 0)) ? {value: $motions.indexOf(motionItem), label: motionItem.Name} : null;
+    const groupBy = (option) => option.group;
 
     function handleMoveSelect() {
-        if (motionItem) {
-            motionItem.Name = selectedMove.Name;
-            motionItem.FilePath = selectedMove.FilePath;
-            motionItem.Delay = selectedMove.Delay;
-            // action.MotionItem.Group = newActionMove.Group;
-        }
+        console.log(selectedMove);
+        motionItem = $motions.at(selectedMove.value);
     }
 
     function resetMotionItem() {
-        if (motionItem) {
-            motionItem.Name = "";
-            motionItem.FilePath = "";
-            motionItem.Delay = 0;
-            // action.MotionItem.Group = "";
-        }
+        motionItem.ID = null;
+        motionItem.Name = "";
+        motionItem.FilePath = "";
+        motionItem.Group = "";
+        motionItem.Delay = 0;
     }
 </script>
 
 <style>
-    .searchable-select {
-        --border: 1px solid rgb(185, 185, 185);
-        --borderFocusColor: rgb(120, 120, 120);
-        --borderHoverColor: rgb(120, 120, 120);
-        --inputPadding: .5em;
-        --placeholderColor: rgb(169, 169, 169);
-        --borderRadius: 0;
-    }
 
     input[type=number] {
         width: 5em;
@@ -50,16 +38,15 @@
 </style>
 
 {#if motionItem}
-    <section class="mb3 searchable-select">
-        <h3 class="h4 m0 mb2">Move</h3>
-        <Select items={$motions}
-                bind:value={selectedMove}
-                placeholder="Search for a move"
-                {groupBy}
-                {getOptionLabel}
-                {getSelectionLabel}
-                on:select={handleMoveSelect}
-                on:clear={resetMotionItem}/>
+    <section>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+            <h3 style="margin: 0;">Motion</h3>
+            <span class="ui labeled input">
+                <span class="ui label">Motion delay (s):</span>
+                <input type="number" id="{motionItem.ID}.UtteranceItem.Delay" placeholder="0" style="padding-top: 8px !important;" bind:value={motionItem.Delay}>
+            </span>
+        </div>
+        <Select items={motions_list} bind:value={selectedMove} placeholder="Search for a move" {groupBy} on:select={handleMoveSelect} on:clear={resetMotionItem}/>
         <label class="my1" for="{motionItem.ID}.MotionItem.Delay">Move delay, s:
             <input type="number" id="{motionItem.ID}.MotionItem.Delay" name="MotionItem.Delay"
                    bind:value={motionItem.Delay}>

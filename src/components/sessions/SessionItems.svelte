@@ -11,13 +11,13 @@
 </script>
 
 {#if inPresentationMode && currentSession.Items.length > 0}
-    <PresentationMode {inPresentationMode} {currentPresentationItem} {currentPresentationItemIndex}/>
+    <PresentationMode {currentPresentationItem} {currentPresentationItemIndex}/>
 {:else}
     {#each currentSession.Items as item, i}
         {#if inEditMode}
             <SessionItemEdit item="{item}" index="{i}" bind:currentSession={currentSession}/>
         {:else}
-            <SessionItem {item} {inPresentationMode} itemIndex={i}/>
+            <SessionItem {item} itemIndex={i}/>
         {/if}
     {/each}
 {/if}
