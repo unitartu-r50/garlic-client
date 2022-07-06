@@ -185,7 +185,7 @@
                 sessions = [];
                 currentSessionIndex = 0;
                 window.localStorage.setItem("currentSessionIndex", 0);
-                selectItem = sessions_list[0];
+                selectItem = null;
                 isFetchNeeded = true;
             })
             .catch(err => {
@@ -264,7 +264,7 @@
     }
 
     function confirmBatchSynthesis() {
-        jQuery('.ui.basic.modal').modal('show');
+        jQuery('#synthesis-modal').modal('show');
     }
 
     function batchSynthesis() {
@@ -378,7 +378,7 @@
         <i class="asterisk loading icon"></i>Synthesizing, please wait...
     </div>
   </div>
-<div class="ui basic mini modal">
+<div class="ui basic mini modal" id="synthesis-modal">
     <div class="ui icon header">
         <i class="wave square icon"></i>
         Batch synthesis

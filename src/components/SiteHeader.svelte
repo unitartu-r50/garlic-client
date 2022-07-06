@@ -1,9 +1,7 @@
 <script>
-    import SiteHeaderMobile from "./SiteHeaderMobile.svelte";
     import { isPepperConnected } from "./stores"
     import { notify } from "./Helpers.svelte";
 
-    let isMobileMenuShown = false;
     let update_ready = false;
     let checking = false;
 
@@ -31,6 +29,25 @@
             });
     }
 
+
+    function confirmRebuild() {
+        jQuery('#rebuild-modal').modal('show');
+    }
+
+    function rebuild() {
+        fetch(`http://` + window.location.hostname + `:8080/api/rebuild`)
+            .then(r => {
+                location.reload();
+            })
+            .catch(err => {
+                console.error("error:", err);
+            });
+    }
+
+    function confirmUpdate() {
+        jQuery('#update-modal').modal('show');
+    }
+
     function update() {
         fetch(`http://` + window.location.hostname + `:8080/api/update`)
             .then(r => {
@@ -40,6 +57,10 @@
             .catch(err => {
                 console.error("error:", err);
             });
+    }
+
+    function confirmShutdown() {
+        jQuery('#shutdown-modal').modal('show');
     }
 
     function shutdown() {
@@ -94,6 +115,57 @@
 </style>
 
 <header>
+    <div class="ui basic mini modal" id="rebuild-modal">
+        <div class="ui icon header">
+            <i class="redo icon"></i>
+            Rebuild
+        </div>
+        <div class="content">
+            <p>You are about to rebuild the site. This will make the application unusable for a few minutes. Proceed?</p>
+        </div>
+        <div class="actions" style="display: flex; justify-content: space-between;">
+            <span class="ui green ok inverted button" on:click={rebuild}>
+                <i class="checkmark icon"></i>Yes
+            </span>
+            <span class="ui red basic cancel inverted button">
+                <i class="remove icon"></i>No
+            </span>
+        </div>
+    </div>
+    <div class="ui basic mini modal" id="update-modal">
+        <div class="ui icon header">
+            <i class="arrow circle down icon"></i>
+            Update
+        </div>
+        <div class="content">
+            <p>You are about to update the services. This will make the application unusable for a few minutes. Proceed?</p>
+        </div>
+        <div class="actions" style="display: flex; justify-content: space-between;">
+            <span class="ui green ok inverted button" on:click={update}>
+                <i class="checkmark icon"></i>Yes
+            </span>
+            <span class="ui red basic cancel inverted button">
+                <i class="remove icon"></i>No
+            </span>
+        </div>
+    </div>
+    <div class="ui basic mini modal" id="shutdown-modal">
+        <div class="ui icon header">
+            <i class="power off icon"></i>
+            Shutdown
+        </div>
+        <div class="content">
+            <p>Really shut down?</p>
+        </div>
+        <div class="actions" style="display: flex; justify-content: space-between;">
+            <span class="ui green ok inverted button" on:click={shutdown}>
+                <i class="checkmark icon"></i>Yes
+            </span>
+            <span class="ui red basic cancel inverted button">
+                <i class="remove icon"></i>No
+            </span>
+        </div>
+    </div>
     <div style="display: flex; justify-content: space-between; height: 100%;">
         <span class="ui compact button span" on:click|preventDefault={openSidebar}>
             {#if $isPepperConnected}
@@ -104,8 +176,11 @@
             <span id="logo-title" class="ui float right">Pepper</span>
         </span>
         <span class="span">
+            <button data-tooltip="Rebuild site" data-position="bottom right" data-inverted="" class="ui icon button serverbutton" on:click={confirmRebuild}>
+                <i class="large redo icon"></i>
+            </button>
             {#if update_ready}
-                <button id="update" data-tooltip="Update" data-position="bottom right" data-inverted="" class="ui icon button serverbutton" on:click={update}>
+                <button id="update" data-tooltip="Update" data-position="bottom right" data-inverted="" class="ui icon button serverbutton" on:click={confirmUpdate}>
                     <i class="large arrow circle down icon"></i>
                 </button>
             {:else if checking}
@@ -117,7 +192,7 @@
                     <i class="large sync alternate icon"></i>
                 </button>
             {/if}
-            <button data-tooltip="Shut Raspberry down" data-position="bottom right" data-inverted="" class="ui icon button serverbutton" on:click={shutdown}>
+            <button data-tooltip="Shut Raspberry down" data-position="bottom right" data-inverted="" class="ui icon button serverbutton" on:click={confirmShutdown}>
                 <i class="large power off icon"></i>
             </button>
             <i class="big grey server icon"></i>

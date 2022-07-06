@@ -41,17 +41,19 @@
             .then(response => response.json())
             .then((response) => {
                 if (response[id] === "action_error") {
-                    notify("negative", response["message"])
+                    notify("negative", response["message"]);
+                    markInactive(target);
                 } else if (response[id] !== "action_success") {
-                    notify("warning", response["message"])
+                    notify("warning", response["message"]);
+                    markInactive(target);
+                } else {
+                    markComplete(target);
                 }
             })
             .catch((err) => {
                 console.error(err);
                 notify("negative", err);
-            })
-            .finally(() => {
-                markComplete(target);
+                markInactive(target);
             })
     }
 
@@ -65,6 +67,14 @@
             }
         } else {
             markActive(element.parentElement);
+        }
+    }
+
+    function markInactive(element) {
+        if (element.tagName.toLowerCase() === "article") {
+            element.style.background = "";
+        } else {
+            markInactive(element.parentElement)
         }
     }
 
@@ -96,7 +106,6 @@
         event.dataTransfer.setData("text/plain", event.target.dataset.moveid);
         event.dataTransfer.dropEffect = "copy";
     }
-
 </script>
 
 <style>

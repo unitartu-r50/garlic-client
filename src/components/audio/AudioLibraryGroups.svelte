@@ -1,6 +1,5 @@
 <script>
     import {notify} from "../Helpers.svelte";
-    import {serverIPStore} from "../stores";
     import Instruction from "../Instruction.svelte";
 
     export let
