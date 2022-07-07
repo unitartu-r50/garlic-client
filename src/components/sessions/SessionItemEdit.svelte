@@ -33,6 +33,7 @@
             ID: null,
             UtteranceItem: {
                 Phrase: "",
+                Pronunciation: "",
                 FilePath: "",
                 Delay: 0
             },

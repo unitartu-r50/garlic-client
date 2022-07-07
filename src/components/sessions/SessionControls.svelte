@@ -268,7 +268,7 @@
     }
 
     function batchSynthesis() {
-        jQuery('.dimmer').dimmer('show');
+        jQuery('#batch-dimmer').dimmer('show');
         fetch(`http://` + window.location.hostname + ':8080/api/synthesis/batch?' + new URLSearchParams({voice: selectVoice.label}), {
             method: "POST",
             headers: {
@@ -293,7 +293,7 @@
                 notify("negative", err);
             })
             .finally(() => {
-                jQuery('.dimmer').dimmer('hide');
+                jQuery('#batch-dimmer').dimmer('hide');
             })
     }
 
@@ -373,18 +373,18 @@
         position: absolute;
     }
 </style>
-<div class="ui page dimmer">
+<div class="ui page dimmer" id="batch-dimmer">
     <div class="content">
         <i class="asterisk loading icon"></i>Synthesizing, please wait...
     </div>
   </div>
-<div class="ui basic mini modal" id="synthesis-modal">
+<div class="ui basic modal" id="synthesis-modal">
     <div class="ui icon header">
         <i class="wave square icon"></i>
         Batch synthesis
     </div>
     <div class="content">
-        <p>You are about to re-synthesize all voicelines. Proceed?
+        <p>You are about to re-synthesize all voicelines, replacing them. This process may take several minutes and can not be reversed. Proceed?
     </div>
     <div class="actions" style="display: flex; justify-content: space-between;">
         <span class="ui green ok inverted button" on:click={batchSynthesis}>

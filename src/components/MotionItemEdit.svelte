@@ -17,7 +17,7 @@
         motionItem = $motions.at(selectedMove.value);
     }
 
-    function resetMotionItem() {
+    function removeMotionItem() {
         motionItem.ID = null;
         motionItem.Name = "";
         motionItem.FilePath = "";
@@ -46,7 +46,7 @@
                 <input type="number" id="{motionItem.ID}.UtteranceItem.Delay" placeholder="0" style="padding-top: 8px !important;" bind:value={motionItem.Delay}>
             </span>
         </div>
-        <Select items={motions_list} bind:value={selectedMove} placeholder="Search for a move" {groupBy} on:select={handleMoveSelect} on:clear={resetMotionItem}/>
+        <Select items={motions_list} bind:value={selectedMove} placeholder="Search for a move" {groupBy} on:select={handleMoveSelect} on:clear={removeMotionItem}/>
         <label class="my1" for="{motionItem.ID}.MotionItem.Delay">Move delay, s:
             <input type="number" id="{motionItem.ID}.MotionItem.Delay" name="MotionItem.Delay"
                    bind:value={motionItem.Delay}>

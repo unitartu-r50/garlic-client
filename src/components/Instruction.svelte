@@ -59,7 +59,6 @@
 
     function markActive(element) {
         if (element.tagName.toLowerCase() === "article") {
-            console.log(element.style.border === "4px solid rgba(159, 255, 159, 0.35)", element.style.border);
             if (element.style.border === "4px solid rgba(159, 255, 159, .35)") {
                 element.style.background = "rgba(159, 255, 159, .15)";
             } else {

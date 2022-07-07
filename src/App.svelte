@@ -13,20 +13,34 @@
         $motionsFetchNeeded = true;
     }
 </script>
-
+<style>
+    #shortcut-sidebar:after {
+        content: "";
+        position: absolute;
+        z-index: 1;
+        bottom: 0;
+        left: 0;
+        pointer-events: none;
+        background-image: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255, 1) 90%);
+        width: 100%;
+        height: 4em;
+    }
+</style>
 <ConnectionSidebar/>
 <div class="pusher">
     <SiteHeader/>
-    <div class="ui grid" style="width: 100%;">
-        <div class="eleven wide column">
+    <div class="ui grid" style="width: 100%; height: calc(100vh - 57px); padding-left: 14px;">
+        <div class="eleven wide column" style="height: 100%; overflow: scroll;">
             <SessionsPage bind:isFetchNeeded={isSessionsFetchNeeded}/>
         </div>
-        <div class="five wide column">
-            <div style="position: sticky; top: 0;">
-                <div class="ui fitted horizontal divider">Shortcuts</div>
-                <ActionLibrary/>
-                <AudioLibrary/>
-                <MotionLibrary/>
+        <div id="shortcut-sidebar" class="five wide column" style="height: 100%; width: 100%; padding: 0 0 14px 14px;">
+            <div style="overflow: auto; height: 100%; width: 100%; padding: 0;">
+                <div style="width: calc(100% - 10px);">
+                    <div class="ui fitted horizontal divider" style="padding-top: 14px;">Shortcuts</div>
+                    <ActionLibrary/>
+                    <AudioLibrary/>
+                    <MotionLibrary/>
+                </div>
             </div>
         </div>
     </div>

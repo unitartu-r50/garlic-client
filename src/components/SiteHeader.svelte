@@ -91,7 +91,7 @@
         background: #9FF1FF;
         width: 100%;
         height: 57px;
-        margin-bottom: 10px;
+        margin-bottom: 14px;
     }
 
     .span {
