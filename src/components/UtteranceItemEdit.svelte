@@ -78,7 +78,7 @@
             utteranceItem.Pronunciation = "";
             phraseLinked = true;
         }
-        jQuery('#audio-dimmer').dimmer('show');
+        jQuery('#audio-dimmer').dimmer({closable:false}).dimmer('show');
         fetch('http://' + window.location.hostname + ':8080/api/synthesis?' + new URLSearchParams({voice: $speaker}), {
             method: 'POST',
             headers: {
@@ -146,7 +146,7 @@
 </style>
 
 {#if utteranceItem}
-    <section style="min-width: 450px; float:left">
+    <section style="min-width: 450px;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
             <h3 style="margin: 0;">Audio</h3>
             <span class="ui labeled input">

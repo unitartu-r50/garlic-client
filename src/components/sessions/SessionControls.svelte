@@ -201,12 +201,29 @@
             console.error("can't find #import-session-file in the document");
             return
         }
+        let filename = el.files[0].name;
+        if (!filename.endsWith(".zip")) {
+            notify("negative", "Please upload a session in ZIP format.")
+            return;
+        }
+        let name = filename.replace('.zip', '');
 
+        for (let index = 0; index < sessions.length; index++) {
+            if (sessions.at(index).Name === name) {
+                let confirmation = window.confirm('A session with this name already exists! Overwrite?');
+                if (!confirmation) {
+                    return;
+                }
+                break;
+            }
+        }
+        console.log(el.files[0])
+
+        jQuery('#import-dimmer').dimmer({closable:false}).dimmer('show');
         const reader = new FileReader();
         reader.addEventListener('load', (e) => {
             let data = new FormData();
             data.append("file_content", el.files[0]);
-
             fetch('http://' + window.location.hostname + ':8080/api/upload/session', {
                 method: "POST",
                 body: data
@@ -221,15 +238,24 @@
                     return r.json();
                 })
                 .then(r => {
-                    notify("positive", r.message);
-                    el.value = "";
-                    currentSessionIndex = sessions.length;
-                    currentSession = null;
-                    isFetchNeeded = true;
+                    if (r['error']) {
+                        notify("negative", r.error);
+                    } else {
+                        notify("positive", r.message);
+                        el.value = "";
+                        console.log(r);
+                        currentSessionIndex = r.session_index;
+                        console.log(currentSessionIndex);
+                        currentSession = null;
+                        isFetchNeeded = true;
+                    }
                 })
                 .catch(err => {
                     console.error(err);
                     notify("negative", err);
+                })
+                .finally(() => {
+                    jQuery('#import-dimmer').dimmer('hide');
                 })
         })
         reader.readAsArrayBuffer(el.files[0]);
@@ -268,7 +294,7 @@
     }
 
     function batchSynthesis() {
-        jQuery('#batch-dimmer').dimmer('show');
+        jQuery('#batch-dimmer').dimmer({closable:false}).dimmer('show');
         fetch(`http://` + window.location.hostname + ':8080/api/synthesis/batch?' + new URLSearchParams({voice: selectVoice.label}), {
             method: "POST",
             headers: {
@@ -377,7 +403,12 @@
     <div class="content">
         <i class="asterisk loading icon"></i>Synthesizing, please wait...
     </div>
-  </div>
+</div>
+<div class="ui page dimmer" id="import-dimmer">
+    <div class="content">
+        <i class="asterisk loading icon"></i>Importing session, please wait...
+    </div>
+</div>
 <div class="ui basic modal" id="synthesis-modal">
     <div class="ui icon header">
         <i class="wave square icon"></i>
@@ -400,7 +431,7 @@
         {#if !inEditMode}
             <span style="font-weight: bold; font-size: 20px; width: 30%;">
                 <Select id="session-select" items={sessions_list} showIndicator={true} isDisabled={!sessions_list} bind:value={selectItem} on:select={handleSessionChange}
-                    isClearable={false} listOffset={0} placeholder="Select a session..."></Select>
+                    isClearable={false} listOffset={0} listPlacement={'bottom'} placeholder="Select a session..."></Select>
             </span>
         {:else}
             <span class="ui labeled input">

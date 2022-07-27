@@ -31,7 +31,7 @@
 
 
     function confirmRebuild() {
-        jQuery('#rebuild-modal').modal('show');
+        jQuery('#rebuild-modal').dimmer({closable:false}).modal('show');
     }
 
     function rebuild() {
@@ -45,7 +45,7 @@
     }
 
     function confirmUpdate() {
-        jQuery('#update-modal').modal('show');
+        jQuery('#update-modal').dimmer({closable:false}).modal('show');
     }
 
     function update() {
@@ -60,7 +60,7 @@
     }
 
     function confirmShutdown() {
-        jQuery('#shutdown-modal').modal('show');
+        jQuery('#shutdown-modal').dimmer({closable:false}).modal('show');
     }
 
     function shutdown() {

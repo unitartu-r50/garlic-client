@@ -154,31 +154,32 @@
     .full-width {
         width: 100%;
     }
-
-    label {
-        display: block;
-    }
 </style>
 
 <form class="my2">
     <fieldset class="m0 mb2">
         <legend class="h5 m0 bold caps mb1">Adding an action</legend>
         <div class="full-width">
-            <div class="mb3">
-                <label for="action-lib-new-name" class="mb1">Name:
-                    <input type="text" id="action-lib-new-name" bind:value={item.Name} required>
-                </label>
-                <label for="action-lib-new-group" class="mb1">Group:
-                    <input type="text" id="action-lib-new-group" bind:value={item.Group} required>
-                </label>
+            <div class="mb3" style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                <span class="ui small labeled input">
+                    <div class="ui label">Name:</div>
+                    <input type="text" bind:value={item.Name} required>
+                </span>
+                <span class="ui small labeled input">
+                    <div class="ui label">Group:</div>
+                    <input type="text" bind:value={item.Group} required>
+                </span>
             </div>
             <UtteranceItemEdit bind:utteranceItem={item.UtteranceItem}/>
+            <div class="ui divider"></div>
             <MotionItemEdit bind:motionItem={item.MotionItem}/>
+            <div class="ui divider"></div>
             <ImageItemEdit bind:imageItem={item.ImageItem}/>
+            <div class="ui divider"></div>
             <URLItemEdit bind:URLItem={item.URLItem}/>
-            <div class="mt3">
-                <button on:click|preventDefault={add}>Add</button>
-                <button on:click|preventDefault={cancelForm}>Cancel</button>
+            <div class="mt3" style="display: flex; justify-content: flex-end;">
+                <button class="ui green button" on:click|preventDefault={add}>Add</button>
+                <button class="ui red button" on:click|preventDefault={cancelForm}>Cancel</button>
             </div>
         </div>
     </fieldset>
