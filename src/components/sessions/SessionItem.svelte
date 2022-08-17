@@ -7,41 +7,35 @@
 </script>
 
 <style>
-    .session-item {
-        display: grid;
-        grid-template-columns: 5fr 2fr;
-        grid-gap: .3rem;
-    }
-
-    @media (max-width: 1080px) {
-        .session-item {
-            grid-template-columns: 50% 50%;
-        }
-    }
-
-    .answers {
-        display: grid;
-        grid-template-rows: 1fr 1fr;
-        grid-gap: .3rem;
+    .column {
+        padding: 0 !important;
     }
 </style>
 
-<div class="session-item my2">
+<div class="ui centered grid" style="margin: 14px 0;">
     {#if item.Actions.length > 0}
+    <div class="sixteen wide column">
         <Instruction item="{item.Actions[0]}"
                      name="{item.Actions[0].UtteranceItem.Phrase}"
                      index="{itemIndex}"
-                     expanded={true}/>
-        <div class="answers">
-            {#each item.Actions as action, actionIndex}
-                {#if actionIndex > 0}
-                    <Instruction item="{action}"
-                                 name="{action.UtteranceItem.Phrase}"
-                                 index="{itemIndex}"/>
-                {/if}
-            {/each}
-        </div>
+                     expanded={true}
+                     border_radius={item.Actions.length > 1 ? 'border-radius: 20px 20px 0 0;' : 'border-radius: 20px;'}/>
+    </div>
+        {#each item.Actions as action, actionIndex}
+            {#if actionIndex > 0}
+            <div class="eight wide column">
+                <Instruction item="{action}"
+                                name="{action.UtteranceItem.Phrase}"
+                                index="{itemIndex}"/>
+            </div>
+            {/if}
+        {/each}
     {:else}
+    <div class="sixteen wide column">
         <EmptyInstruction index={itemIndex}></EmptyInstruction>
+    </div>
     {/if}
 </div>
+{#if item.Actions.length > 1}
+<div class="ui hidden divider"></div>
+{/if}

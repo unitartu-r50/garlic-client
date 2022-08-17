@@ -20,7 +20,7 @@
     }
 </style>
 
-<article class="instruction">
+<article class="instruction" style="border-radius: 20px;">
     <p>Question {index + 1}</p>
 </article>
 

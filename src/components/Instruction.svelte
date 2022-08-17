@@ -8,7 +8,9 @@
         index = 0,
         expanded = false,
         small = false,
-        isDraggable = false;
+        isDraggable = false,
+        border_radius = '';
+        
 
     let isMobile = false;
 
@@ -134,14 +136,15 @@
 <article id="instruction-{getID(item)}"
          class="instruction"
          class:items-start={!expanded}
+         style="{border_radius}"
          draggable={isDraggable}
          on:dragstart={dragStartHandler}
          data-moveid={(isDraggable && item.MotionItem) ? item.MotionItem.ID : 'undefined ID'}
          on:click={sendInstruction(getID(item), window.location.hostname, this)}>
     {#if expanded}
-        <p class="h6 m0 bold caps {isMobile ? 'mb2' : 'mb4'}">Question {index + 1}</p>
+        <p class="h6 m0 bold caps {isMobile ? 'mb2' : 'mb4'}" style="margin-bottom: 14px;">Question {index + 1}</p>
     {:else}
-        <p class="m0 mb1" class:instruction-name="{!small}">{truncateLongString(name)}</p>
+        <p class="m0 mb1" class:instruction-name="{!small}">{name}</p>
     {/if}
     <div>
         {#if expanded}
