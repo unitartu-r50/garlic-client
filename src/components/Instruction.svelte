@@ -136,7 +136,7 @@
 <article id="instruction-{getID(item)}"
          class="instruction"
          class:items-start={!expanded}
-         style="{border_radius}"
+         style="{border_radius} min-height: 100%;"
          draggable={isDraggable}
          on:dragstart={dragStartHandler}
          data-moveid={(isDraggable && item.MotionItem) ? item.MotionItem.ID : 'undefined ID'}
