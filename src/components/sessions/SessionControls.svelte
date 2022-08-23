@@ -142,6 +142,7 @@
         inEditMode = false;
         inPresentationMode = true;
         currentSession = null;
+        selectItem = null;
         isFetchNeeded = true;
     }
 
@@ -261,13 +262,12 @@
         reader.readAsArrayBuffer(el.files[0]);
     }
 
-    // TODO: USE ME
     function exportSession() {
         if (currentSession == null) {
             return;
         }
 
-        fetch(`http://` + window.location.hostname + `:8080/api/session_export/${currentSession.ID}`, {
+        fetch('http://' + window.location.hostname + `:8080/api/export_session/${currentSession.ID}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json"
@@ -281,7 +281,7 @@
             })
             .then(r => {
                 notify("positive", r.message);
-                window.open(`http://` + window.location.hostname + `:8080/${r.relative_path}`);
+                window.open('http://' + window.location.hostname + `:8080/${r.relative_path}`);
             })
             .catch(err => {
                 console.error(err);
@@ -398,6 +398,9 @@
         top: -999999px;
         position: absolute;
     }
+    .mode-button {
+        background-color: #c0c1c2;
+    }
 </style>
 <div class="ui page dimmer" id="batch-dimmer">
     <div class="content">
@@ -453,10 +456,10 @@
 <div class="ui clearing divider" style="margin: 8px 0 5px 0;"></div>
 <div style="display: flex; justify-content: space-between;">
     <span style="margin-top: 3px;">
-        <span data-tooltip={inEditMode ? "Finish editing first!" : null} data-inverted="" class="display: inline">
+        <span data-tooltip={inEditMode ? "Finish editing first!" : null} data-inverted="">
             <button class="ui{inEditMode === true ? ' disabled' : ''} button" on:click|preventDefault={add}>Create session</button>
         </span>
-        <span data-tooltip={inEditMode ? "Finish editing first!" : null} data-inverted="" class="display: inline">
+        <span data-tooltip={inEditMode ? "Finish editing first!" : null} data-inverted="">
             <form class="ui form" style="display: inline;">
                 <label for="import-session-file" class="ui{inEditMode === true ? ' disabled' : ''} icon button">
                     <i class="upload icon"></i>
@@ -471,19 +474,22 @@
         {:else}
             {#if currentSession}
                 {#if inPresentationMode}
-                    <button class="ui button" on:click|preventDefault={() => {inPresentationMode = !inPresentationMode}}>Detailed mode</button>
+                    <button class="ui button mode-button" on:click|preventDefault={() => {inPresentationMode = !inPresentationMode}}>Detailed mode</button>
                 {:else}
                     {#if inEditMode}
                     <button class="ui button" on:click={save}>Save</button>
                     <button class="ui button" on:click={cancelEdit}>Cancel</button>
                     {:else}
-                        <button class="ui button" on:click|preventDefault={() => {inPresentationMode = !inPresentationMode}}>Presentation mode</button>
+                        <button class="ui button mode-button" on:click|preventDefault={() => {inPresentationMode = !inPresentationMode}}>Presentation mode</button>
                         <button class="ui button" on:click={edit}>Edit</button>
                     {/if}
                     <button class="ui button" on:click|preventDefault={remove} data-id="{currentSession.ID}" data-name="{currentSession.Name}">Remove</button>
                     {#if !inEditMode}
-                        <span data-tooltip="Coming soon!" data-inverted="" class="display: inline">
-                            <button class="ui disabled button" on:click|preventDefault={exportSession}>Export</button>
+                        <span>
+                            <button class="ui button" on:click|preventDefault={exportSession}>
+                                <i class="download icon"></i>
+                                Export
+                            </button>
                         </span>
                     {/if}
                 {/if}
