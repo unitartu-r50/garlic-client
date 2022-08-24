@@ -42,7 +42,9 @@
         })
             .then(response => response.json())
             .then((response) => {
-                if (response[id] === "action_error") {
+                if (response[id] == "action_retry_required") {
+                    sendInstruction(id, serverIP, target);
+                } else if (response[id] === "action_error") {
                     notify("negative", response["message"]);
                     markInactive(target);
                 } else if (response[id] !== "action_success") {
