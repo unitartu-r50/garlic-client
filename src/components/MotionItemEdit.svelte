@@ -26,30 +26,15 @@
     }
 </script>
 
-<style>
-
-    input[type=number] {
-        width: 5em;
-    }
-
-    label {
-        display: block;
-    }
-</style>
-
 {#if motionItem}
     <section>
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
             <h3 style="margin: 0;">Motion</h3>
             <span class="ui labeled input">
                 <span class="ui label">Motion delay (s):</span>
-                <input type="number" id="{motionItem.ID}.UtteranceItem.Delay" placeholder="0" style="padding-top: 8px !important;" bind:value={motionItem.Delay}>
+                <input type="number" id="{motionItem.ID}.UtteranceItem.Delay" placeholder="0" style="padding-top: 8px !important; width: 5em;" bind:value={motionItem.Delay}>
             </span>
         </div>
         <Select items={motions_list} bind:value={selectedMove} placeholder="Search for a move" {groupBy} on:select={handleMoveSelect} on:clear={removeMotionItem}/>
-        <label class="my1" for="{motionItem.ID}.MotionItem.Delay">Move delay, s:
-            <input type="number" id="{motionItem.ID}.MotionItem.Delay" name="MotionItem.Delay"
-                   bind:value={motionItem.Delay}>
-        </label>
     </section>
 {/if}

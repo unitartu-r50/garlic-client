@@ -124,16 +124,6 @@
         background: rgba(228, 249, 254, .5);
     }
 
-    .col-2 {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        grid-gap: 2em;
-    }
-
-    .full-width {
-        width: 100%;
-    }
-
     .item {
         border: 4px solid rgba(159, 241, 255, .35);
         border-radius: .5em;
@@ -151,11 +141,17 @@
                 {:else}
                     <legend class="h5 m0 bold caps mb1">Action</legend>
                 {/if}
-                <div class="col-2 full-width">
-                    <UtteranceItemEdit bind:utteranceItem={action.UtteranceItem}/>
-                    <MotionItemEdit bind:motionItem={action.MotionItem}/>
-                    <ImageItemEdit bind:imageItem={action.ImageItem}/>
-                    <URLItemEdit bind:URLItem={action.URLItem}/>
+                <div style="display: flex; flex-wrap: wrap; justify-content: space-between;">
+                    <span style="flex-basis: 50%; flex-grow: 9999; padding: 14px;">
+                        <UtteranceItemEdit bind:utteranceItem={action.UtteranceItem}/>
+                    </span>
+                    <span style="flex-basis: 50%; flex-grow: 1; padding: 14px;">
+                        <MotionItemEdit bind:motionItem={action.MotionItem}/>
+                        <div class="ui hidden divider"></div>
+                        <ImageItemEdit bind:imageItem={action.ImageItem}/>
+                        <div class="ui hidden divider"></div>
+                        <URLItemEdit bind:URLItem={action.URLItem}/>
+                    </span>
                 </div>
                 <button on:click|preventDefault={removeAction} data-index="{i}" class="m0 mt3">
                     Remove the action

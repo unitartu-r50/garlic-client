@@ -158,6 +158,9 @@
                 <input type="number" id="{utteranceItem.ID}.UtteranceItem.Delay" placeholder="0" style="padding-top: 8px !important;" bind:value={utteranceItem.Delay}>
             </span>
         </div>
+        {#if !phraseLinked}
+        <h4 style="margin: 5px 0 2px 0;">Phrase</h4>
+        {/if}
         <textarea class="full-width"
                     placeholder="Enter a phrase..."
                     name="phrase"
