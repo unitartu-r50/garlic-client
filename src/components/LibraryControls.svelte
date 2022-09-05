@@ -16,13 +16,13 @@
     }
 </script>
 
-<div class="mb2">
+<span style="display: flex; flex-wrap: nowrap;">
     {#if !inAddMode}
-        <button class="m0" on:click|preventDefault={toggleAdd}>Add</button>
+        <button class="ui button" on:click|preventDefault={toggleAdd}>Add</button>
     {/if}
     {#if !inEditMode}
-        <button class="m0" on:click|preventDefault={toggleEdit}>Edit</button>
+        <button class="ui button" on:click|preventDefault={toggleEdit}>Edit</button>
     {:else}
-        <button class="m0" on:click|preventDefault={toggleEdit}>Done</button>
+        <button class="ui button" on:click|preventDefault={toggleEdit}>Done</button>
     {/if}
-</div>
+</span>

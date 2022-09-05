@@ -37,10 +37,12 @@
 </script>
 
 <CollapsibleLibrary title="Motions">
-    <LibraryControls bind:inAddMode={inAddMode} bind:inEditMode={inEditMode}/>
     {#if inAddMode}
         <MotionLibraryItemEdit bind:inAddMode={inAddMode} search={search}/>
     {/if}
-    <Search {search}/>
+    <div style="display: flex;">
+        <LibraryControls bind:inAddMode={inAddMode} bind:inEditMode={inEditMode}/>
+        <Search {search}/>
+    </div>
     <MotionLibraryGroups bind:itemsByGroup={itemsByGroup} {inEditMode}/>
 </CollapsibleLibrary>

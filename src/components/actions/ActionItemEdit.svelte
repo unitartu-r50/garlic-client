@@ -6,44 +6,50 @@
     import URLItemEdit from "../URLItemEdit.svelte";
     import { motionsFetchNeeded } from '../stores'
 
-    export let inAddMode, fetchNeeded;
-
-    let item = {
-        ID: null,
-        Name: "",
-        Group: "Default",
-        UtteranceItem: {
-            ID: null,
-            Phrase: "",
-            FilePath: "",
-            Delay: 0
-        },
-        MotionItem: {
+    export let
+        inAddMode,
+        fetchNeeded,
+        actionEdit = false,
+        item = {
             ID: null,
             Name: "",
-            FilePath: "",
-            Delay: 0,
-            Group: ""
-        },
-        ImageItem: {
-            ID: null,
-            Name: "",
-            FilePath: "",
-            Delay: 0,
-            Group: ""
-        },
-        URLItem: {
-            ID: null,
-            Name: "",
-            URL: "",
-            Delay: 0,
-            Group: ""
-        }
-    };
+            Group: "Default",
+            UtteranceItem: {
+                ID: null,
+                Phrase: "",
+                FilePath: "",
+                Delay: 0
+            },
+            MotionItem: {
+                ID: null,
+                Name: "",
+                FilePath: "",
+                Delay: 0,
+                Group: ""
+            },
+            ImageItem: {
+                ID: null,
+                Name: "",
+                FilePath: "",
+                Delay: 0,
+                Group: ""
+            },
+            URLItem: {
+                ID: null,
+                Name: "",
+                URL: "",
+                Delay: 0,
+                Group: ""
+            }
+        };
 
     function cancelForm() {
-        resetNewFormItem();
-        inAddMode = false;
+        if (actionEdit) {
+            actionEdit = false;
+        } else {
+            resetNewFormItem();
+            inAddMode = false;
+        }
     }
 
     function add() {
@@ -80,6 +86,32 @@
                 }
                 inAddMode = false;
                 resetNewFormItem();
+            })
+            .catch((err) => {
+                console.error(err);
+                notify("negative", err);
+            });
+    }
+
+    function edit() {
+        console.log("Saving action", item);
+        fetch(`http://` + window.location.hostname + `:8080/api/actions/${item.ID}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(item)
+        })
+            .then(response => response.json())
+            .then((response) => {
+                console.log("server response:", response);
+                if ("error" in response) {
+                    notify("negative", response["error"]);
+                } else {
+                    notify("positive", response["message"]);
+                    fetchNeeded = true;
+                    actionEdit = false;
+                }
             })
             .catch((err) => {
                 console.error(err);
@@ -178,7 +210,11 @@
             <div class="ui divider"></div>
             <URLItemEdit bind:URLItem={item.URLItem}/>
             <div class="mt3" style="display: flex; justify-content: flex-end;">
+                {#if inAddMode}
                 <button class="ui green button" on:click|preventDefault={add}>Add</button>
+                {:else}
+                <button class="ui green button" on:click|preventDefault={edit}>Save</button>
+                {/if}
                 <button class="ui red button" on:click|preventDefault={cancelForm}>Cancel</button>
             </div>
         </div>

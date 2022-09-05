@@ -1,6 +1,7 @@
 <script>
     import {notify} from "./Helpers.svelte";
     import InstructionIcon from "./InstructionIcon.svelte";
+    import ActionItemEdit from "./actions/ActionItemEdit.svelte";
 
     export let
         item,
@@ -9,22 +10,17 @@
         expanded = false,
         small = false,
         isDraggable = false,
-        border_radius = '';
-        
+        border_radius = '',
+        inEditMode = false,
+        isFetchNeeded = false;
 
     let isMobile = false;
+    let actionEdit = false;
 
     $: isMobile = window.screen.width <= 1280;
 
-    function truncateLongString(value) {
-        // truncate on desktop, mobile has different layout, no need to truncate there
-        if (!isMobile) {
-            const maxAllowedChars = 40;
-            if (value.length > maxAllowedChars) {
-                return value.substring(0, maxAllowedChars) + "...";
-            }
-        }
-        return value;
+    $: if (!inEditMode) {
+        actionEdit = false;
     }
 
     async function sendInstruction(id, serverIP, target) {
@@ -109,6 +105,36 @@
         event.dataTransfer.setData("text/plain", event.target.dataset.moveid);
         event.dataTransfer.dropEffect = "copy";
     }
+
+    function editAction() {
+        actionEdit = true;
+    }
+
+    function removeAction() {
+
+        let confirmation = window.confirm(`Are you sure you want to remove the action: ${name}?`);
+        if (!confirmation) {
+            return;
+        }
+
+        fetch(`http://` + window.location.hostname + `:8080/api/actions/${item.ID}`, {
+            method: "DELETE"
+        })
+            .then(response => response.json())
+            .then((response) => {
+                console.log("server response:", response);
+                if (response["error"] && response["error"].length > 0) {
+                    notify("negative", response["error"]);
+                } else {
+                    notify("positive", response["message"]);
+                    isFetchNeeded = true;
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+                notify("negative", err);
+            });
+    }
 </script>
 
 <style>
@@ -135,6 +161,11 @@
     }
 </style>
 
+{#if (inEditMode && actionEdit)}
+<div style="grid-column-start: 1; grid-column-end: 3;">
+    <ActionItemEdit inAddMode={false} bind:fetchNeeded={isFetchNeeded} bind:actionEdit={actionEdit} bind:item={item}></ActionItemEdit>
+</div>
+{:else}
 <article id="instruction-{getID(item)}"
          class="instruction"
          class:items-start={!expanded}
@@ -146,7 +177,17 @@
     {#if expanded}
         <p class="h6 m0 bold caps {isMobile ? 'mb2' : 'mb4'}" style="margin-bottom: 14px;">Question {index + 1}</p>
     {:else}
-        <p class="m0 mb1" class:instruction-name="{!small}">{name}</p>
+        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+            <p class:instruction-name="{!small}" style="margin: 0;">{name}</p>
+            <span style={(small && inEditMode) ? 'visibility: visible;' : 'visibility: hidden;'}>
+                <button class="ui tiny basic icon button" on:click|stopPropagation={editAction}>
+                    <i class="edit icon"></i>
+                </button>
+                <button class="ui tiny basic icon button" on:click|stopPropagation={removeAction}>
+                    <i class="red trash alternate outline icon"></i>
+                </button>
+            </span>
+        </div>
     {/if}
     <div>
         {#if expanded}
@@ -166,4 +207,5 @@
         {/if}
     </div>
 </article>
+{/if}
 

@@ -38,10 +38,12 @@
 </script>
 
 <CollapsibleLibrary title="Actions" isCollapsed={false}>
-    <LibraryControls bind:inAddMode={inAddMode} bind:inEditMode={inEditMode}/>
     {#if inAddMode}
         <ActionItemEdit bind:inAddMode={inAddMode} bind:fetchNeeded={isFetchNeeded}/>
     {/if}
-    <Search {search}/>
+    <div style="display: flex;">
+        <LibraryControls bind:inAddMode={inAddMode} bind:inEditMode={inEditMode}/>
+        <Search {search}/>
+    </div>
     <ActionLibraryGroups bind:isFetchNeeded={isFetchNeeded} bind:itemsByGroup={itemsByGroup} {inEditMode}/>
 </CollapsibleLibrary>

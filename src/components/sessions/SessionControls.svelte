@@ -454,50 +454,54 @@
     </div>
 </div>
 <div class="ui clearing divider" style="margin: 8px 0 5px 0;"></div>
-<div style="display: flex; justify-content: space-between;">
-    <span style="margin-top: 3px;">
-        <span data-tooltip={inEditMode ? "Finish editing first!" : null} data-inverted="">
-            <button class="ui{inEditMode === true ? ' disabled' : ''} button" on:click|preventDefault={add}>Create session</button>
+<div style="display: flex; justify-content: space-between; flex-wrap: nowrap;">
+    <span style="margin-top: 3px; display: flex; flex-wrap: wrap;">
+        <span>
+            <span data-tooltip={inEditMode ? "Finish editing first!" : null} data-inverted="">
+                <button class="ui{inEditMode === true ? ' disabled' : ''} button" on:click|preventDefault={add}>Create session</button>
+            </span>
+            <span data-tooltip={inEditMode ? "Finish editing first!" : null} data-inverted="">
+                <form class="ui form" style="display: inline;">
+                    <label for="import-session-file" class="ui{inEditMode === true ? ' disabled' : ''} icon button">
+                        <i class="upload icon"></i>
+                        Import session
+                    </label>
+                    <input type="file" id="import-session-file" class="ui file input"
+                        accept="zip,application/octet-stream,application/zip,application/x-zip,application/x-zip-compressed" on:change={importSession}>
+                </form>
+            </span>
         </span>
-        <span data-tooltip={inEditMode ? "Finish editing first!" : null} data-inverted="">
-            <form class="ui form" style="display: inline;">
-                <label for="import-session-file" class="ui{inEditMode === true ? ' disabled' : ''} icon button">
-                    <i class="upload icon"></i>
-                    Import session
-                </label>
-                <input type="file" id="import-session-file" class="ui file input"
-                       accept="zip,application/octet-stream,application/zip,application/x-zip,application/x-zip-compressed" on:change={importSession}>
-            </form>
-        </span>
-        {#if !sessions && sessions.length === 0}
-            <p><em>No sessions found.</em></p>
-        {:else}
-            {#if currentSession}
-                {#if inPresentationMode}
-                    <button class="ui button mode-button" on:click|preventDefault={() => {inPresentationMode = !inPresentationMode}}>Detailed mode</button>
-                {:else}
-                    {#if inEditMode}
-                    <button class="ui button" on:click={save}>Save</button>
-                    <button class="ui button" on:click={cancelEdit}>Cancel</button>
+        <span>
+            {#if !sessions && sessions.length === 0}
+                <p><em>No sessions found.</em></p>
+            {:else}
+                {#if currentSession}
+                    {#if inPresentationMode}
+                        <button class="ui button mode-button" on:click|preventDefault={() => {inPresentationMode = !inPresentationMode}}>Detailed mode</button>
                     {:else}
-                        <button class="ui button mode-button" on:click|preventDefault={() => {inPresentationMode = !inPresentationMode}}>Presentation mode</button>
-                        <button class="ui button" on:click={edit}>Edit</button>
-                    {/if}
-                    <button class="ui button" on:click|preventDefault={remove} data-id="{currentSession.ID}" data-name="{currentSession.Name}">Remove</button>
-                    {#if !inEditMode}
-                        <span>
-                            <button class="ui button" on:click|preventDefault={exportSession}>
-                                <i class="download icon"></i>
-                                Export
-                            </button>
-                        </span>
+                        {#if inEditMode}
+                        <button class="ui button" on:click={save}>Save</button>
+                        <button class="ui button" on:click={cancelEdit}>Cancel</button>
+                        {:else}
+                            <button class="ui button mode-button" on:click|preventDefault={() => {inPresentationMode = !inPresentationMode}}>Presentation mode</button>
+                            <button class="ui button" on:click={edit}>Edit</button>
+                        {/if}
+                        <button class="ui button" on:click|preventDefault={remove} data-id="{currentSession.ID}" data-name="{currentSession.Name}">Remove</button>
+                        {#if !inEditMode}
+                            <span>
+                                <button class="ui button" on:click|preventDefault={exportSession}>
+                                    <i class="download icon"></i>
+                                    Export
+                                </button>
+                            </span>
+                        {/if}
                     {/if}
                 {/if}
             {/if}
-        {/if}
+        </span>
     </span>
     {#if inPresentationMode}
-        <span style="margin-top: 3px;">
+        <span style="margin-top: 3px; display: flex; flex-wrap: nowrap;">
             <button on:click|preventDefault={previousQuestion} class="ui icon button"><i class="arrow left icon"></i></button>
             <button on:click|preventDefault={nextQuestion} class="ui icon button"><i class="arrow right icon"></i></button>
         </span>

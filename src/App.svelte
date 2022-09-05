@@ -3,7 +3,6 @@
     import SiteHeader from './components/SiteHeader.svelte';
     import ConnectionSidebar from './components/ConnectionSidebar.svelte';
     import SessionsPage from './components/sessions/SessionsPage.svelte';
-    import AudioLibrary from './components/audio/AudioLibrary.svelte';
     import MotionLibrary from './components/motions/MotionLibrary.svelte';
     import ActionLibrary from './components/actions/ActionLibrary.svelte';
 
@@ -30,15 +29,14 @@
 <div class="pusher">
     <SiteHeader/>
     <div class="ui grid" style="width: 100%; height: calc(100vh - 57px); padding-left: 14px;">
-        <div class="eleven wide column" style="height: 100%; overflow: scroll;">
+        <div class="ten wide column" style="height: 100%; overflow: scroll;">
             <SessionsPage bind:isFetchNeeded={isSessionsFetchNeeded}/>
         </div>
-        <div id="shortcut-sidebar" class="five wide column" style="height: 100%; width: 100%; padding: 0 0 14px 14px;">
+        <div id="shortcut-sidebar" class="six wide column" style="height: 100%; width: 100%; padding: 0 0 14px 14px;">
             <div style="overflow: auto; height: 100%; width: 100%; padding: 0;">
                 <div style="width: calc(100% - 10px);">
                     <div class="ui fitted horizontal divider" style="padding-top: 14px;">Shortcuts</div>
                     <ActionLibrary/>
-                    <AudioLibrary/>
                     <MotionLibrary/>
                 </div>
             </div>
