@@ -12,7 +12,7 @@
     }
 </style>
 
-<div class="ui grid" style="margin: 14px 0 14px 0;">
+<div class="ui centered grid" style="margin: 14px 0 14px 0;">
     {#if currentPresentationItem && currentPresentationItem.Actions.length > 0}
     <div class="sixteen wide column">
         <Instruction item="{currentPresentationItem.Actions[0]}"
