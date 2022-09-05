@@ -69,7 +69,7 @@
         audio.play();
     }
 
-    function synthesize() {
+    function synthesize(event) {
         if (utteranceItem.Phrase === "") {
             notify("negative", "Enter a phrase to synthesize!");
             return;
@@ -78,7 +78,7 @@
             utteranceItem.Pronunciation = "";
             phraseLinked = true;
         }
-        jQuery('#audio-dimmer').dimmer({closable:false}).dimmer('show');
+        jQuery(event.target.parentElement).dimmer({closable:false}).dimmer('show');
         fetch('http://' + window.location.hostname + ':8080/api/synthesis?' + new URLSearchParams({voice: $speaker}), {
             method: 'POST',
             headers: {
@@ -103,7 +103,7 @@
             notify("negative", err);
         })
         .finally(() => {
-            jQuery('#audio-dimmer').dimmer('hide');
+            jQuery(event.target.parentElement).dimmer('hide');
         })
     }
 
@@ -179,7 +179,7 @@
             <span>
                 <span class="ui blurring buttons" id="audio-src-span">
                     <button class="ui icon button" on:click|preventDefault={synthesize}><i class="magic icon" style="border-radius: .28571429rem; margin-right: 6px !important;"></i>Synthesize</button>
-                    <span class="ui inverted dimmer" id="audio-dimmer"></span>
+                    <span class="ui inverted dimmer"></span>
                     <span class="or"></span>
                     <form class="ui form" style="display: inline;">
                         <label for="{utteranceItem.ID ? utteranceItem.ID : id_placeholder}-speechupload" class="ui icon button" style="border-radius: 0 .28571429rem .28571429rem 0;">
