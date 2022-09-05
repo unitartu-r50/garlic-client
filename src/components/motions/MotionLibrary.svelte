@@ -1,5 +1,5 @@
 <script>
-    import {filterByGroup} from '../Helpers.svelte';
+    import {filterByGroup, notify} from '../Helpers.svelte';
     import CollapsibleLibrary from "../CollapsibleLibrary.svelte";
     import LibraryControls from "../LibraryControls.svelte";
     import MotionLibraryItemEdit from "./MotionLibraryItemEdit.svelte";
@@ -10,6 +10,10 @@
     let inAddMode = false;
     let inEditMode = false;
     let itemsByGroup = null;
+
+    $: if (inAddMode) {
+        notify("negative", "Adding motions is not yet supported!");
+    }
 
     $: if ($motionsFetchNeeded) {
         fetch(`http://` + window.location.hostname + `:8080/api/motions/`)

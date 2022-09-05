@@ -7,6 +7,7 @@
         itemsByGroup,
         inEditMode;
 
+    // TODO: Remove
     function removeMove(event) {
         const id = event.target.dataset.id;
         const name = event.target.dataset.name;
@@ -51,14 +52,7 @@
         <section class="move-group">
             {#each itemsByGroup[groupName] as item}
                 <div>
-                    <Instruction item={{MotionItem: item}} name={item.Name} small={true} expanded={false} isDraggable={true}/>
-                    {#if inEditMode}
-                        <div>
-                            <button class="m0 mb1" on:click|preventDefault={removeMove} data-id="{item.ID}"
-                                    data-name="{item.Name}">Remove
-                            </button>
-                        </div>
-                    {/if}
+                    <Instruction item={{MotionItem: item}} name={item.Name} small={true} expanded={false} isDraggable={true} inEditMode={inEditMode} isMove={true}/>
                 </div>
             {/each}
         </section>

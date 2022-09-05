@@ -12,7 +12,8 @@
         isDraggable = false,
         border_radius = '',
         inEditMode = false,
-        isFetchNeeded = false;
+        isFetchNeeded = false,
+        isMove=false;
 
     let isMobile = false;
     let actionEdit = false;
@@ -111,6 +112,10 @@
     }
 
     function removeAction() {
+        if (isMove) {
+            notify("negative", "Removing motions is not yet supported!");
+            return;
+        }
 
         let confirmation = window.confirm(`Are you sure you want to remove the action: ${name}?`);
         if (!confirmation) {
@@ -180,9 +185,11 @@
         <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
             <p class:instruction-name="{!small}" style="margin: 0;">{name}</p>
             <span style={(small && inEditMode) ? 'visibility: visible;' : 'visibility: hidden;'}>
+                {#if !isMove}
                 <button class="ui tiny basic icon button" on:click|stopPropagation={editAction}>
                     <i class="edit icon"></i>
                 </button>
+                {/if}
                 <button class="ui tiny basic icon button" on:click|stopPropagation={removeAction}>
                     <i class="red trash alternate outline icon"></i>
                 </button>
