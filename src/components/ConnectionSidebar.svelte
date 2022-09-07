@@ -1,5 +1,6 @@
 <script>
-    import { serverIPStore, isPepperConnected } from './stores'
+    import { serverIPStore, isPepperConnected } from './stores';
+    import {notify} from "./Helpers.svelte";
 
     let serverIP = "unknown";
     var ping_period = 5000;
@@ -46,11 +47,16 @@
         }
     }
 
-    function setServerIPManually() {
-        serverIPStore.set(serverIP);
-        window.localStorage.setItem("server-ip", serverIP);
-        location.reload();
-        console.log("server IP set to", serverIP);
+    function stop_video() {
+        fetch('http://' + window.location.hostname + ':8080/api/pepper/stop_video')
+            .then(r => r.json())
+            .then(r => {
+                if (r.message) {
+                    notify("positive", r.message);
+                } else {
+                    notify("negative", r.error);
+                }
+            })
     }
 
     timeout = setPepperStatus();
@@ -64,14 +70,16 @@
     }
 </style>
 
-<div class="ui sidebar inverted vertical menu" id="connection_sidebar">
-    <div>
-        <abbr title="Pepper <—> backend connection indicator">Pepper status</abbr>:
-        {#if $isPepperConnected}<i class="check icon"></i>{:else}<i class="times icon"></i>{/if}
-    </div>
-    <div>
-        <label for="serverIP"><abbr title="Enter this IP into the Server's IP field on Pepper's tablet">Server IP</abbr></label>:
-        <input id="serverIP" type="text" bind:value={serverIP}/>
-        <button class="ui button" on:click={setServerIPManually}>Set</button>
+<div class="ui sidebar inverted vertical menu" id="connection_sidebar" style="display: inline-block;">
+    <div class="ui container">
+        <div class="ui hidden divider"></div>
+        <div style="margin: 0 auto;">
+            <abbr title="Pepper <—> Raspberry connection indicator">Pepper status</abbr>:
+            {#if $isPepperConnected}<i class="check icon"></i>{:else}<i class="times icon"></i>{/if}
+        </div>
+        <div class="ui hidden divider"></div>
+        <div style="margin: 0 auto;">
+            <button class="ui button" on:click={stop_video}>Stop Video Playback</button>
+        </div>
     </div>
 </div>
