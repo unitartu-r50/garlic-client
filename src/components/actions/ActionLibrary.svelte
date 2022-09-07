@@ -41,7 +41,7 @@
     {#if inAddMode}
         <ActionItemEdit bind:inAddMode={inAddMode} bind:fetchNeeded={isFetchNeeded}/>
     {/if}
-    <div style="display: flex;">
+    <div style="display: flex; flex-wrap: wrap;">
         <LibraryControls bind:inAddMode={inAddMode} bind:inEditMode={inEditMode}/>
         <Search {search}/>
     </div>

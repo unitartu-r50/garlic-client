@@ -60,11 +60,8 @@
 
     function markActive(element) {
         if (element.tagName.toLowerCase() === "article") {
-            if (element.style.border === "4px solid rgba(159, 255, 159, .35)") {
-                element.style.background = "rgba(159, 255, 159, .15)";
-            } else {
-                element.style.background = "rgba(159, 241, 255, .15)";
-            }
+            element.style.background = "rgba(253, 202, 129, .15)";
+            element.style.border = "4px solid rgba(253, 202, 129, .50)"
         } else {
             markActive(element.parentElement);
         }
@@ -72,18 +69,23 @@
 
     function markInactive(element) {
         if (element.tagName.toLowerCase() === "article") {
-            element.style.background = "";
+            element.style.background = "rgba(159, 241, 255, .15)";
+            element.style.border = "4px solid rgba(159, 241, 255, .50)"
         } else {
             markInactive(element.parentElement)
         }
     }
 
     function markComplete(element) {
-        if (element.tagName.toLowerCase() === "article") {
-            element.style.background = "rgba(159, 255, 159, .05)";
-            element.style.border = "4px solid rgba(159, 255, 159, .35)";
+        if (small) {
+            markInactive(element);
         } else {
-            markComplete(element.parentElement);
+            if (element.tagName.toLowerCase() === "article") {
+                element.style.background = "rgba(159, 255, 159, .15)";
+                element.style.border = "4px solid rgba(159, 255, 159, .50)";
+            } else {
+                markComplete(element.parentElement);
+            }
         }
     }
 
@@ -166,7 +168,7 @@
     }
 </style>
 
-{#if (inEditMode && actionEdit)}
+{#if (actionEdit && inEditMode)}
 <div style="grid-column-start: 1; grid-column-end: 3;">
     <ActionItemEdit inAddMode={false} bind:fetchNeeded={isFetchNeeded} bind:actionEdit={actionEdit} bind:item={item}></ActionItemEdit>
 </div>
@@ -182,36 +184,36 @@
     {#if expanded}
         <p class="h6 m0 bold caps {isMobile ? 'mb2' : 'mb4'}" style="margin-bottom: 14px;">Question {index + 1}</p>
     {:else}
-        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-            <p class:instruction-name="{!small}" style="margin: 0;">{name}</p>
-            <span style={(small && inEditMode) ? 'visibility: visible;' : 'visibility: hidden;'}>
-                {#if !isMove}
-                <button class="ui tiny basic icon button" on:click|stopPropagation={editAction}>
-                    <i class="edit icon"></i>
-                </button>
-                {/if}
-                <button class="ui tiny basic icon button" on:click|stopPropagation={removeAction}>
-                    <i class="red trash alternate outline icon"></i>
-                </button>
-            </span>
-        </div>
+        <p class:instruction-name="{!small}" style="margin: 0;">{isMove ? name.replaceAll("_", " ") : name}</p>
     {/if}
-    <div>
-        {#if expanded}
-            <p class="m0 mb1 instruction-name">{name}</p>
-        {/if}
-        {#if item.UtteranceItem && item.UtteranceItem.FilePath && item.UtteranceItem.FilePath.length > 0}
-            <InstructionIcon item={item.UtteranceItem} iconBaseName="speech" alt="audio is present"/>
-        {/if}
-        {#if item.MotionItem && (item.MotionItem.Name || item.MotionItem.FilePath)}
-            <InstructionIcon item={item.MotionItem} iconBaseName="pepper-icon" alt="motion is present"/>
-        {/if}
-        {#if item.ImageItem && item.ImageItem.FilePath}
-            <InstructionIcon item={item.ImageItem} iconBaseName="image" alt="graphics is present"/>
-        {/if}
-        {#if item.URLItem && item.URLItem.URL.length > 0}
-            <InstructionIcon item={item.URLItem} iconBaseName="url" alt="URL is present"/>
-        {/if}
+    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+        <span>
+            {#if expanded}
+                <p class="m0 mb1 instruction-name">{name}</p>
+            {/if}
+            {#if item.UtteranceItem && item.UtteranceItem.FilePath && item.UtteranceItem.FilePath.length > 0}
+                <InstructionIcon item={item.UtteranceItem} iconBaseName="speech" alt="audio is present"/>
+            {/if}
+            {#if item.MotionItem && (item.MotionItem.Name || item.MotionItem.FilePath)}
+                <InstructionIcon item={item.MotionItem} iconBaseName="pepper-icon" alt="motion is present"/>
+            {/if}
+            {#if item.ImageItem && item.ImageItem.FilePath}
+                <InstructionIcon item={item.ImageItem} iconBaseName="image" alt="graphics is present"/>
+            {/if}
+            {#if item.URLItem && item.URLItem.URL.length > 0}
+                <InstructionIcon item={item.URLItem} iconBaseName="url" alt="URL is present"/>
+            {/if}
+        </span>
+        <span style={(small && inEditMode) ? 'visibility: visible;' : 'visibility: hidden;'}>
+            {#if !isMove}
+            <button class="ui tiny basic icon button" on:click|stopPropagation={editAction}>
+                <i class="edit icon"></i>
+            </button>
+            {/if}
+            <button class="ui tiny basic icon button" on:click|stopPropagation={removeAction}>
+                <i class="red trash alternate outline icon"></i>
+            </button>
+        </span>
     </div>
 </article>
 {/if}

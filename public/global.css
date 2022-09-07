@@ -10,7 +10,8 @@ body {
 .instruction {
 	cursor: pointer;
 	padding: 1rem;
-	border: 4px solid rgba(159, 241, 255, .35);
+	border: 4px solid rgba(159, 241, 255, .75);
+	background: rgba(159, 241, 255, .15);
 	transition: all .2s ease-in-out;
 }
 

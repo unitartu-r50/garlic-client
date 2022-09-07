@@ -42,20 +42,19 @@
     .move-group {
         display: grid;
         grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr;
         grid-gap: .3em;
     }
 </style>
 
 {#if itemsByGroup}
     {#each Object.keys(itemsByGroup) as groupName}
-        <h3 class="h4">{groupName}</h3>
-        <section class="move-group">
+        <h4 class="ui header" style="margin: 14px 0 7px 0;">{groupName}</h4>
+        <div class="move-group">
             {#each itemsByGroup[groupName] as item}
-                <div>
-                    <Instruction item={{MotionItem: item}} name={item.Name} small={true} expanded={false} isDraggable={true} inEditMode={inEditMode} isMove={true}/>
-                </div>
+                <Instruction item={{MotionItem: item}} name={item.Name} small={true} expanded={false} isDraggable={true} inEditMode={inEditMode} isMove={true} border_radius={'border-radius: 20px;'}/>
             {/each}
-        </section>
+        </div>
     {/each}
 {:else}
     <p><em>No motions found.</em></p>

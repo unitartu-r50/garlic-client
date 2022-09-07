@@ -1,5 +1,4 @@
 <script>
-    import {notify} from "../Helpers.svelte";
     import Instruction from "../Instruction.svelte";
 
     export let

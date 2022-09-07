@@ -44,7 +44,7 @@
     {#if inAddMode}
         <MotionLibraryItemEdit bind:inAddMode={inAddMode} search={search}/>
     {/if}
-    <div style="display: flex;">
+    <div style="display: flex; flex-wrap: wrap;">
         <LibraryControls bind:inAddMode={inAddMode} bind:inEditMode={inEditMode}/>
         <Search {search}/>
     </div>
