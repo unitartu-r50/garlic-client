@@ -18,28 +18,29 @@
                 ID: null,
                 Phrase: "",
                 FilePath: "",
-                Delay: 0
+                Delay: 0,
+                Speed: 1,
             },
             MotionItem: {
                 ID: null,
                 Name: "",
                 FilePath: "",
                 Delay: 0,
-                Group: ""
+                Group: "",
             },
             ImageItem: {
                 ID: null,
                 Name: "",
                 FilePath: "",
                 Delay: 0,
-                Group: ""
+                Group: "",
             },
             URLItem: {
                 ID: null,
                 Name: "",
                 URL: "",
                 Delay: 0,
-                Group: ""
+                Group: "",
             }
         };
 

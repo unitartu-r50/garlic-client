@@ -70,6 +70,10 @@
     }
 
     function synthesize(event) {
+        if (utteranceItem.Speed > 2 || utteranceItem.Speed < 0.5) {
+            notify("negative", "Speed must be a value between 0.5 and 2!");
+            return;
+        }
         if (utteranceItem.Phrase === "") {
             notify("negative", "Enter a phrase to synthesize!");
             return;
@@ -79,12 +83,12 @@
             phraseLinked = true;
         }
         jQuery(event.target.parentElement).dimmer({closable:false}).dimmer('show');
-        fetch('http://' + window.location.hostname + ':8080/api/synthesis?' + new URLSearchParams({voice: $speaker}), {
+        fetch('http://' + window.location.hostname + ':8080/api/synthesis', {
             method: 'POST',
             headers: {
-                'Content-Type': 'text/strings'
+                'Content-Type': 'application/json'
             },
-            body: phraseLinked ? utteranceItem.Phrase : utteranceItem.Pronunciation
+            body: JSON.stringify({'phrase': phraseLinked ? utteranceItem.Phrase : utteranceItem.Pronunciation, 'voice': $speaker, 'speed': utteranceItem.Speed})
         })
         .then(r => {
             if (!r.ok) {
@@ -117,9 +121,9 @@
     function removePronunciation() {
         jQuery('#add-pronunciation').show();
         jQuery('#remove-pronunciation').hide();
+        audioLinked = false;
         utteranceItem.Pronunciation = "";
         phraseLinked = true;
-        synthesize();
     }
 
     function removeUtterance() {
@@ -127,14 +131,15 @@
         utteranceItem.Phrase = "";
         utteranceItem.FilePath = "";
         utteranceItem.Delay = 0;
+        utteranceItem.Speed = 1;
+    }
+
+    function unsync() {
+        audioLinked = false;
     }
 </script>
 
 <style>
-    input[type=number] {
-        width: 5em;
-    }
-
     .full-width {
         width: 100%;
     }
@@ -154,8 +159,10 @@
                         class="ui icon button" on:click|preventDefault={addPronunciation}><i class="unlink icon"></i></button>
                 <button id="remove-pronunciation" data-tooltip="Use phrase as pronunciation" data-inverted="" data-position="top center" style="display: {phraseLinked ? "none" : "block"};"
                         class="ui icon button" on:click|preventDefault={removePronunciation}><i class="linkify icon"></i></button>
-                <span class="ui label">Audio delay (s):</span>
-                <input type="number" id="{utteranceItem.ID}.UtteranceItem.Delay" placeholder="0" style="padding-top: 8px !important;" bind:value={utteranceItem.Delay}>
+                <span class="ui label">Speed:</span>
+                <input type="number" id="{utteranceItem.ID}.UtteranceItem.Delay" placeholder="1.0" min="0.5" max="2.0" step="0.05" style="padding-top: 8px !important; width: 6em;" bind:value={utteranceItem.Speed} on:change={unsync}>
+                <span class="ui label">Delay (s):</span>
+                <input type="number" id="{utteranceItem.ID}.UtteranceItem.Delay" placeholder="0" style="padding-top: 8px !important; width: 5em;" bind:value={utteranceItem.Delay}>
             </span>
         </div>
         {#if !phraseLinked}

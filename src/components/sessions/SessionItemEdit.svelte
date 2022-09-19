@@ -35,26 +35,27 @@
                 Phrase: "",
                 Pronunciation: "",
                 FilePath: "",
-                Delay: 0
+                Delay: 0,
+                Speed: 1,
             },
             MotionItem: {
                 Name: "",
                 FilePath: "",
                 Delay: 0,
-                Group: ""
+                Group: "",
             },
             ImageItem: {
                 Name: "",
                 FilePath: "",
                 Delay: 0,
-                Group: ""
+                Group: "",
             },
             URLItem: {
                 // ID: "",
                 Name: "",
                 URL: "",
                 Delay: 0,
-                Group: ""
+                Group: "",
             }
         });
         item = item;
