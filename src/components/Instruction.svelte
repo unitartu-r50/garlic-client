@@ -1,5 +1,6 @@
 <script>
     import {notify} from "./Helpers.svelte";
+    import { pepperConnectionID } from './stores';
     import InstructionIcon from "./InstructionIcon.svelte";
     import ActionItemEdit from "./actions/ActionItemEdit.svelte";
 
@@ -30,7 +31,7 @@
             "item_id": id
         }
         console.log("sending instruction", payload)
-        fetch(`http://${serverIP}:8080/api/pepper/send_command`, {
+        fetch(`http://${serverIP}:8080/api/pepper/send_command?` + new URLSearchParams({'conn': $pepperConnectionID}), {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

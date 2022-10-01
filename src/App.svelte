@@ -1,5 +1,5 @@
 <script>
-    import { isPepperConnected, motionsFetchNeeded } from "./components/stores";
+    import { pepperConnectionID, motionsFetchNeeded } from "./components/stores";
     import SiteHeader from './components/SiteHeader.svelte';
     import ConnectionSidebar from './components/ConnectionSidebar.svelte';
     import SessionsPage from './components/sessions/SessionsPage.svelte';
@@ -8,7 +8,7 @@
 
     let isSessionsFetchNeeded = true;
 
-    $: if ($isPepperConnected) {
+    $: if ($pepperConnectionID != null) {
         $motionsFetchNeeded = true;
     }
 </script>

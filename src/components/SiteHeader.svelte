@@ -1,5 +1,5 @@
 <script>
-    import { isPepperConnected } from "./stores"
+    import { pepperConnectionID } from "./stores"
     import { notify } from "./Helpers.svelte";
 
     let update_ready = false;
@@ -168,10 +168,10 @@
     </div>
     <div style="display: flex; justify-content: space-between; height: 100%;">
         <span class="ui compact button span" on:click|preventDefault={openSidebar}>
-            {#if $isPepperConnected}
-            <img src="/images/pepper.png" class="logo" alt="Pepper Control">
-            {:else}
+            {#if $pepperConnectionID == null}
             <img src="/images/pepper_silhouette.png" class="logo" alt="Pepper Control">
+            {:else}
+            <img src="/images/pepper.png" class="logo" alt="Pepper Control">
             {/if}
             <span id="logo-title" class="ui float right">Pepper</span>
         </span>

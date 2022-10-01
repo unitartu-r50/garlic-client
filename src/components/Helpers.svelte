@@ -11,9 +11,9 @@
         notifications.appendChild(notification);
 
         // conditional timeout
-        let timeout = 3000;
+        let timeout = 5000;
         if (label !== "positive") {
-            timeout = 5000;
+            timeout = 3000;
         }
 
         // removing the notification after some time
