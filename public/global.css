@@ -30,9 +30,9 @@ body {
 	left: 0;
 	display: flex;
 	flex-direction: column;
+	z-index: 99;
 	/*padding: 1rem;*/
 	/*transition: all ease-in-out .2s;*/
-	/*z-index: 99;*/
 }
 
 .notification-item {

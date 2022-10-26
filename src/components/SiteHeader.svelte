@@ -1,5 +1,5 @@
 <script>
-    import { pepperConnectionID } from "./stores"
+    import { pepperConnectionID, recording } from "./stores"
     import { notify } from "./Helpers.svelte";
 
     let update_ready = false;
@@ -72,7 +72,7 @@
 </script>
 
 <style>
-    span:hover, span:focus {
+    #logo-title:hover, #logo-title:focus {
         font-style: italic;
     }
 
@@ -175,6 +175,14 @@
             {/if}
             <span id="logo-title" class="ui float right">Pepper</span>
         </span>
+        {#if $recording}
+            <span class="span" style="font-size: 2em;">
+                <button class="ui red basic button" style="background-color: #ffffff;">
+                    <i class="ui red circle icon"></i>
+                    Recording...
+                </button>
+            </span>
+        {/if}
         <span class="span">
             <button data-tooltip="Rebuild site" data-position="bottom right" data-inverted="" class="ui icon button serverbutton" on:click={confirmRebuild}>
                 <i class="large redo icon"></i>

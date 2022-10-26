@@ -2,7 +2,7 @@
     import {notify} from "../Helpers.svelte";
     import { afterUpdate } from 'svelte';
     import Select from "svelte-select";
-    import { motionsFetchNeeded, speaker } from '../stores'
+    import { pepperConnectionID, motionsFetchNeeded, speaker, recording } from '../stores';
 
     export let inPresentationMode,
                inEditMode,
@@ -19,6 +19,7 @@
     let selectItem;
     let currentSessionIndex = 0;
     let forceCurrentSessionReload = false;
+    let rec_paused = false;
 
     if (window.localStorage.getItem("currentSessionIndex")) {
         currentSessionIndex = window.localStorage.getItem("currentSessionIndex")
@@ -366,6 +367,42 @@
         currentPresentationItem = currentSession.Items[currentPresentationItemIndex];
     }
 
+    function record_session() {
+        fetch('http://' + window.location.hostname + ':8080/api/recording/start?' + new URLSearchParams({'conn': $pepperConnectionID}))
+            .then(response => response.json())
+            .then((r) => {
+                if (r['error']) {
+                    notify("negative", r['error']);
+                } else {
+                    $recording = true;
+                    notify("positive", r['message']);
+                }
+            });
+    }
+
+    function pause_recording() {
+        console.log("WIP");
+        rec_paused = true;
+    }
+
+    function resume_recording() {
+        console.log("WIP");
+        rec_paused = false;
+    }
+
+    function stop_recording() {
+        fetch('http://' + window.location.hostname + ':8080/api/recording/stop?' + new URLSearchParams({'conn': $pepperConnectionID}))
+            .then(response => response.json())
+            .then((r) => {
+                if (r['error']) {
+                    notify("negative", r['error']);
+                } else {
+                    $recording = false;
+                    notify("positive", r['message']);
+                }
+            });
+    }
+
     fetchSessions(false);
 
     fetch('http://' + window.location.hostname + ':8080/api/voices')
@@ -471,6 +508,32 @@
                 </form>
             </span>
         </span>
+        {#if $pepperConnectionID !== null}
+        <span>
+            {#if $recording}
+                {#if rec_paused}
+                <button class="ui black button" on:click={resume_recording}>
+                    <i class="ui play icon"></i>
+                    Resume recording
+                </button>
+                {:else}
+                <button class="ui red button" on:click={pause_recording}>
+                    <i class="ui pause icon"></i>
+                    Pause recording
+                </button>
+                {/if}
+                <button class="ui red button" on:click={stop_recording}>
+                    <i class="ui stop icon"></i>
+                    Stop recording
+                </button>
+            {:else}
+                <button class="ui button" on:click={record_session}>
+                    <i class="ui red circle icon"></i>
+                    Record session
+                </button>
+            {/if}
+        </span>
+        {/if}
         <span>
             {#if !sessions && sessions.length === 0}
                 <p><em>No sessions found.</em></p>

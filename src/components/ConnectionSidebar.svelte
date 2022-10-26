@@ -4,8 +4,8 @@
     var ping_period = 5000;
     let status_time;
 
-    function notify(label, message) {
-        const notification = document.getElementById("notification-msg");
+    function sidebar_notify(label, message) {
+        const notification = document.getElementById("sidebar-notification-msg");
         notification.className = notification.className.replace(/(warning)|(negative)|(positive)/g, `${label}`)
         notification.innerText = message;
         notification.style.opacity = '1';
@@ -41,9 +41,9 @@
             .then(r => r.json())
             .then(r => {
                 if (r.message) {
-                    notify("positive", r.message);
+                    sidebar_notify("positive", r.message);
                 } else {
-                    notify("negative", r.error);
+                    sidebar_notify("negative", r.error);
                 }
             })
     }
@@ -55,15 +55,15 @@
             .then(response => response.json())
             .then((r) => {
                 if (r['error']) {
-                    notify("negative", r['error']);
+                    sidebar_notify("negative", r['error']);
                 } else {
                     $pepperConnectionID = conn_id;
                     status_time = setPepperStatus()
-                    notify("positive", r['message']);
+                    sidebar_notify("positive", r['message']);
                 }
             })
             .catch(error => {
-                notify("negative", error);
+                sidebar_notify("negative", error);
                 console.log(error)
             })
     }
@@ -73,13 +73,19 @@
             .then(response => response.json())
             .then((r) => {
                 if (r['error']) {
-                    notify("negative", r['error']);
+                    sidebar_notify("negative", r['error']);
                 } else {
                     $pepperConnectionID = null;
                     window.clearTimeout(status_time);
-                    notify("positive", r['message']);
+                    sidebar_notify("positive", r['message']);
                 }
             })
+    }
+
+    function input_keyup(event) {
+        if (event.key == "Enter") {
+            connect();
+        }
     }
 </script>
 
@@ -96,7 +102,7 @@
         margin: 0;
     }
 
-    #notification-msg {
+    #sidebar-notification-msg {
         position: absolute;
         bottom: 0;
         margin-left: auto;
@@ -123,7 +129,7 @@
         </div>
         <div style="margin: 0 auto;">
             <span class="ui input">
-                <input type="text" id="conn_id_input" pattern="^[0-9]{4}$" placeholder="XXXX" style="padding-top: 8px !important; width: 5em; text-align: center;">
+                <input type="text" id="conn_id_input" pattern="^[0-9]{4}$" placeholder="XXXX" style="padding-top: 8px !important; width: 5em; text-align: center;" on:keyup={input_keyup}>
             </span>
             <button class="ui button" on:click={connect} style="width: 7em;">Connect</button>
         </div>
@@ -137,7 +143,7 @@
         </div>
         {/if}
         <div style="height: 100%; position: relative; width: 100%;">
-            <span id="notification-msg" class="ui positive message">
+            <span id="sidebar-notification-msg" class="ui positive message">
                 Notification placeholder
             </span>
         </div>
