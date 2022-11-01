@@ -39,6 +39,13 @@ export default {
 	},
 	plugins: [
 		svelte({
+			onwarn: (warning, handler) => {
+				// Not worth fixing node-modules
+				if (warning.code === 'a11y-click-events-have-key-events') return
+		
+				// Let Rollup handle all other warnings normally
+				handler(warning)
+			},
 			compilerOptions: {
 				// enable run-time checks when not in production
 				dev: !production
@@ -51,7 +58,8 @@ export default {
 		// Copy Fomantic files to the build
 		copy({targets: [
 			{ src: "node_modules/jquery/dist/jquery.js", dest: "public/build" },
-			{ src: "node_modules/fomantic-ui-css/themes", dest: "public/build" }
+			{ src: "node_modules/fomantic-ui-css/themes", dest: "public/build" },
+			{ src: "node_modules/progressbar.js/dist/progressbar.js", dest: "public/build" }
 		]}),
 
 		// If you have external dependencies installed from

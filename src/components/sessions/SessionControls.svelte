@@ -458,9 +458,9 @@
         <p>You are about to re-synthesize all voicelines, replacing them. This process may take several minutes and can not be reversed. Proceed?
     </div>
     <div class="actions" style="display: flex; justify-content: space-between;">
-        <span class="ui green ok inverted button" on:click={batchSynthesis}>
+        <button class="ui green ok inverted button" on:click={batchSynthesis}>
             <i class="checkmark icon"></i>Yes
-        </span>
+        </button>
         <span class="ui red basic cancel inverted button">
             <i class="remove icon"></i>No
         </span>

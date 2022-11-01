@@ -1,5 +1,5 @@
 <script context="module">
-    export function notify(label, message) {
+    export function notify(label, message, customtimer = -1) {
         // adding a notification item
         const notification = document.createElement("div");
         notification.classList.add("notification-item");
@@ -11,9 +11,13 @@
         notifications.appendChild(notification);
 
         // conditional timeout
-        let timeout = 5000;
-        if (label !== "positive") {
+        let timeout;
+        if (customtimer !== -1) {
+            timeout = customtimer;
+        } else if (label !== "positive") {
             timeout = 3000;
+        } else {
+            timeout = 5000;
         }
 
         // removing the notification after some time
