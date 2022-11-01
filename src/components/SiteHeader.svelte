@@ -12,7 +12,7 @@
     }
 
     function browse_rec_dir() {
-        window.open('http://' + window.location.hostname + ':8080/data/recordings');
+        window.open('http://' + window.location.hostname + ':5000/recordings/');
     }
 
     function confirmClear() {
