@@ -8,7 +8,12 @@
     let checking = false;
 
     function openSidebar() {
-        jQuery('.ui.sidebar').sidebar('toggle');
+        jQuery('.ui.sidebar').sidebar({
+            onVisible: function(){
+                if ($pepperConnectionID === null) {
+                    setTimeout(function(){document.getElementById('conn_id_input').focus()},50)
+                }}
+        }).sidebar('show');
     }
 
     function browse_rec_dir() {
