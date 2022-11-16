@@ -1,5 +1,5 @@
 <script>
-    import { pepperConnectionID, rec_disk_fill } from './stores';
+    import { pepperConnectionID } from './stores';
 
     var ping_period = 5000;
     let status_time;
@@ -32,7 +32,6 @@
                 } else {
                     $pepperConnectionID = null;
                 }
-                $rec_disk_fill = response["rec_fill"];
             })
             .catch(err => console.error(err))
     }

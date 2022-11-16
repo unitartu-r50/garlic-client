@@ -58,8 +58,7 @@ export default {
 		// Copy Fomantic files to the build
 		copy({targets: [
 			{ src: "node_modules/jquery/dist/jquery.js", dest: "public/build" },
-			{ src: "node_modules/fomantic-ui-css/themes", dest: "public/build" },
-			{ src: "node_modules/progressbar.js/dist/progressbar.js", dest: "public/build" }
+			{ src: "node_modules/fomantic-ui-css/themes", dest: "public/build" }
 		]}),
 
 		// If you have external dependencies installed from
