@@ -26,6 +26,11 @@
     }
 
     async function sendInstruction(id, serverIP, target) {
+        if ($pepperConnectionID == null) {
+            notify("negative", "You are not connected to a robot!");
+            return;
+        }
+
         markActive(target);
         const payload = {
             "item_id": id
