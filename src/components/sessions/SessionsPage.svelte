@@ -47,4 +47,5 @@
             </div>
         {/if}
     {/if}
+    <div class="ui hidden section divider"></div>
 </section>

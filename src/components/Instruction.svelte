@@ -1,6 +1,6 @@
 <script>
     import {notify} from "./Helpers.svelte";
-    import { pepperConnectionID } from './stores';
+    import { pepperConnectionID, instructionInProgress } from './stores';
     import InstructionIcon from "./InstructionIcon.svelte";
     import ActionItemEdit from "./actions/ActionItemEdit.svelte";
 
@@ -31,6 +31,12 @@
             return;
         }
 
+        if ($instructionInProgress) {
+            notify("warning", "Please wait for the previous command to finish!");
+            return;
+        }
+
+        $instructionInProgress = true;
         markActive(target);
         const payload = {
             "item_id": id
@@ -47,14 +53,17 @@
             .then((response) => {
                 if (response[id] == "action_retry_required") {
                     sendInstruction(id, serverIP, target);
-                } else if (response[id] === "action_error") {
-                    notify("negative", response["message"]);
-                    markInactive(target);
-                } else if (response[id] !== "action_success") {
-                    notify("warning", response["message"]);
-                    markInactive(target);
                 } else {
-                    markComplete(target);
+                    $instructionInProgress = false;
+                    if (response[id] === "action_error") {
+                        notify("negative", response["message"]);
+                        markInactive(target);
+                    } else if (response[id] !== "action_success") {
+                        notify("warning", response["message"]);
+                        markInactive(target);
+                    } else {
+                        markComplete(target);
+                    }
                 }
             })
             .catch((err) => {
@@ -70,15 +79,6 @@
             element.style.border = "4px solid rgba(253, 202, 129, .50)"
         } else {
             markActive(element.parentElement);
-        }
-    }
-
-    function markInactive(element) {
-        if (element.tagName.toLowerCase() === "article") {
-            element.style.background = "rgba(159, 241, 255, .15)";
-            element.style.border = "4px solid rgba(159, 241, 255, .50)"
-        } else {
-            markInactive(element.parentElement)
         }
     }
 
@@ -148,6 +148,19 @@
                 notify("negative", err);
             });
     }
+</script>
+
+<script context="module">
+
+    export function markInactive(element) {
+        if (element.tagName.toLowerCase() === "article") {
+            element.style.background = "rgba(159, 241, 255, .15)";
+            element.style.border = "4px solid rgba(159, 241, 255, .50)"
+        } else {
+            markInactive(element.parentElement)
+        }
+    }
+
 </script>
 
 <style>

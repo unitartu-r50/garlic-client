@@ -34,7 +34,10 @@
                 }
                 $rec_disk_fill = response["rec_fill"];
             })
-            .catch(err => console.error(err))
+            .catch(err => {
+                $pepperConnectionID = null;
+                console.error(err);
+            })
     }
 
     function stop_video() {
