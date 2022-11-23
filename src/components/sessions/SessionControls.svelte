@@ -1,5 +1,6 @@
 <script>
     import {notify} from "../Helpers.svelte";
+    import { markInactive } from "../Instruction.svelte";
     import { afterUpdate } from 'svelte';
     import Select from "svelte-select";
     import { pepperConnectionID, motionsFetchNeeded, speaker, recording } from '../stores';
@@ -339,6 +340,10 @@
         setCurrentSessionIndex(selectItem.value);
         currentSession = sessions[currentSessionIndex];
         currentPresentationItemIndex = 0;
+        var instructions = document.getElementsByClassName("instruction");
+        for (var i=0; i < instructions.length; i++) {
+            markInactive(instructions.item(i));
+        }
     }
 
     function handleVoiceChange() {
@@ -500,7 +505,7 @@
             <span data-tooltip={inEditMode ? "Finish editing first!" : null} data-inverted="">
                 <form class="ui form" style="display: inline;">
                     <label for="import-session-file" class="ui{inEditMode === true ? ' disabled' : ''} icon button">
-                        <i class="upload icon"></i>
+                        <i class="download icon"></i>
                         Import session
                     </label>
                     <input type="file" id="import-session-file" class="ui file input"
@@ -553,7 +558,7 @@
                         {#if !inEditMode}
                             <span>
                                 <button class="ui button" on:click|preventDefault={exportSession}>
-                                    <i class="download icon"></i>
+                                    <i class="upload icon"></i>
                                     Export
                                 </button>
                             </span>

@@ -25,6 +25,11 @@
             window.clearTimeout(timeoutID);
             notifications.removeChild(notification);
         }, timeout);
+
+        notification.addEventListener("click", function(e) {
+            window.clearTimeout(timeoutID);
+            notifications.removeChild(notification);
+        });
     }
 
     export function filterByGroup(items) {
