@@ -517,7 +517,7 @@
                     Resume recording
                 </button>
                 {:else}
-                <button class="ui red button" on:click={pause_recording}>
+                <button class="ui disabled red button" on:click={pause_recording}>
                     <i class="ui pause icon"></i>
                     Pause recording
                 </button>
