@@ -336,14 +336,18 @@
         }
     })
 
-    function handleSessionChange() {
-        setCurrentSessionIndex(selectItem.value);
-        currentSession = sessions[currentSessionIndex];
-        currentPresentationItemIndex = 0;
+    function inactivateAll() {
         var instructions = document.getElementsByClassName("instruction");
         for (var i=0; i < instructions.length; i++) {
             markInactive(instructions.item(i));
         }
+    }
+
+    function handleSessionChange() {
+        setCurrentSessionIndex(selectItem.value);
+        currentSession = sessions[currentSessionIndex];
+        currentPresentationItemIndex = 0;
+        inactivateAll();
     }
 
     function handleVoiceChange() {
@@ -360,6 +364,7 @@
             return;
         }
         currentPresentationItem = currentSession.Items[currentPresentationItemIndex];
+        inactivateAll();
     }
 
     function previousQuestion() {
@@ -370,6 +375,7 @@
             return;
         }
         currentPresentationItem = currentSession.Items[currentPresentationItemIndex];
+        inactivateAll();
     }
 
     function record_session() {
