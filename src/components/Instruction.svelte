@@ -203,7 +203,7 @@
     {#if expanded}
         <p class="h6 m0 bold caps {isMobile ? 'mb2' : 'mb4'}" style="margin-bottom: 14px;">Question {index + 1}</p>
     {:else}
-        <p class:instruction-name="{!small}" style="margin: 0;">{isMove ? name.replaceAll("_", " ") : name}</p>
+        <p class:instruction-name="{!small}" style="margin: 0;">{isMove ? name.replaceAll("_", " ") : name === "" ? item.UtteranceItem.Phrase : name}</p>
     {/if}
     <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
         <span>
