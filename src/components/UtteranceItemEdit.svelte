@@ -132,6 +132,7 @@
         utteranceItem.FilePath = "";
         utteranceItem.Delay = 0;
         utteranceItem.Speed = 1;
+        audioLinked = false;
     }
 
     function unsync() {
@@ -200,11 +201,12 @@
                     </form>
                 </span>
                 <button data-tooltip="Remove linked audio" data-inverted="" data-position="bottom center"
-                        class="ui {utteranceItem.FilePath ? "" : "disabled "}icon button" on:click|preventDefault={removeUtterance}><i class="trash icon"></i></button>
+                        class="ui {oldUtterance.FilePath ? "" : "disabled "}icon button" on:click|preventDefault={removeUtterance}><i class="trash icon"></i></button>
             </span>
             <span>
                 <button data-tooltip="Preview audio" data-inverted="" data-position="bottom center" style="margin-right: 0;"
-                        class="ui {utteranceItem.FilePath ? '' : 'disabled '}icon button" on:click|preventDefault={playAudio}><i class="play icon"></i></button>
+                        class="ui {utteranceItem.FilePath ? 'green ' : 'disabled '}icon button" on:click|preventDefault={playAudio}><i class="play icon"></i></button>
+                <!---
                 <span class="ui large {audioLinked ? "green" : "yellow"} label">
                     {#if audioLinked}
                         <i class="white check icon"></i>
@@ -213,6 +215,7 @@
                     {/if}
                     Audio {audioLinked ? "" : "not "}linked
                 </span>
+                -->
             </span>
         </div>
     </section>
