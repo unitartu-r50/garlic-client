@@ -204,7 +204,7 @@
             </span>
             <span>
                 <button data-tooltip="Preview audio" data-inverted="" data-position="bottom center" style="margin-right: 0;"
-                        class="ui {audioLinked ? '' : 'disabled '}icon button" on:click|preventDefault={playAudio}><i class="play icon"></i></button>
+                        class="ui {utteranceItem.FilePath ? '' : 'disabled '}icon button" on:click|preventDefault={playAudio}><i class="play icon"></i></button>
                 <span class="ui large {audioLinked ? "green" : "yellow"} label">
                     {#if audioLinked}
                         <i class="white check icon"></i>
