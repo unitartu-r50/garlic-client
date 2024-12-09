@@ -2,9 +2,10 @@
     import {notify} from "./Helpers.svelte";
 
     export let
-        imageItem;
+        imageItem,
+        action;
 
-    let id_placeholder = Date.now();
+    let id_placeholder = action.ID + "-ImageItem";
 
     function imageUpload(event) {
         // console.log("uploading image", event);

@@ -149,7 +149,7 @@
                     <span style="flex-basis: 50%; flex-grow: 1; padding: 14px;">
                         <MotionItemEdit bind:motionItem={action.MotionItem}/>
                         <div class="ui hidden divider"></div>
-                        <ImageItemEdit bind:imageItem={action.ImageItem}/>
+                        <ImageItemEdit action="{action}" bind:imageItem={action.ImageItem}/>
                         <div class="ui hidden divider"></div>
                         <URLItemEdit bind:URLItem={action.URLItem}/>
                     </span>
